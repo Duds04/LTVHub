@@ -1,0 +1,346 @@
+/* Container Principal */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f8fafc;
+  font-family: "Roboto", sans-serif;
+  margin-left: 250px; /* Para telas grandes */
+  min-height: 100vh;
+  padding: 3vmin 6vw;
+  padding-top: 3vmin;
+  box-sizing: border-box;
+  transition: margin-left 0.3s ease;
+}
+
+/* Ajustes para o Gráfico */
+.chartContainer {
+  width: 48%; /* Aumenta o width do gráfico para um pouco menor que a tabela */
+  height: 400px;
+  margin-top: 15vmin;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-left: 50px;
+}
+
+.split {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #f8fafc;
+  font-family: "Roboto", sans-serif;
+  box-sizing: border-box;
+}
+
+.left{
+    width: 100%;
+}
+
+/* Ajuste para dispositivos móveis */
+@media (max-width: 768px) {
+  .container {
+    margin-left: 0; /* Remove a margem lateral em telas pequenas */
+    padding: 20px;
+  }
+
+  .cardsContainer {
+    grid-template-columns: 1fr 1fr; /* 2 colunas em telas pequenas */
+  }
+
+  .searchFilterContainer {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .searchInput,
+  .filterSelect {
+    width: 100%;
+  }
+}
+
+/* Filtro de Pesquisa */
+.searchInput {
+  flex-grow: 1;
+  padding: 15px 10px;
+  font-size: 1rem;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000000' viewBox='0 0 24 24'%3E%3Cpath d='M10 2C5.589 2 2 5.589 2 10c0 4.411 3.589 8 8 8a7.96 7.96 0 005.656-2.344l4.658 4.658 1.414-1.414-4.658-4.658A7.96 7.96 0 0018 10c0-4.411-3.589-8-8-8zm0 2c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z'/%3E%3C/svg%3E")
+    no-repeat 98% center;
+  background-size: 16px;
+  margin-right: 10px;
+  background-color: #f4f4f4;
+  border: 0;
+  border-radius: 50px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  width: 250px;
+}
+
+.searchInput:focus {
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 102, 34, 0.5);
+}
+
+/* Filtro Select */
+.filterSelect {
+  padding: 15px 10px;
+  font-size: 1rem;
+  background-color: #f4f4f4;
+  border: 0;
+  border-radius: 50px;
+  box-sizing: border-box;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Cards de Clientes */
+.cardsContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.clientCard {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.clientCard:hover {
+  transform: translateY(-10px);
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.clientId {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #006822;
+  margin-bottom: 10px;
+}
+
+.detailsButton {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #006822;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.detailsButton:hover {
+  background-color: #034b24;
+  transform: scale(1.05);
+}
+
+/* Estilo Geral da Tabela */
+.table {
+  width: 90%; /* Reduzindo o width da tabela em todas as telas */
+  border-collapse: collapse;
+  background-color: #ffffff;
+  margin-top: 30px;
+  padding-left: 30px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+
+}
+
+/* Header da Tabela */
+.table th {
+  background-color: #006822;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-bottom: 2px solid #ddd;
+  cursor: pointer;
+  position: relative;
+}
+
+.table th:hover {
+  background-color: #005d1f;
+}
+
+.table th span {
+  margin-left: 8px;
+  font-size: 0.9rem;
+}
+
+/* Estilo das células da Tabela */
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.table tr:hover td {
+  background-color: #f9f9f9;
+}
+
+/* Paginação */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  margin-top: 15px;
+}
+
+.pagination span {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #046320;
+  margin: 0 10px;
+  padding: 10px 15px;
+  background-color: #e0f7e0;
+  border-radius: 25px;
+  box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.pageButton {
+  padding: 10px 15px;
+  margin: 0 5px;
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.pageButton:hover {
+  background-color: #bdbdbd;
+  transform: scale(1.05);
+}
+
+.pageButton.active {
+  background-color: #016828;
+  color: white;
+  box-shadow: none;
+}
+
+.pagination-arrow {
+  font-size: 1.4rem;
+  margin: 0 15px;
+  cursor: pointer;
+  color: #046320;
+}
+
+.pagination-arrow:hover {
+  color: #034b24;
+}
+
+/* Ajustes para dispositivos móveis */
+@media (max-width: 768px) {
+  .table {
+    font-size: 0.9rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 8px;
+  }
+
+  .cardsContainer {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .clientCard {
+    padding: 15px;
+  }
+
+  .searchInput {
+    width: 100%;
+  }
+}
+
+/* Informações do Cliente */
+.clientInfo {
+  margin: 0;
+  padding: 0;
+  margin-top: 20px;
+}
+
+/* Ajustes de título */
+.title {
+  margin-top: 0px;
+  padding-top: 20px;
+  font-size: 3rem;
+  font-weight: bold;
+  color: #046320;
+  text-align: center;
+}
+
+/* Ajuste para telas menores que 1300px */
+@media (max-width: 1300px) {
+  .split {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f8fafc;
+    font-family: "Roboto", sans-serif;
+    box-sizing: border-box;
+  }
+
+  .chartContainer {
+    margin-top: 30px;
+  }
+}
+
+/* Ajuste para telas maiores que 1300px */
+.chartContainer {
+  width: 70%; /* O gráfico terá um width ligeiramente menor que o da tabela */
+  align-self: first baseline;
+}
+
+/* Estilo aprimorado para o botão de voltar com a paleta verde #006822 */
+.backButton {
+  background-color: #006822; /* Verde principal do programa */
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px; /* Borda arredondada */
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center; /* Para alinhar o ícone e o texto */
+  justify-content: center;
+  transition: all 0.3s ease; /* Transição suave para todos os estados */
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1); /* Sombra suave */
+
+  margin-top: 5vmin;
+}
+
+.backButton:hover {
+  background-color: #034b24; /* Tom mais escuro de verde para o hover */
+  transform: translateY(-4px); /* Animação de "subir" ao passar o mouse */
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15); /* Sombra mais forte */
+}
+
+.backButton:focus {
+  outline: none; /* Remove a borda padrão ao focar */
+  box-shadow: 0 0 10px rgba(0, 102, 34, 0.5); /* Sombra verde suave ao focar */
+}
+
+.backButton svg {
+  margin-right: 8px; /* Espaço entre o ícone e o texto */
+  font-size: 1.2rem; /* Tamanho do ícone */
+}
+
+/* Aplique o estilo de ícone, se você quiser incluir uma seta */
+.backButtonIcon {
+  font-size: 1.5rem; /* Tamanho do ícone da seta */
+  margin-right: 8px; /* Espaçamento entre o ícone e o texto */
+}

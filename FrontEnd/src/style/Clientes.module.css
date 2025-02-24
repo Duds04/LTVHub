@@ -1,0 +1,161 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f9f9f9;
+  font-family: "Roboto", sans-serif;
+  margin-left: 250px; /* Para o layout que considera uma barra lateral */
+  min-height: 100vh;
+  padding: 5vmin 20px;
+  box-sizing: border-box; /* Garante que o padding seja incluído no tamanho total */
+}
+
+.searchFilterContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.title{
+  margin-top: 0px;
+  padding-top: -20px;
+}
+
+/* Search Input */
+.searchInput {
+  flex-grow: 1;
+  padding: 15px 10px;
+  font-size: 1rem;
+
+  /* Lupa */
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000000' viewBox='0 0 24 24'%3E%3Cpath d='M10 2C5.589 2 2 5.589 2 10c0 4.411 3.589 8 8 8a7.96 7.96 0 005.656-2.344l4.658 4.658 1.414-1.414-4.658-4.658A7.96 7.96 0 0018 10c0-4.411-3.589-8-8-8zm0 2c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z'/%3E%3C/svg%3E")
+    no-repeat 98% center;
+  background-size: 16px;
+  margin-right: 10px;
+  
+  background-color: #F0F0F0; 
+  border: 0px;  
+  border-radius: 0px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  box-shadow: 6px 8px 10px #acacac; 
+}
+
+/* Filter Select */
+.filterSelect {
+  padding: 15px 10px; 
+  font-size: 1rem;
+  background-color: #F0F0F0; 
+  border:0px; 
+  border-radius: 0px; 
+  box-sizing: border-box;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  box-shadow: 6px 8px 10px #acacac; 
+}
+
+
+.cardsContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+.clientCard {
+  background-color: #b3d1be;
+  padding: 15px;
+  border-radius: 8px;
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+  box-shadow: 6px 8px 10px #acacac; 
+
+  text-align: left;
+}
+
+.clientId {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #046320;
+}
+
+.detailsButton {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #046320;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-left: 5px;
+
+}
+
+.detailsButton:hover {
+  background-color: #034b24;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  align-items: center;
+}
+
+.pageButton {
+  padding: 8px 12px;
+  margin: 0 5px;
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 2px 5px 10px #acacacaf; 
+
+}
+
+.pageButton:hover {
+  background-color: #bdbdbd;
+}
+
+.pageButton.active {
+  background-color: #016828;
+  color: white;
+}
+
+.pagination-arrow {
+  font-size: 1.2rem;
+  margin: 0 10px;
+  cursor: pointer;
+  color: #046320;
+}
+
+.pagination-arrow:hover {
+  color: #034b24;
+}
+
+.clientInfo {
+  margin: 0; /* Remove espaçamentos embutidos */
+  padding: 0; /* Caso o padding também esteja contribuindo */
+  margin-top: 2px;
+  margin-left: 5px;
+}
+
+
+@media (max-width: 768px) {
+  .container {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .cardsContainer {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .searchFilterContainer {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

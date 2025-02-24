@@ -1,0 +1,105 @@
+/* Container principal */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f9f9f9;
+  font-family: "Roboto", sans-serif;
+  margin-left: 250px; /* Para o layout que considera uma barra lateral */
+  min-height: 100vh;
+  padding: 5vmin 20px;
+  box-sizing: border-box; /* Garante que o padding seja incluído no tamanho total */
+}
+
+/* Título principal */
+h1 {
+  text-align: center;
+  font-size: 2.5rem; /* Font size mais fluido */
+  color: #333;
+  margin-bottom: 30px;
+  font-weight: bold; /* Adiciona mais ênfase */
+}
+
+/* Linha de gráficos - flexbox para 2 gráficos por linha */
+.graphRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center; /* Garante que os gráficos fiquem centralizados */
+  width: 100%;
+}
+
+/* Contêiner de cada gráfico */
+.graphContainer {
+  width: 100%; /* Responsivo: começa com 100% */
+  max-width: 600px; /* Máxima largura para gráficos maiores */
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 10px; /* Espaçamento interno */
+  background-color: #fff; /* Fundo branco para destacar os gráficos */
+  border-radius: 10px; /* Bordas arredondadas */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Efeito de transição suave */
+}
+
+/* Efeito de hover para os contêineres de gráficos */
+.graphContainer:hover {
+  transform: translateY(-10px); /* Levanta o gráfico quando passa o mouse */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Aumenta a sombra ao passar o mouse */
+}
+
+/* Imagem dos gráficos */
+.graphImage {
+  width: 100%;
+  height: auto;
+  border-radius: 8px; /* Bordas arredondadas */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adiciona sombra à imagem */
+}
+
+/* Estilo para a legenda do gráfico */
+.graphLegenda {
+  width: 100%;
+  height: auto;
+  margin-top: 10px; /* Espaçamento acima da legenda */
+  border-radius: 8px; /* Bordas arredondadas */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  overflow: visible;
+}
+
+/* Título de cada gráfico */
+h3 {
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  color: #444;
+  font-weight: 600;
+}
+
+/* Media query para dispositivos móveis */
+@media (max-width: 768px) {
+  .container {
+    margin-left: 0; /* Remove a margem da barra lateral em dispositivos móveis */
+  }
+
+  .graphContainer {
+    width: 100%; /* Gráficos ocupam toda a largura em telas menores */
+  }
+
+  h1 {
+    font-size: 2rem; /* Reduz o tamanho do título em dispositivos menores */
+  }
+
+  h3 {
+    font-size: 1rem; /* Ajuste do tamanho do título do gráfico */
+  }
+}
+
+/* Media query para telas grandes (desktop) */
+@media (min-width: 1024px) {
+  .graphRow {
+    justify-content: space-between; /* Alinha os gráficos de forma mais distribuída em telas grandes */
+  }
+
+  .graphContainer {
+    width: 48%; /* Gráficos em duas colunas */
+  }
+}

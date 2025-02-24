@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg
+*.egg-info/
+dist/
+build/
+*.log
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environments
+.env
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Flask
+instance/
+*.sqlite
+*.db
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+
+# React
+build/
+public/static/
+public/react/
+
+# Logs
+logs/
+*.log
+*.out
+*.err
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Coverage reports
+coverage/
+*.lcov
+
+# Miscellaneous
+*.swp
+*.swo
+
+# Ignore .idea and .mypy_cache
+.idea/
+.mypy_cache/
+
+# Ignore ambiente_exec folder inside BackEnd
+BackEnd/ambiente_exec/
+ambiente_exec/

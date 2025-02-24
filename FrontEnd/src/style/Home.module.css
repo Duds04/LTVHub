@@ -1,0 +1,208 @@
+/* Container principal */
+.homeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Alinha o conteúdo no topo */
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #f9f9f9;
+  margin-left: 250px; /* Desloca o conteúdo para a direita, dando espaço para o Sidebar */
+  font-family: "Roboto", sans-serif;
+  margin-bottom: 0px;
+  flex-wrap: wrap; /* Permite que os itens se alinhem em várias linhas */
+  justify-content: space-between; /* Espaça os itens igualmente */
+}
+
+/* Cada seção (LTV HUB e UPLOAD) */
+.section {
+  margin-bottom: 40px;
+  max-width: 70vw; /* Aumenta a largura da seção */
+  font-weight: 600;
+  padding: 0px 20px 20px 20px;
+  /* background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;  */
+}
+
+/* Títulos */
+.title {
+  text-align: center;
+  font-size: 5.4vmin;
+  color: #09292a;
+  margin-bottom: 20px;
+}
+
+/* Descrições */
+.description {
+  text-align: justify;
+  line-height: 1.6;
+  color: #525252;
+  margin-bottom: 2vmin;
+  font-size: 2.6vmin;
+}
+
+/* Subtítulos */
+.subTitle {
+  font-size: 3vmin;
+  color: #09292a;
+  margin-bottom: 1.5vmin;
+  font-weight: 700;
+  text-align: left; /* Alinha os subtítulos à esquerda */
+}
+
+/* Ajuste na lista dentro das descrições */
+.description ul {
+  padding-left: 20px; /* Espaçamento para listas */
+  list-style-type: disc; /* Define o marcador padrão */
+}
+
+.description li {
+  margin-bottom: 1vmin; /* Espaçamento entre os itens */
+  color: #525252; /* Mesma cor do texto da descrição */
+  font-size: 2.4vmin; /* Ligeiramente menor que o texto da descrição principal */
+  line-height: 1.5; /* Ajusta o espaçamento entre linhas */
+}
+
+/* Destaque para texto em negrito */
+.description strong {
+  color: #09292a;
+  font-weight: 700; /* Negrito mais visível */
+}
+
+
+/* Ajuste no container principal */
+.homeContainer {
+  padding-bottom: 50px; /* Espaço extra na parte inferior */
+}
+
+/* Link de navegação (se houver links na descrição futuramente) */
+.description a {
+  color: #0c6b2d; /* Verde escuro */
+  text-decoration: none;
+}
+
+.description a:hover {
+  text-decoration: underline;
+  color: #004f1f; /* Verde mais escuro no hover */
+}
+
+/* Container para o upload */
+.uploadContainer {
+  width: 100%;
+  max-width: 100%; /* Garante que o container ocupe toda a largura disponível */
+  margin-top: 5vmin;
+}
+
+/* Wrapper para agrupar input e botão */
+.uploadWrapper {
+  display: flex;
+  flex-direction: row; /* Alinha o input e o botão verticalmente */
+  gap: 10px; /* Espaço entre o input e o botão */
+  width: 100%; /* Garante que o wrapper ocupe toda a largura disponível */
+}
+
+/* Estilo do label do input */
+.uploadLabel {
+  display: inline-block;
+  font-size: 2.6vmin;
+  font-weight: 600;
+  color: #09292a;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 80px;
+  padding: 20px 0;
+  
+  /* Fundo com gradiente suave */
+  background: linear-gradient(145deg, #e0e0e0, #dddddd);
+  
+  /* Box-shadow para efeito de profundidade */
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1), 0 2px 12px rgba(0, 0, 0, 0.1);
+
+  /* Ajuste de tamanho */
+  width: 100%; /* Faz o label ocupar toda a largura do container */
+  max-width: 100%; /* Limita para 100% da largura do container */
+  
+  /* Transição suave */
+  transition: all 0.3s ease-in-out;
+
+  flex: 4;
+}
+
+/* Efeito de hover */
+.uploadLabel:hover {
+  background: linear-gradient(145deg, #e0e0e0, #d0d0d0);
+  box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.15), 0 2px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo do input de arquivo */
+.uploadInput {
+  display: block;
+  margin: 0 auto;
+  padding: 20px;
+  font-size: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: #f0f0f0;
+  width: 100%; /* Faz o input ocupar toda a largura disponível */
+  box-sizing: border-box; /* Certifica-se de que o padding não afete a largura total */
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Foco do input */
+.uploadInput:focus {
+  border-color: #09292a;
+  background-color: #e9f8e9;
+  outline: none;
+}
+
+/* Estilo para o input de file com um texto personalizado */
+input[type="file"] {
+  display: none;
+}
+
+/* Estilo do botão de envio */
+.uploadButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #0c6b2d;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 10px;
+  cursor: pointer;
+  width: 100%; /* Faz o botão ocupar toda a largura disponível */
+  transition: background-color 0.3s ease;
+
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1), 0 2px 12px rgba(0, 0, 0, 0.1);
+
+  flex: 1;
+}
+
+.uploadButton:hover {
+  background-color: #004f1f;
+}
+
+.uploadButton:active {
+  background-color: #0c6b2d;
+}
+
+/* Classe adicional para o estado de toggle */
+.uploadButtonToggled {
+  background-color: #4caf50; /* Cor verde quando toggled */
+  color: white;
+  cursor: not-allowed; /* Impede clicar quando o estado for toggled */
+}
+
+/* Ícone do botão de envio */
+.uploadButtonIcon {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+/* Texto dentro do botão de envio */
+.uploadButtonText {
+  font-weight: 900;
+  font-size: 1rem;
+}

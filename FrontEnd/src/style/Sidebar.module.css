@@ -1,0 +1,104 @@
+/* Sidebar Container */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 250px; /* Define a largura do Sidebar */
+  background-color: #09292A;
+  color: white;
+  padding-top: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Roboto', sans-serif;
+  margin: 0px;
+}
+
+/* Logo no topo */
+.logoContainer {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.logo {
+  width: 80%;
+  max-width: 120px;
+}
+
+/* Menu de navegação */
+.navMenu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 50%;
+  font-weight: 900;
+}
+
+.navMenu ul {
+  list-style: none;
+  padding-left: 0;
+  width: 100%;
+}
+
+.navMenu li {
+  margin: 20px 0;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+  font-size: 18px;
+  transition: background-color 0.3s;
+  height: 40px;
+}
+
+.navItem:hover,
+.navItem:active {
+  background-color: #006825;
+}
+
+.icon {
+  margin-right: 15px;
+  font-size: 20px;
+  margin-left: 10px;
+}
+
+/* Rodapé com redes sociais */
+.footer {
+  position: absolute;
+  bottom: 30px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-weight: 900;
+}
+
+.socialLinks ul {
+  list-style: none;
+  padding-left: 0;
+  display: flex;
+  justify-content: space-evenly;
+  margin: 0;
+}
+
+.socialLinks li {
+  margin: 15px 0;
+}
+
+.socialLinks a {
+  color: white;
+  font-size: 24px;
+  text-decoration: none;
+}
+
+.copyright {
+  margin-top: 10px;
+}
