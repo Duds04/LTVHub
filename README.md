@@ -45,6 +45,7 @@ O **LTV-HUB** foi desenvolvido para simplificar os cálculos do Lifetime Value (
 ## 🔧 Tecnologias Utilizadas
 
 - **React.js** (Principal)
+- **Python** (Principal)
 - JSX
 - HTML
 - CSS
