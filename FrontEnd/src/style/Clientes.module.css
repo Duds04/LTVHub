@@ -46,6 +46,7 @@
 
 /* Filter Select */
 .filterSelect {
+  min-width: 120px;
   padding: 15px 10px; 
   font-size: 1rem;
   background-color: #F0F0F0; 
@@ -56,6 +57,24 @@
   box-shadow: 6px 8px 10px #acacac; 
 }
 
+.sortContainer {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.sortSelect {
+  min-width: 120px;
+  padding: 15px 10px;
+  font-size: 1rem;
+  background-color: #F0F0F0;
+  border: 0px;
+  border-radius: 0px;
+  box-sizing: border-box;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  box-shadow: 6px 8px 10px #acacac;
+  margin-left: 10px;
+}
 
 .cardsContainer {
   display: grid;

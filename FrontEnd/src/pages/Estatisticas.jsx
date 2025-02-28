@@ -12,12 +12,15 @@ const Estatisticas = () => {
         <div className={stylesEstatisticas.graphContainer}>
           <h3>Porcentagem de Compras - Base de Dados</h3>
           <img 
-            src="/static/react/assets/grafico_1.svg"
+            // src="/static/react/assets/grafico_1.svg"
+            src="./assets/grafico_1.svg"
+
             alt="Gráfico de Compras"
             className={stylesEstatisticas.graphImage}
           />
           <img 
-            src="/static/react/assets/legenda_grafico_1.svg"
+            // src="/static/react/assets/legenda_grafico_1.svg"
+            src=".assets/legenda_grafico_1.svg"
             alt="Legenda Gráfico de Compras"
             className={stylesEstatisticas.graphLegenda}
           />
@@ -27,12 +30,14 @@ const Estatisticas = () => {
         <div className={stylesEstatisticas.graphContainer}>
           <h3>Porcentagem Compras das Classificações</h3>
           <img 
-            src="/static/react/assets/grafico2.png"
+            // src="/static/react/assets/grafico2.png"
+            src=".assets/grafico2.png"
             alt="Gráfico de Vendas"
             className={stylesEstatisticas.graphImage}
           />
           <img 
-            src="/static/react/assets/legenda_grafico_2.svg"
+            // src="/static/react/assets/legenda_grafico_2.svg"
+            src=".assets/legenda_grafico_2.svg"
             alt="Legenda Gráfico de Compras"
             className={stylesEstatisticas.graphLegenda}
           />
@@ -44,12 +49,14 @@ const Estatisticas = () => {
         <div className={stylesEstatisticas.graphContainer}>
           <h3>Porcentagem Classificação de Clientes</h3>
           <img 
-            src="/static/react/assets/grafico3.png"
+            // src="/static/react/assets/grafico3.png"
+            src=".assets/grafico3.png"
             alt="Gráfico de Taxa de Conversão"
             className={stylesEstatisticas.graphImage}
           />
           <img 
-            src="/static/react/assets/legenda_grafico_3.svg"
+            // src="/static/react/assets/legenda_grafico_3.svg"
+            src=".assets/legenda_grafico_3.svg"
             alt="Legenda Gráfico de Taxa de Conversão"
             className={stylesEstatisticas.graphLegenda}
           />
@@ -59,12 +66,14 @@ const Estatisticas = () => {
         <div className={stylesEstatisticas.graphContainer}>
           <h3>Porcentagem Valor Monetário de Clientes</h3>
           <img 
-            src="/static/react/assets/grafico4.png"
+            // src="/static/react/assets/grafico4.png"
+            src=".assets/grafico4.png"
             alt="Gráfico de Retenção"
             className={stylesEstatisticas.graphImage}
           />
           <img 
-            src="/static/react/assets/legenda_grafico_4.svg"
+            // src="/static/react/assets/legenda_grafico_4.svg"
+            src=".assets/legenda_grafico_4.svg"
             alt="Legenda Gráfico de Retenção"
             className={stylesEstatisticas.graphLegenda}
           />

@@ -3,20 +3,34 @@ import stylesHome from "../style/Home.module.css";
 import { FaPaperPlane } from 'react-icons/fa'; // Ícone do avião de papel
 import { useNavigate } from 'react-router-dom'; // Usando o useNavigate para navegação
 
+import LoadingModal from "../components/LoadingModal"; // Importando o componente de carregamento
+import ErrorModal from "../components/ErrorModal"; // Importando o componente de erro
+
 const Home = () => {
   const [fileName, setFileName] = useState("");
   const [file, setFile] = useState(null); // Estado para armazenar o arquivo
   const [isUploaded, setIsUploaded] = useState(false); // Estado para o toggle do envio
+  const [error, setError] = useState(""); // Estado para armazenar mensagens de erro
+  const [loading, setLoading] = useState(false); // Estado para controlar o modal de carregamento
   const navigate = useNavigate(); // Hook para navegação
 
   // Função para lidar com a mudança no input de arquivo
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
-      setFileName(selectedFile.name); // Atualiza o nome do arquivo
-      setFile(selectedFile); // Armazena o arquivo
-      setIsUploaded(false);   // Resetando o estado para "não enviado"
-      localStorage.removeItem('fileUploaded');
+      const fileExtension = selectedFile.name.split('.').pop().toLowerCase();
+      if (fileExtension === 'csv') {
+        setFileName(selectedFile.name); // Atualiza o nome do arquivo
+        setFile(selectedFile); // Armazena o arquivo
+        setIsUploaded(false);   // Resetando o estado para "não enviado"
+        setError(""); // Limpa a mensagem de erro
+        localStorage.removeItem('fileUploaded');
+      } else {
+        setFileName(""); // Limpa o nome do arquivo
+        setFile(null); // Limpa o arquivo
+        setError("Por favor, insira um arquivo CSV."); // Define a mensagem de erro
+        setTimeout(() => setError(""), 5000); // Limpa a mensagem de erro após 5 segundos
+      }
     } else {
       setFileName(""); // Se nenhum arquivo for selecionado, o nome é limpo
       setFile(null); // Limpa o arquivo
@@ -25,6 +39,13 @@ const Home = () => {
 
   // Função para simular o envio do arquivo e redirecionar para o modelo
   const handleFileUpload = async () => {
+    if (!file) {
+      setError("Por favor, insira um arquivo CSV para prosseguir.");
+      return;
+    }
+
+    setLoading(true);
+    
     if (file) {  // Verifica se o arquivo foi selecionado
       const formData = new FormData();
       formData.append('file', file);
@@ -45,9 +66,13 @@ const Home = () => {
           navigate("/modelo");  // Aqui, "/modelo" é o caminho da página de configuração do modelo
         } else {
           console.error('Erro ao enviar o arquivo');
+          setError('Erro ao enviar o arquivo');
         }
       } catch (error) {
         console.error('Erro ao enviar o arquivo', error);
+        setError('Erro ao enviar o arquivo');
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -104,7 +129,7 @@ const Home = () => {
           </ul>
         </p>
         <p className={stylesHome.description}>
-          Escolha um arquivo e clique em "Enviar Arquivo" para continuar.
+          Escolha um arquivo ".csv" e clique em "Enviar Arquivo" para continuar.
         </p>
         
         {/* Container para o input e botão */}
@@ -112,7 +137,7 @@ const Home = () => {
           <div className={stylesHome.uploadWrapper}>
             {/* Label e Input de Arquivo */}
             <label htmlFor="upload-file" className={stylesHome.uploadLabel}>
-              {fileName ? fileName : "Selecione o arquivo"}
+              {fileName ? fileName : "Selecione o arquivo CSV"}
             </label>
             <input 
               type="file" 
@@ -125,16 +150,22 @@ const Home = () => {
             <button 
               className={`${stylesHome.uploadButton} ${isUploaded ? stylesHome.uploadButtonToggled : ''}`} 
               onClick={handleFileUpload} // Simula o envio do arquivo
-              disabled={!fileName || isUploaded} // Desabilita o botão se não houver arquivo ou se o arquivo já foi enviado
+              disabled={isUploaded} // Desabilita o botão se não houver arquivo ou se o arquivo já foi enviado
             >
               <FaPaperPlane className={stylesHome.uploadButtonIcon} />
               <span className={stylesHome.uploadButtonText}>
                 {isUploaded ? 'Enviado' : 'Enviar Arquivo'}
               </span>
             </button>
+    
           </div>
+            {/* Exibe a mensagem de erro, se houver */}
+            {error && <p className={stylesHome.error}>{error}</p>}
         </div>
       </div>
+
+      {loading && <LoadingModal />}
+
     </div>
   );
 };

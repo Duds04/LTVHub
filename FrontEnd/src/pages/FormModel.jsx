@@ -3,17 +3,22 @@ import styles from "../style/FormModel.module.css"; // Importando o CSS
 import isFileUploaded from "../components/isFileUploaded"; // Importando o HOC
 import { useNavigate } from "react-router-dom"; // Usando o useNavigate para navegação
 
+import LoadingModal from "../components/LoadingModal"; // Importando o componente de carregamento
+import ErrorModal from "../components/ErrorModal"; // Importando o ErrorModal
+
 const FormModel = () => {
   const navigate = useNavigate(); // Hook para navegação
 
   // Estados para armazenar as seleções dos campos
   const [idColumn, setIdColumn] = useState("");
-  const [transactionDateColumn, setTransactionDateColumn] = useState("");
-  const [transactionValueColumn, setTransactionValueColumn] = useState("");
+  const [dateColumn, setDateColumn] = useState("");
+  const [amountColumn, setAmountColumn] = useState("");
   const [frequencyModel, setFrequencyModel] = useState("");
   const [monetaryModel, setMonetaryModel] = useState("");
-  const [weeksAhead, setWeeksAhead] = useState(1); // Valor padrão de 1
+  const [weeksAhead, setWeeksAhead] = useState(180); // Valor padrão de 180
   const [columns, setColumns] = useState([]); // Estado para armazenar as colunas do CSV
+  const [loading, setLoading] = useState(false); // Estado para controlar o modal de carregamento
+  const [error, setError] = useState(null); // Estado para controlar a mensagem de erro
 
   // Função para validar e enviar o formulário
   const handleSubmit = async (e) => {
@@ -22,30 +27,33 @@ const FormModel = () => {
     // Verifica se todos os campos obrigatórios foram preenchidos
     if (
       !idColumn ||
-      !transactionDateColumn ||
-      !transactionValueColumn ||
+      !dateColumn ||
+      !amountColumn ||
       !frequencyModel ||
       !monetaryModel ||
       !weeksAhead
     ) {
-      alert("Todos os campos obrigatórios devem ser preenchidos."); // Alerta se algum campo obrigatório estiver vazio
+      alert("Todos os campos obrigatórios devem ser preenchidos.");
     } else {
       // Coletar os dados do formulário
       const formData = {
         idColumn,
-        transactionDateColumn,
-        transactionValueColumn,
+        dateColumn,
+        amountColumn,
         frequencyModel,
         monetaryModel,
         weeksAhead,
       };
 
+      // Mostrar o modal de carregamento
+      setLoading(true);
+
       // Enviar os dados para o backend
       try {
-        const response = await fetch('/submit_form', {
-          method: 'POST',
+        const response = await fetch("/submit_form", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(formData),
         });
@@ -56,10 +64,18 @@ const FormModel = () => {
           localStorage.setItem("configurateModel", "true");
           navigate("/clientes");
         } else {
-          console.error("Erro ao enviar formulário:", data);
+          console.error(data.error);
+          setError(
+            `Não foi possível enviar o formulário. <br />Por favor, revise os parâmetros selecionados e tente novamente.`
+          );
         }
       } catch (error) {
-        console.error("Erro ao enviar formulário:", error);
+        console.error("Erro ao processar o formulário:", error);
+        setError(
+          "Erro ao processar o formulário.<br />Tente novamente da Tela Inicial."
+        );
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -81,9 +97,16 @@ const FormModel = () => {
           setColumns(data.columns);
         } else {
           console.error("Erro ao buscar colunas:", data.error);
+          setError(
+            data.error ||
+              "Erro ao buscar colunas.<br />Tente novamente da Tela Inicial."
+          );
         }
       } catch (error) {
         console.error("Erro ao buscar colunas:", error);
+        setError(
+          "Erro ao buscar colunas.<br />Tente novamente da Tela Inicial."
+        );
       }
     };
 
@@ -93,7 +116,6 @@ const FormModel = () => {
   return (
     <div className={styles.formContainer}>
       <h1 className={styles.title}>CONFIGURAÇÃO DO MODELO</h1>
-
       <form onSubmit={handleSubmit} className={styles.form}>
         {/* Coluna ID Usuário */}
         <div className={styles.inputGroup}>
@@ -120,13 +142,13 @@ const FormModel = () => {
 
         {/* Coluna Data das Transações */}
         <div className={styles.inputGroup}>
-          <label htmlFor="transactionDateColumn" className={styles.inputLabel}>
+          <label htmlFor="dateColumn" className={styles.inputLabel}>
             Selecione a coluna de <b>Data das Transações</b> do usuário
           </label>
           <select
-            id="transactionDateColumn"
-            value={transactionDateColumn}
-            onChange={(e) => setTransactionDateColumn(e.target.value)}
+            id="dateColumn"
+            value={dateColumn}
+            onChange={(e) => setDateColumn(e.target.value)}
             className={styles.input}
             required
           >
@@ -143,13 +165,13 @@ const FormModel = () => {
 
         {/* Coluna Valor das Transações */}
         <div className={styles.inputGroup}>
-          <label htmlFor="transactionValueColumn" className={styles.inputLabel}>
+          <label htmlFor="amountColumn" className={styles.inputLabel}>
             Selecione a coluna de <b>Valor das Transações</b> do usuário
           </label>
           <select
-            id="transactionValueColumn"
-            value={transactionValueColumn}
-            onChange={(e) => setTransactionValueColumn(e.target.value)}
+            id="amountColumn"
+            value={amountColumn}
+            onChange={(e) => setAmountColumn(e.target.value)}
             className={styles.input}
             required
           >
@@ -174,7 +196,7 @@ const FormModel = () => {
               type="radio"
               id="bgNBD"
               name="frequencyModel"
-              value="BG/NBD"
+              value="BGFModel"
               onChange={(e) => setFrequencyModel(e.target.value)}
               required
             />
@@ -184,7 +206,7 @@ const FormModel = () => {
               type="radio"
               id="pareto"
               name="frequencyModel"
-              value="Pareto"
+              value="ParetoModel"
               onChange={(e) => setFrequencyModel(e.target.value)}
               required
             />
@@ -194,8 +216,8 @@ const FormModel = () => {
               type="radio"
               id="ml"
               name="frequencyModel"
-              data-value="Machine Learning"
-              onChange={(e) => setFrequencyModel(e.target.dataset.value)}
+              value="MachineLearning"
+              onChange={(e) => setFrequencyModel(e.target.value)}
               required
             />
             <label htmlFor="ml">Machine Learning</label>
@@ -212,7 +234,7 @@ const FormModel = () => {
               type="radio"
               id="gammaGamma"
               name="monetaryModel"
-              value="Gamma-Gamma"
+              value="GammaGammaModel"
               onChange={(e) => setMonetaryModel(e.target.value)}
               required
             />
@@ -222,18 +244,19 @@ const FormModel = () => {
               type="radio"
               id="mlMonetary"
               name="monetaryModel"
-              data-value="Machine Learning"
-              onChange={(e) => setMonetaryModel(e.target.dataset.value)}
+              value="MachineLearning"
+              onChange={(e) => setMonetaryModel(e.target.value)}
               required
             />
             <label htmlFor="mlMonetary">Machine Learning</label>
           </div>
         </div>
 
-        {/* Semanas a frente para cálculo */}
+        {/* Semanas a frente para cálculo (Numero de Periodos)*/}
         <div className={styles.inputGroup}>
           <label htmlFor="weeksAhead" className={styles.inputLabel}>
-            Selecione quantas semanas a frente você deseja calcular
+            Selecione quantos periodos (em semanas) a frente você deseja
+            calcular
           </label>
           <input
             type="number"
@@ -252,6 +275,12 @@ const FormModel = () => {
           ENVIAR
         </button>
       </form>
+
+      {/* Renderizar o modal de carregamento */}
+      {loading && <LoadingModal />}
+
+      {/* Renderizar o ErrorModal */}
+      <ErrorModal message={error} onClose={() => setError(null)} />
     </div>
   );
 };

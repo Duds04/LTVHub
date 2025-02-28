@@ -206,3 +206,48 @@ input[type="file"] {
   font-weight: 900;
   font-size: 1rem;
 }
+
+.error {
+  width: 75%;
+  color: #5c2c2c; /* Marrom avermelhado suave para melhor legibilidade */
+  font-weight: bold;
+  margin-top: 12px;
+  flex-basis: 100%;
+  padding: 14px 0px;
+  font-size: 2.8vmin;
+  text-align: center;
+  background-color: #fce8e6; /* Tom pastel de vermelho claro */
+  border: 1.5px solid #c66b6b33; /* Vermelho escuro para destaque */
+  border-radius: 10px; /* Bordas arredondadas para suavidade */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px; /* Espaço entre o ícone e o texto */
+  transition: transform 0.2s ease-in-out;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Ícone opcional dentro da mensagem de erro */
+.error::before {
+  content: "🚨"; /* Ícone de erro */
+  font-size: 3vmin;
+}
+
+/* Efeito ao passar o mouse para realce */
+.error:hover {
+  transform: scale(1.01);
+}
+
+/* Pequena animação ao exibir erro */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

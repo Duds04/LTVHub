@@ -17,15 +17,12 @@ class ParetoModelTask(TransactionModelTask):
             isTraining = True #Caso seja para efetuar a predição em um dataset com ou sem o período de observação
             penalizer = 0.1# Coeficiente de penalização usado pelo modelo
         """
-        super().__init__(name,  isTraining, numPeriods)
-        self.penalizer = penalizer
-        self.isTraining = isTraining
-        self.isRating = isRating
+        super().__init__(name,  isTraining, penalizer, isRating, numPeriods)
         self.model = self.createModel()
 
     def on_run(self, dfRFM: pd.DataFrame) -> pd.DataFrame:
         self.fit(dfRFM)
-        dfRFM['ExpectedPareto'] = self.predict(dfRFM)
+        dfRFM['ExpectedFrequency'] = self.predict(dfRFM)
 
         if(self.isTraining and self.isRating):
             self.rating(dfRFM)
@@ -59,7 +56,7 @@ class ParetoModelTask(TransactionModelTask):
         """
             Retorna a classificação do cliente
         """
-        xExpected = 'ExpectedPareto'
+        xExpected = 'ExpectedFrequency'
         super().rating('Pareto', df, xExpected)
 
     def predict(self, df: pd.DataFrame) -> pd.DataFrame:

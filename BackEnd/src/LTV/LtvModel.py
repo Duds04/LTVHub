@@ -38,7 +38,7 @@ class LTVTask(Task):
         """
 
         factor = {"W": 4.345, "M": 1.0, "D": 30, "H": 30 * 24}[self.frequency]
-
+        
         if self.isTraining:
             self.columnMonetary = "monetary_value_cal"
             self.columnFrequency = "frequency_cal"
@@ -49,8 +49,8 @@ class LTVTask(Task):
             df[f"CLV_holdout"] = (df[self.columnMonetary] * df[self.columnFrequency]) / (1 + self.discountRate) ** (self.numPeriods / factor)
 
         else:
-            assert self.columnMonetary in df.columns
-            assert self.columnFrequency in df.columns
+            assert self.columnMonetary in df.columns, f"Monetary column '{self.columnMonetary}' not found in DataFrame columns: {df.columns}"
+            assert self.columnFrequency in df.columns, f"Frequency column '{self.columnFrequency}' not found in DataFrame columns: {df.columns}"
             df[f"CLV"] = (df[self.columnMonetary] * df[self.columnFrequency]) / (1 + self.discountRate) ** (self.numPeriods / factor)
     
         return df

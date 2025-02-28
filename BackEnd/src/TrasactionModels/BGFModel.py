@@ -6,7 +6,6 @@ class BGFModelTask(TransactionModelTask):
     def __init__(
         self,
         name: str,
-        # grid = None,
         isTraining: bool = False,
         penalizer: float = 0.1,
         isRating: bool = False,
@@ -18,15 +17,12 @@ class BGFModelTask(TransactionModelTask):
             isTraining = True #Caso seja para efetuar a predição em um dataset com ou sem o período de observação
             penalizer = 0.1# Coeficiente de penalização usado pelo modelo
         """
-        super().__init__(name,  isTraining, numPeriods)
-        self.penalizer = penalizer
-        self.isTraining = isTraining
-        self.isRating = isRating
+        super().__init__(name,  isTraining, penalizer, isRating, numPeriods)
         self.model = self.createModel()
 
     def on_run(self, dfRFM: pd.DataFrame) -> pd.DataFrame:
         self.fit(dfRFM)
-        dfRFM['ExpectedBGF'] = self.predict(dfRFM)
+        dfRFM['ExpectedFrequency'] = self.predict(dfRFM)
         
         if (self.isTraining and  self.isRating):
             self.rating(dfRFM)
@@ -58,7 +54,7 @@ class BGFModelTask(TransactionModelTask):
         """
             Retorna a classificação do cliente
         """
-        xExpected = 'ExpectedBGF'
+        xExpected = 'ExpectedFrequency'
         super().rating('BG/NBD', df,  xExpected)
 
     def predict(self, df: pd.DataFrame) -> pd.DataFrame:

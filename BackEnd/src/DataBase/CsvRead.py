@@ -8,7 +8,7 @@ class CsvReadTask(Task):
         name: str,
         fp: str,
         columnID: str = "id",
-        columnDate: str = "dt",
+        columnDate: str = "date",
         columnMonetary: str = "monetary",
     ) -> None:
         super().__init__(name)
@@ -21,16 +21,15 @@ class CsvReadTask(Task):
         df = pd.read_csv(self.fp)
         df.rename(
             columns={self.columnID: "id",
-                     self.columnDate: "dt", self.columnMonetary: "monetary"},
+                     self.columnDate: "date", self.columnMonetary: "monetary"},
             inplace=True,
         )
 
-        assert "id" in df.columns
-        assert "dt" in df.columns
-        assert "monetary" in df.columns
+        assert "id" in df.columns, f"ID column 'id' not found in DataFrame columns: {df.columns}"
+        assert "date" in df.columns, f"Date column 'dt' not found in DataFrame columns: {df.columns}"
+        assert "monetary" in df.columns, f"Monetary column 'monetary' not found in DataFrame columns: {df.columns}"
 
-        if "dt" in df.columns:
-            df["dt"] = pd.to_datetime(df["dt"])
-
+        if "date" in df.columns:
+            df["date"] = pd.to_datetime(df["date"])
+            
         return df
-

@@ -13,22 +13,8 @@ import {
 } from "recharts";
 import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa"; // Importando os ícones do React Icons
 import stylesDetalheCliente from "../style/DetalheCliente.module.css";
-
-// Dados simulados de compras para demonstrar
-const compraData = [
-  { id: 1, valor: 200, data: "2024-01-15", clienteId: 1 },
-  { id: 2, valor: 250, data: "2024-02-20", clienteId: 1 },
-  { id: 3, valor: 300, data: "2024-03-05", clienteId: 1 },
-  { id: 4, valor: 150, data: "2024-04-11", clienteId: 2 },
-  { id: 5, valor: 220, data: "2024-05-25", clienteId: 2 },
-  { id: 6, valor: 170, data: "2024-06-12", clienteId: 1 },
-  { id: 7, valor: 210, data: "2024-07-22", clienteId: 3 },
-  { id: 8, valor: 180, data: "2024-08-13", clienteId: 1 },
-  { id: 9, valor: 260, data: "2024-09-04", clienteId: 2 },
-  { id: 10, valor: 300, data: "2024-10-17", clienteId: 1 },
-  { id: 11, valor: 150, data: "2024-11-05", clienteId: 3 },
-  { id: 12, valor: 280, data: "2024-12-02", clienteId: 1 },
-];
+import ErrorModal from "../components/ErrorModal"; // Importando o ErrorModal
+import LoadingModal from "../components/LoadingModal"; // Importando o LoadingModal
 
 const DetalheCliente = () => {
   const { id } = useParams(); // Captura o ID do cliente da URL
@@ -37,54 +23,44 @@ const DetalheCliente = () => {
   // Estado para armazenar os dados do cliente e compras
   const [cliente, setCliente] = useState(null);
   const [compras, setCompras] = useState([]);
+  const [error, setError] = useState(null); // Estado para controlar a mensagem de erro
+  const [loading, setLoading] = useState(true); // Estado para controlar o carregamento
 
-  // Simulação de busca de dados do cliente por ID
+  // Função para buscar os dados do cliente do backend
   useEffect(() => {
-    const clienteData = {
-      1: {
-        tipo: "Cliente A",
-        descricaoTipo: "Clientes com alto LTV e frequentes compras.",
-        comoLidar:
-          "Oferecer programas de fidelidade e descontos para aumento da recorrência.",
-        numCompras: 12,
-        valorPorCompra: 250,
-        LTV: 3000,
-      },
-      2: {
-        tipo: "Cliente B",
-        descricaoTipo: "Clientes com compras esporádicas.",
-        comoLidar: "Enviar promoções ocasionais e buscar fidelização.",
-        numCompras: 8,
-        valorPorCompra: 180,
-        LTV: 1500,
-      },
-      3: {
-        tipo: "Cliente C",
-        descricaoTipo: "Clientes com baixo valor de compras.",
-        comoLidar:
-          "Melhorar o engajamento e incentivos para aumento do ticket médio.",
-        numCompras: 5,
-        valorPorCompra: 120,
-        LTV: 800,
-      },
+    const fetchClienteData = async () => {
+      try {
+        const response = await fetch(`/cliente/${id}`);
+        const data = await response.json();
+        if (response.ok) {
+          setCliente(data);
+          setCompras(data.transactions); // Atualiza o estado de compras com os dados de transactions
+        } else {
+          console.error("Erro ao buscar dados do cliente:", data.error);
+          setError(data.error || "Erro ao buscar dados do cliente.");
+        }
+      } catch (error) {
+        console.error("Erro ao buscar dados do cliente:", error);
+        setError("Erro ao buscar dados do cliente.");
+      } finally {
+        setLoading(false); // Define o estado de carregamento como falso após a conclusão da solicitação
+      }
     };
 
-    setCliente(clienteData[id]);
-    setCompras(
-      compraData.filter((compra) => compra.clienteId === parseInt(id))
-    );
+    fetchClienteData();
   }, [id]);
 
   // Função para obter dados para o gráfico de barras (soma das compras por mês)
   const getLastPurchasesData = () => {
     const months = Array(12).fill(0);
     compras.forEach((compra) => {
-      const month = new Date(compra.data).getMonth(); // 0-11
-      months[month] += compra.valor; // Somando o valor das compras por mês
+      const dateParts = compra.date.split('/');
+      const month = parseInt(dateParts[1], 10) - 1; // Subtrai 1 para ajustar ao índice do array (0-11)
+      months[month] += compra.monetary; // Somando o valor das compras por mês
     });
     return months.map((value, index) => ({
       month: new Date(0, index).toLocaleString("default", { month: "short" }),
-      total: value, // Total de compras para aquele mês
+      total: parseFloat(value.toFixed(2)), // Arredondando o valor total para dois dígitos
     }));
   };
 
@@ -95,16 +71,17 @@ const DetalheCliente = () => {
   const columns = React.useMemo(
     () => [
       {
-        Header: "ID da Compra",
-        accessor: "id",
+        Header: "ID da Transação",
+        accessor: "id_transaction",
       },
       {
         Header: "Valor da Compra",
-        accessor: "valor",
+        accessor: "monetary",
       },
       {
         Header: "Data da Compra",
-        accessor: "data",
+        accessor: "date",
+        disableSortBy: true,
       },
     ],
     []
@@ -128,7 +105,7 @@ const DetalheCliente = () => {
     {
       columns,
       data: compras,
-      initialState: { pageSize: 5, sortBy: [{ id: "id", desc: false }] }, // Ordenação padrão pela coluna "ID"
+      initialState: { pageSize: 5, sortBy: [{ id: "id_transaction", desc: false }] }, // Ordenação padrão pela coluna "ID da Transação"
     },
     useSortBy,
     usePagination
@@ -141,31 +118,33 @@ const DetalheCliente = () => {
 
   return (
     <div className={stylesDetalheCliente.container}>
-      <h1 className={stylesDetalheCliente.title}>DETALHE DO CLIENTE</h1>
+      {loading && <LoadingModal />} {/* Exibe o LoadingModal enquanto os dados estão sendo carregados */}
+      {cliente && (<h1 className={stylesDetalheCliente.title}>DETALHE DO CLIENTE {cliente.id}</h1>)}
 
       <div className={stylesDetalheCliente.split}>
         <div className={stylesDetalheCliente.left}>
           {/* Informações do cliente */}
           {cliente && (
             <div className={stylesDetalheCliente.clientDetails}>
-              <h2>Tipo de Cliente: {cliente.tipo}</h2>
+              <h2 className={stylesDetalheCliente.clientId}>ID do Cliente: <span className={stylesDetalheCliente.id}>{id}</span></h2> 
+              <h2 className={stylesDetalheCliente.clientType}> <strong>Tipo de Cliente: </strong>{cliente.type}</h2>
               <p>
-                <strong>Descrição do Tipo:</strong> {cliente.descricaoTipo}
+                <strong>Descrição do Tipo:</strong> {cliente.description}
               </p>
               <p>
                 <strong>Como Lidar com Esse Tipo de Cliente:</strong>{" "}
-                {cliente.comoLidar}
+                {cliente.howToManage}
               </p>
               <p>
                 <strong>Número Esperado de Compras:</strong>{" "}
-                {cliente.numCompras}
+                {cliente.frequency}
               </p>
               <p>
                 <strong>Valor Esperado por Compra:</strong> $
-                {cliente.valorPorCompra.toFixed(2)}
+                {cliente.monetary_value.toFixed(2)}
               </p>
               <p>
-                <strong>LTV:</strong> ${cliente.LTV.toFixed(2)}
+                <strong>LTV:</strong> ${cliente.CLV.toFixed(2)}
               </p>
             </div>
           )}
@@ -181,6 +160,7 @@ const DetalheCliente = () => {
                         {...column.getHeaderProps(
                           column.getSortByToggleProps()
                         )}
+                        className={stylesDetalheCliente.tableHeader}
                       >
                         {column.render("Header")}
                         <span>
@@ -267,6 +247,7 @@ const DetalheCliente = () => {
                 <Legend />
                 <Bar
                   dataKey="total"
+                  name = "Total"
                   fill="#006822"
                   radius={[10, 10, 0, 0]}
                   background={{ fill: "#D8E7DE" }}
@@ -285,6 +266,9 @@ const DetalheCliente = () => {
       >
         Voltar para Clientes
       </button>
+
+      {/* Modal de erro */}
+      {error && <ErrorModal message={error} onClose={() => setError(null)} />}
     </div>
   );
 };

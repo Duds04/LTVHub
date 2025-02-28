@@ -4,7 +4,7 @@ from lifetimes.utils import (  # noqa: E402
     calibration_and_holdout_data,
     summary_data_from_transaction_data,
 )
-
+import numpy as np
 
 class RFMTask(Task):
     def __init__(
@@ -15,7 +15,7 @@ class RFMTask(Task):
         predictInterval: int = -1,
         numPeriods: int = -1,
         columnID: str = "id",
-        columnDate: str = "dt",
+        columnDate: str = "date",
         columnMonetary: str = "monetary",
         frequency: str = "W",
         calibrationEnd=None,
@@ -23,6 +23,7 @@ class RFMTask(Task):
         split: float = 0.8,
         isTraining: bool = False,
         apply_calibration_split: bool = False,
+        isRating: bool = False,
     ) -> None:
         """
         Args:
@@ -47,12 +48,14 @@ class RFMTask(Task):
         self.calibrationEnd = calibrationEnd
         self.observationEnd = observationEnd
         self.split = split
+        self.isTraining = isTraining
         if(isTraining): self.apply_calibration_split = isTraining
         else: self.apply_calibration_split = apply_calibration_split
         self.numPeriods = numPeriods
         self.minTrainin = minTrainin
         self.maxTraining = maxTraining
         self.predictInterval = predictInterval
+        self.isRating = isRating
 
     def __getPeriodosList(self, df: pd.DataFrame):
         def __to_period(df: pd.DataFrame):
@@ -110,11 +113,30 @@ class RFMTask(Task):
                     observation_period_end=observationEnd,
                 )
             return rfm_cal_holdout
+        
+    def __split_by_percentage(self, df: pd.DataFrame, column: str, percent=0.75):
+        limiar = df[column].sort_values().iloc[int(df.shape[0] * percent)]
+        return np.where(df[column] > limiar, 1, 0)
+    
+    def rating(self, df: pd.DataFrame) -> pd.DataFrame:
+        if(self.isTraining):
+            df['groupFrequency'] = self.__split_by_percentage(df, 'frequency_cal')
+            df['groupRecency'] = self.__split_by_percentage(df, 'recency_cal')
+            df['groupMonetary'] = self.__split_by_percentage(df, 'monetary_value_cal')
+        else:
+            df['groupFrequency'] = self.__split_by_percentage(df, 'frequency')
+            df['groupRecency'] = self.__split_by_percentage(df, 'recency')
+            df['groupMonetary'] = self.__split_by_percentage(df, 'monetary_value')
+
+        cols = ['groupFrequency', 'groupRecency', 'groupMonetary']
+        df['rankingClients'] = df[cols].apply(lambda row: int(''.join(row.values.astype(str)), 2), axis=1)
+        return df
+
 
     def on_run(self, df: pd.DataFrame) -> pd.DataFrame:
-        assert self.columnID in df.columns
-        assert self.columnMonetary in df.columns
-        assert self.columnDate in df.columns
+        assert self.columnID in df.columns, f"ID column '{self.columnID}' not found in DataFrame columns: {df.columns}"
+        assert self.columnMonetary in df.columns, f"Monetary column '{self.columnMonetary}' not found in DataFrame columns: {df.columns}"
+        assert self.columnDate in df.columns, f"Date column '{self.columnDate}' not found in DataFrame columns: {df.columns}"
         
         dfReturn = pd.DataFrame()
         if self.predictInterval == -1:
@@ -125,13 +147,14 @@ class RFMTask(Task):
             if self.maxTraining == -1:
                 self.maxTraining = len(periods) - (self.predictInterval + 1)
             if self.minTrainin == -1:
-               self.minTrainin = self.predictInterval * 2
+                self.minTrainin = self.predictInterval * 2
             
             for period in range(self.minTrainin, self.maxTraining, self.predictInterval):
                 self.calibrationEnd = periods[period].to_timestamp()
                 self.observationEnd = periods[period + self.predictInterval].to_timestamp()
                 dfReturn = pd.concat([dfReturn, self.__rfm_data_filler(df)], ignore_index=True)
                 
-                              
+        if self.isRating:
+            dfReturn = self.rating(dfReturn)
+                
         return dfReturn
-           

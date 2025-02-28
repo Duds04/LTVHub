@@ -8,6 +8,7 @@ class GenericModelTask(Task):
         self,
         name: str,
         target: str,
+        isMonetary: bool,
         isTunning: bool = False,
         isTraining: bool = False,
     ) -> None:
@@ -20,6 +21,7 @@ class GenericModelTask(Task):
         super().__init__(name)
         self.target = target
         self.isTunning = isTunning
+        self.isMonetary = isMonetary
         self.isTraining = isTraining
 
     @abstractmethod

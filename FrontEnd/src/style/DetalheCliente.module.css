@@ -120,9 +120,19 @@
 }
 
 .clientId {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: bold;
   color: #006822;
+  margin-bottom: 10px;
+  .id{
+    color: #006822b8;
+  }
+}
+
+.clientType {
+  font-size: 1.3rem;
+  font-weight: normal;
+  color: #333;
   margin-bottom: 10px;
 }
 
@@ -294,13 +304,14 @@
   }
 
   .chartContainer {
-    margin-top: 30px;
+    margin-top: 35px;
+    margin-left: 0; 
   }
 }
 
 /* Ajuste para telas maiores que 1300px */
 .chartContainer {
-  width: 70%; /* O gráfico terá um width ligeiramente menor que o da tabela */
+  width: 85%; 
   align-self: first baseline;
 }
 
@@ -343,4 +354,8 @@
 .backButtonIcon {
   font-size: 1.5rem; /* Tamanho do ícone da seta */
   margin-right: 8px; /* Espaçamento entre o ícone e o texto */
+}
+
+.tableHeader{
+  user-select: none;
 }

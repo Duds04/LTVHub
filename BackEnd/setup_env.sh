@@ -15,7 +15,7 @@ source ambiente_exec/bin/activate
 
 # Instala as dependências
 echo "Instalando dependências..."
-pip install pandas numpy xgboost lightgbm scikit-learn lifetimes flask
+pip install pandas numpy xgboost lightgbm scikit-learn lifetimes flask flask-cors seaborn
 
 # Executa o script Python
 #echo "Executando o script main.py..."
