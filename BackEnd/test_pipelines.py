@@ -8,6 +8,7 @@ from src.TrasactionModels.BGFModel import BGFModelTask
 from src.MonetaryModels.GammaGammaModel import GammaGammaModelTask
 from src.GenericModels.MachineLearning import MachineLearningModel
 from src.LTV.LtvModel import LTVTask
+from src.DataVisualization.Plot import PlotTask
 
 from src.TrasactionModels.TransactionModelRunner import TransactionModelRunner
 from src.MonetaryModels.MonetaryModelRunner import MonetaryModelRunner
@@ -287,11 +288,13 @@ def calculate_Rating(file_path="data/transactions.csv", columnID="customer_id", 
             "read_dt", file_path, columnID, columnDate, columnMonetary
         )
         rfm_data = RFMTask("split_data", isRating=True)
+        
+        plot_data = PlotTask("plot", plot_all=True)
 
         # Lembrando (>> só associa, executa apenas apos rodar pipeline.run())
-        read_dt >> rfm_data
+        read_dt >> rfm_data >> plot_data
 
-    rfm = pipeline.run()['split_data']
+    rfm = pipeline.run()['plot']
     
     return rfm
 
@@ -395,59 +398,6 @@ dictClassificacao = {
         "This part of customers can be aroused by promotion and discount. When the resource allocation is insufficient, this part of users can be temporarily abandoned."
         )
 }
-
-import seaborn as sns
-import matplotlib.pyplot as plt
-import os
-
-def plotPorcentagemClientes(df, col='rankingClients'):
-    plt.subplots(figsize=(15, 15))
-    colors = sns.color_palette('pastel')
-    data = df[col].value_counts()
-    legenda = [dictClassificacao[i][0] for i in data.index]
-
-    # create pie chart
-    patches, texts, junk = plt.pie(
-        data.values, colors=colors, autopct='%.0f%%')
-    plt.legend(patches, legenda, loc='best')
-    plt.title("Porcentagem das classificações de clientes")
-    plot_path = "./static/assets/plots/clientsPie.png"
-    os.makedirs(os.path.dirname(plot_path), exist_ok=True)
-    plt.savefig(plot_path, bbox_inches="tight")
-    plt.close()
-
-def plotMonetaryClientes(df, colRank='rankingClients', colMonetary='monetary_value'):
-    plt.subplots(figsize=(15, 15))
-    colors = sns.color_palette('pastel')
-    data = df.groupby([colRank]).sum()[colMonetary]
-    legenda = [dictClassificacao[i][0] for i in data.index]
-
-    # create pie chart
-    patches, texts, junk = plt.pie(
-        data.values, colors=colors, autopct='%.0f%%')
-    plt.legend(patches, legenda, loc='best')
-    plt.title("Porcentagem do valor monetário das classificações de clientes")
-    plot_path = "./static/assets/plots/monetaryPie.png"
-    os.makedirs(os.path.dirname(plot_path), exist_ok=True)
-    plt.savefig(plot_path, bbox_inches="tight")
-    plt.close()
-
-def plotFrequencyClientes(df, colRank='rankingClients', colFreq='frequency'):
-    df['newFreq'] = df[colFreq] + 1
-    plt.subplots(figsize=(15, 15))
-    colors = sns.color_palette('pastel')
-    data = df.groupby([colRank]).sum()[colFreq]
-    legenda = [dictClassificacao[i][0] for i in data.index]
-
-    # create pie chart
-    patches, texts, junk = plt.pie(
-        data.values, colors=colors, autopct='%.0f%%')
-    plt.legend(patches, legenda, loc='best')
-    plt.title("Porcentagem das compras das classificações de clientes")
-    plot_path = "./static/assets/plots/frequencyPie.png"
-    os.makedirs(os.path.dirname(plot_path), exist_ok=True)
-    plt.savefig(plot_path, bbox_inches="tight")
-    plt.close()
 
 
 def main():

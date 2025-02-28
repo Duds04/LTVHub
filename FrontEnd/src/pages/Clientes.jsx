@@ -78,7 +78,7 @@ const Clientes = () => {
   const filteredClients = sortedClients.filter((client) => {
     // Converte todos os dados do cliente para string para a comparação
     const searchString = `${client.id} ${client.type}`.toLowerCase();
-    
+
     const matchesSearch = searchString.includes(searchTerm.toLowerCase()); // Verifica se o termo de pesquisa está em qualquer campo
 
     const matchesFilter = filter ? client.type === filter : true; // Verifica o filtro de tipo de cliente, se houver
@@ -87,7 +87,10 @@ const Clientes = () => {
   });
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentClients = filteredClients.slice(startIndex, startIndex + itemsPerPage); // Pega os clientes da página atual
+  const currentClients = filteredClients.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  ); // Pega os clientes da página atual
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber); // Muda a página
@@ -111,7 +114,7 @@ const Clientes = () => {
   };
 
   // Função para pegar os tipos de clientes únicos
-  const clientTypes = [...new Set(clientes.map(client => client.type))];
+  const clientTypes = [...new Set(clientes.map((client) => client.type))];
 
   return (
     <div className={stylesCliente.container}>
@@ -124,48 +127,61 @@ const Clientes = () => {
           value={searchTerm} // Valor do input
           onChange={handleSearchChange} // Atualiza o termo de pesquisa
         />
-        <div className={stylesCliente.sortContainer}>
-          <select
-            id="sort"
-            className={stylesCliente.sortSelect}
-            value={sortCriteria}
-            onChange={handleSortChange} // Atualiza o critério de ordenação
-          >
-            <option value="" disabled>Ordenar por</option>
-            <option value="id">ID do Cliente</option>
-            <option value="ltv">Lifetime Value (LTV)</option>
-            <option value="frequency">Número Esperado de Compras</option>
-            <option value="monetary_value">Valor Esperado por Transação</option>
-            <option value="type">Categoria do Cliente</option>
-          </select>
-        </div>
-        <div className={stylesCliente.filterContainer}>
-          <select
-            className={stylesCliente.filterSelect}
-            value={filter}
-            onChange={handleFilterChange} // Atualiza o filtro
-          >
-            <option value="" disabled >Filtros</option>
-            {clientTypes.map((type, index) => (
-              <option key={index} value={type}>
-                {type}
+        <span className={stylesCliente.selectsContainer}>
+          <div className={stylesCliente.sortContainer}>
+            <select
+              id="sort"
+              className={stylesCliente.sortSelect}
+              value={sortCriteria}
+              onChange={handleSortChange} // Atualiza o critério de ordenação
+            >
+              <option value="" disabled>
+                Ordenar por
               </option>
-            ))}
-          </select>
-        </div>
+              <option value="id">ID do Cliente</option>
+              <option value="ltv">Lifetime Value (LTV)</option>
+              <option value="frequency">Número Esperado de Compras</option>
+              <option value="monetary_value">
+                Valor Esperado por Transação
+              </option>
+              <option value="type">Categoria do Cliente</option>
+            </select>
+          </div>
+          <div className={stylesCliente.filterContainer}>
+            <select
+              className={stylesCliente.filterSelect}
+              value={filter}
+              onChange={handleFilterChange} // Atualiza o filtro
+            >
+              <option value="" disabled>
+                Filtros
+              </option>
+              {clientTypes.map((type, index) => (
+                <option key={index} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
+        </span>
       </div>
 
-      {loading ? (<LoadingModal />) : (
+      {loading ? (
+        <LoadingModal />
+      ) : (
         <>
           <div className={stylesCliente.cardsContainer}>
             {currentClients.map((client) => (
               <div className={stylesCliente.clientCard} key={client.id}>
-                <h3 className={stylesCliente.clientId}>ID Cliente: {client.id}</h3>
+                <h3 className={stylesCliente.clientId}>
+                  ID Cliente: {client.id}
+                </h3>
                 <p className={stylesCliente.clientInfo}>
                   <strong>Tipo de Cliente:</strong> {client.type}
                 </p>
                 <p className={stylesCliente.clientInfo}>
-                  <strong>Número Esperado de Compras:</strong> {client.frequency}
+                  <strong>Número Esperado de Compras:</strong>{" "}
+                  {client.frequency}
                 </p>
                 <p className={stylesCliente.clientInfo}>
                   <strong>Valor Esperado por Transação:</strong> $

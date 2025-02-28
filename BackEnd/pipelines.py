@@ -7,6 +7,7 @@ from src.LTV.LtvModel import LTVTask
 
 from src.TrasactionModels.TransactionModelRunner import TransactionModelRunner
 from src.MonetaryModels.MonetaryModelRunner import MonetaryModelRunner
+from src.DataVisualization.Plot import PlotTask
 
 from datetime import datetime
 
@@ -16,26 +17,29 @@ def readCSV(file_path="data/transactions.csv", columnID="customer_id", columnDat
 
     return df
 
-def calculate_LTV(transactionModel, monetaryModel, file_path="data/transactions.csv", columnID="customer_id", columnDate="date", columnMonetary="amount"):
+def calculate_LTV_and_Plot(transactionModel, monetaryModel, file_path="data/transactions.csv", columnID="customer_id", columnDate="date", columnMonetary="amount"):
     with Pipeline() as pipeline:
     
     
         read_dt = CsvReadTask(
             "read_dt", file_path, columnID, columnDate, columnMonetary
         )
-        rfm_data = RFMTask("split_data")
+        rfm_data = RFMTask("split_data", isRating=True)
 
         transaction_model = transactionModel.run()
         monetary_model = monetaryModel.run()
 
         ltv = LTVTask("calculo_ltv", columnFrequency="ExpectedFrequency",
                     columnMonetary="ExpectedMonetary")
+        
+        plot_data = PlotTask("plot", plot_all=True)
+
 
         # Lembrando (>> só associa, executa apenas apos rodar pipeline.run())
-        read_dt >> rfm_data >> transaction_model >> monetary_model >> ltv
+        read_dt >> rfm_data >> transaction_model >> monetary_model >> ltv >> plot_data
     
     # Retorna um Dicionario com o nome da Task e o DataFrame
-    df = pipeline.run()['calculo_ltv']
+    df = pipeline.run()['plot']
     
     return df
 
@@ -76,7 +80,7 @@ def __use_calculate():
             name="monetary_model", model = data['monetaryModel'], isRating=True)
 
     print(transactionModel, monetaryModel)
-    calculate_LTV(transactionModel, monetaryModel, csv_file_path,
+    calculate_LTV_and_Plot(transactionModel, monetaryModel, csv_file_path,
                   data['idColumn'], data['dateColumn'], data['amountColumn'])
     
 

@@ -129,18 +129,18 @@ const DetalheCliente = () => {
               <h2 className={stylesDetalheCliente.clientId}>ID do Cliente: <span className={stylesDetalheCliente.id}>{id}</span></h2> 
               <h2 className={stylesDetalheCliente.clientType}> <strong>Tipo de Cliente: </strong>{cliente.type}</h2>
               <p>
-                <strong>Descrição do Tipo:</strong> {cliente.description}
+                <strong>Descrição do Tipo: </strong> {cliente.description}
               </p>
               <p>
-                <strong>Como Lidar com Esse Tipo de Cliente:</strong>{" "}
+                <strong>Como Lidar com Esse Tipo de Cliente: </strong>
                 {cliente.howToManage}
               </p>
               <p>
-                <strong>Número Esperado de Compras:</strong>{" "}
+                <strong>Número Esperado de Compras: </strong>
                 {cliente.frequency}
               </p>
               <p>
-                <strong>Valor Esperado por Compra:</strong> $
+                <strong>Valor Esperado por Compra: </strong> $
                 {cliente.monetary_value.toFixed(2)}
               </p>
               <p>
