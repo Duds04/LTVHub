@@ -53,12 +53,12 @@ class MonetaryModelRunner():
         Dado um dataset com os valores de RFM, retorna a predição do número de transações esperadas
         """
         if self.model == "MachineLearning":
-            print("MachineLearning")
+            # print("MachineLearning")
             assert self.target is not None, "Target não pode ser nulo"
             assert self.X_Columns is not None, "X_Columns não pode ser nulo"
             return MachineLearningModel(name = self.name, target=self.target, X_Columns=self.X_Columns, isTraining=self.isTraining, isTunning=self.isTunning, isMonetary=True)
         elif self.model == "GammaGammaModel":
-            print("GammaGammaModel")
+            # print("GammaGammaModel")
             return GammaGammaModelTask(name = self.name, isTunning=self.isTunning,  isTraining=self.isTraining, penalizer=self.penalizer, isRating=self.isRating)
         else:
             raise ValueError(f"Modelo desconhecido: {self.model}")

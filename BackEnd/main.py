@@ -101,8 +101,6 @@ def submit_form():
         dfLTV = calculate_LTV_and_Plot(transactionModel, monetaryModel, csv_file_path,
                       data['idColumn'], data['dateColumn'], data['amountColumn'])
         
-        print(dfLTV)
-        
         dfOriginal = readCSV(csv_file_path, data['idColumn'], data['dateColumn'], data['amountColumn'])
         
         return jsonify({"message": "Dados recebidos com sucesso."}), 200

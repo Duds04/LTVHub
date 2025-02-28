@@ -51,15 +51,15 @@ class TransactionModelRunner():
 
     def run(self):
         if self.model == "MachineLearning":
-            print("MachineLearning")
+            # print("MachineLearning")
             assert self.target is not None, "Target não pode ser nulo"
             assert self.X_Columns is not None, "X_Columns não pode ser nulo"
             return MachineLearningModel(name = self.name, target = self.target, X_Columns=self.X_Columns, isTraining=self.isTraining, isTunning=self.isTunning, isMonetary=False)
         elif self.model == "ParetoModel":
-            print("ParetoModel")
+            # print("ParetoModel")
             return ParetoModelTask(name = self.name, isTraining= self.isTraining, penalizer=self.penalizer, isRating=self.isRating, numPeriods=self.numPeriods)
         elif self.model == "BGFModel":
-            print("BGFModel")
+            # print("BGFModel")
             return BGFModelTask(name = self.name, isTraining = self.isTraining, penalizer=self.penalizer, isRating=self.isRating, numPeriods=self.numPeriods)
         else:
             raise ValueError(f"Modelo desconhecido: {self.model}")

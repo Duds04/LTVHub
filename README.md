@@ -38,7 +38,6 @@ O **LTV-HUB** foi desenvolvido para simplificar os cálculos do Lifetime Value (
 - [GitHub](https://github.com/Duds04)
 - [LinkedIn](https://www.linkedin.com/in/maria-eduarda-de-pinho-braga-558057219/)
 
-
 **Laboratório:** NESPeD-LAB (Laboratório de Inteligência em Sistemas Pervasivos e Distribuídos).
 
 ---
@@ -59,6 +58,7 @@ O **LTV-HUB** foi desenvolvido para simplificar os cálculos do Lifetime Value (
 Certifique-se de ter instalado:
 - **Node.js** (versão 18 ou superior).
 - **NPM** ou **Yarn**.
+- **Python** (versão 3.8 ou superior).
 
 ### Passo a Passo
 
@@ -72,17 +72,46 @@ Certifique-se de ter instalado:
    cd LTVHub-FrontDesign
    ```
 
-3. Instale as dependências:
+### 🔹 Executando o Backend
+
+3. Em um terminal, entre na pasta `BackEnd`:
+   ```bash
+   cd BackEnd
+   ```
+
+4. Se for a primeira execução, instale as dependências executando:
+   ```bash
+   ./setup_env.sh
+   ```
+
+5. Ative o ambiente virtual:
+   ```bash
+   source ambiente_exec/bin/activate
+   ```
+
+6. Inicie o servidor backend:
+   ```bash
+   python main.py
+   ```
+
+### 🔹 Executando o Frontend
+
+7. Em outro terminal, entre na pasta `FrontEnd`:
+   ```bash
+   cd FrontEnd
+   ```
+
+8. Se for a primeira execução, instale as dependências:
    ```bash
    npm install
    ```
 
-4. Inicie o servidor de desenvolvimento:
+9. Inicie o servidor frontend:
    ```bash
    npm start
    ```
 
-5. Acesse a aplicação no navegador em `http://localhost:3000`.
+10. Acesse a aplicação no navegador em `http://localhost:3000`.
 
 ---
 

@@ -62,8 +62,6 @@ def __use_calculate():
         'weeksAhead': 180
     }
     csv_file_path = "data/transactions.csv"
-    print(csv_file_path, data['idColumn'], data['dateColumn'], data['amountColumn'],
-          data['weeksAhead'], data['frequencyModel'], data['monetaryModel'])
 
     if data['frequencyModel'] == "MachineLearning":
         transactionModel = TransactionModelRunner("transaction_model", model = data['frequencyModel'], target="frequency", X_Columns=[
@@ -79,7 +77,6 @@ def __use_calculate():
         monetaryModel = MonetaryModelRunner(
             name="monetary_model", model = data['monetaryModel'], isRating=True)
 
-    print(transactionModel, monetaryModel)
     calculate_LTV_and_Plot(transactionModel, monetaryModel, csv_file_path,
                   data['idColumn'], data['dateColumn'], data['amountColumn'])
     
