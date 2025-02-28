@@ -25,7 +25,7 @@ O **LTV-HUB** foi desenvolvido para simplificar os cálculos do Lifetime Value (
   - Machine Learning
 
 - **Previsão de LTV**:
-  - Escolha do horizonte temporal em meses.
+  - Escolha do horizonte temporal em semanas.
 
 <img src="./FrontEnd//public/assets/Tela.png" alt="Exemplo de Dashboard" />
 
