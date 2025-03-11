@@ -4,6 +4,8 @@ import stylesCliente from "../style/Clientes.module.css";
 import isConfigurateModel from "../components/isConfigurateModel"; // Importando o HOC
 import ErrorModal from "../components/ErrorModal"; // Importando o ErrorModal
 import LoadingModal from "../components/LoadingModal"; // Importando o LoadingModal
+import InfoTooltip from "../components/InfoTooltip";
+
 
 const Clientes = () => {
   const [searchTerm, setSearchTerm] = useState(""); // Termo de pesquisa
@@ -178,9 +180,10 @@ const Clientes = () => {
                 </h3>
                 <p className={stylesCliente.clientInfo}>
                   <strong>Tipo de Cliente:</strong> {client.type}
+                  <InfoTooltip text={client.description} />
                 </p>
                 <p className={stylesCliente.clientInfo}>
-                  <strong>Número Esperado de Compras:</strong>{" "}
+                  <strong>Número Esperado de Transações: </strong>
                   {client.frequency}
                 </p>
                 <p className={stylesCliente.clientInfo}>
@@ -188,7 +191,9 @@ const Clientes = () => {
                   {client.monetary_value.toFixed(2)}
                 </p>
                 <p className={stylesCliente.clientInfo}>
-                  <strong>LTV:</strong> {client.CLV}
+                  <strong>LTV:</strong> ${client.CLV.toFixed(2)}
+                  <InfoTooltip text="Lifetime Value (LTV) é uma métrica que indica o valor total estimado que um cliente trará para a empresa ao longo do tempo." />
+
                 </p>
                 <button
                   className={stylesCliente.detailsButton}

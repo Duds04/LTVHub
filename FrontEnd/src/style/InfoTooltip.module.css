@@ -1,0 +1,65 @@
+.tooltipContainer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.infoIcon {
+  font-size: 1rem;
+  color: #046320;
+  transition: color 0.3s ease;
+}
+
+.infoIcon:hover {
+  color: #034b24;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 0.6rem;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  white-space: normal; /* Permite quebra de linha */
+  word-wrap: break-word; /* Permite que o texto quebre em palavras */
+  word-break: break-word; /* Quebra palavras longas se necessário */
+  text-align: center;
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  min-width: 200px; /* Ajusta o tamanho mínimo */
+  max-width: 90%; /* Ajuste para garantir que o tooltip não ultrapasse o card */
+  width: auto;
+  z-index: 100;
+}
+
+.tooltipContainer:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tooltipContainer:hover .tooltip {
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100% - 20px); /* Garante que o tooltip não ultrapasse o limite do card */
+  margin-left: 80px;
+}
+
+/* Ajuste para garantir que o tooltip não ultrapasse os limites da tela */
+.tooltipContainer:hover .tooltip {
+  left: calc(50% - 125px); /* Centraliza levando em consideração a margem de 250px à esquerda */
+  right: calc(50% - 125px); /* Garante que o tooltip fique dentro da tela */
+}
+
+@media (max-width: 768px) {
+  .tooltip {
+    max-width: 80%; /* Diminui ainda mais a largura do tooltip em telas pequenas */
+  }
+}

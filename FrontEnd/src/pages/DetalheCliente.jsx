@@ -50,18 +50,37 @@ const DetalheCliente = () => {
     fetchClienteData();
   }, [id]);
 
-  // Função para obter dados para o gráfico de barras (soma das compras por mês)
+  // Função para obter dados para o gráfico de barras (soma das compras por mês e por ano)
   const getLastPurchasesData = () => {
-    const months = Array(12).fill(0);
+    const purchasesByYearMonth = {};
+
     compras.forEach((compra) => {
       const dateParts = compra.date.split('/');
+      const year = dateParts[2];
       const month = parseInt(dateParts[1], 10) - 1; // Subtrai 1 para ajustar ao índice do array (0-11)
-      months[month] += compra.monetary; // Somando o valor das compras por mês
+
+      const yearMonthKey = `${year}-${month < 9 ? `0${month + 1}` : month + 1}`; // Combina ano e mês no formato "YYYY-MM"
+
+      if (!purchasesByYearMonth[yearMonthKey]) {
+        purchasesByYearMonth[yearMonthKey] = 0;
+      }
+
+      purchasesByYearMonth[yearMonthKey] += compra.monetary; // Somando o valor das compras por mês/ano
     });
-    return months.map((value, index) => ({
-      month: new Date(0, index).toLocaleString("default", { month: "short" }),
-      total: parseFloat(value.toFixed(2)), // Arredondando o valor total para dois dígitos
-    }));
+
+    // Formatação dos dados para o gráfico
+    const formattedData = [];
+    for (const yearMonth in purchasesByYearMonth) {
+      const [year, month] = yearMonth.split("-");
+      const monthName = new Date(0, parseInt(month) - 1).toLocaleString("default", { month: "short" });
+      formattedData.push({
+        year,
+        month: `${monthName}/${year}`, // Formato Mês/Ano
+        total: parseFloat(purchasesByYearMonth[yearMonth].toFixed(2)),
+      });
+    }
+
+    return formattedData;
   };
 
   const lastPurchasesData = getLastPurchasesData();
@@ -75,8 +94,9 @@ const DetalheCliente = () => {
         accessor: "id_transaction",
       },
       {
-        Header: "Valor da Compra",
+        Header: "Valor da Transação",
         accessor: "monetary",
+        Cell: ({ value }) => `$${parseFloat(value).toFixed(2)}`, // Adiciona o símbolo de dólar à coluna "monetary"
       },
       {
         Header: "Data da Compra",
@@ -136,11 +156,11 @@ const DetalheCliente = () => {
                 {cliente.howToManage}
               </p>
               <p>
-                <strong>Número Esperado de Compras: </strong>
+                <strong>Número Esperado de Transações: </strong>
                 {cliente.frequency}
               </p>
               <p>
-                <strong>Valor Esperado por Compra: </strong> $
+                <strong>Valor Esperado por Transação: </strong> $
                 {cliente.monetary_value.toFixed(2)}
               </p>
               <p>
@@ -242,12 +262,14 @@ const DetalheCliente = () => {
               <BarChart data={lastPurchasesData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
+                <YAxis label={{ value: 'Valor Esperado ($)', angle: -90, position: 'insideLeft', dy: 50 }} />
+                <Tooltip 
+                  formatter={(value) => `$${value.toFixed(2)}`} 
+                />
                 <Legend />
                 <Bar
                   dataKey="total"
-                  name = "Total"
+                  name="Total ($)"
                   fill="#006822"
                   radius={[10, 10, 0, 0]}
                   background={{ fill: "#D8E7DE" }}
