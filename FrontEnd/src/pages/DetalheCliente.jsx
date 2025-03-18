@@ -15,6 +15,8 @@ import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa"; // Importando os 
 import stylesDetalheCliente from "../style/DetalheCliente.module.css";
 import ErrorModal from "../components/ErrorModal"; // Importando o ErrorModal
 import LoadingModal from "../components/LoadingModal"; // Importando o LoadingModal
+import InfoTooltip from "../components/InfoTooltip";
+
 
 const DetalheCliente = () => {
   const { id } = useParams(); // Captura o ID do cliente da URL
@@ -182,6 +184,7 @@ const DetalheCliente = () => {
               </p>
               <p>
                 <strong>LTV:</strong> ${cliente.CLV.toFixed(2)}
+                <InfoTooltip text="Lifetime Value (LTV) é uma métrica que indica o valor total estimado que um cliente trará para a empresa ao longo do tempo." />
               </p>
             </div>
           )}
