@@ -55,7 +55,7 @@ const DetalheCliente = () => {
     const purchasesByYearMonth = {};
 
     compras.forEach((compra) => {
-      const dateParts = compra.date.split('/');
+      const dateParts = compra.date.split("/");
       const year = dateParts[2];
       const month = parseInt(dateParts[1], 10) - 1; // Subtrai 1 para ajustar ao índice do array (0-11)
 
@@ -72,7 +72,10 @@ const DetalheCliente = () => {
     const formattedData = [];
     for (const yearMonth in purchasesByYearMonth) {
       const [year, month] = yearMonth.split("-");
-      const monthName = new Date(0, parseInt(month) - 1).toLocaleString("default", { month: "short" });
+      const monthName = new Date(0, parseInt(month) - 1).toLocaleString(
+        "default",
+        { month: "short" }
+      );
       formattedData.push({
         year,
         month: `${monthName}/${year}`, // Formato Mês/Ano
@@ -125,7 +128,10 @@ const DetalheCliente = () => {
     {
       columns,
       data: compras,
-      initialState: { pageSize: 5, sortBy: [{ id: "id_transaction", desc: false }] }, // Ordenação padrão pela coluna "ID da Transação"
+      initialState: {
+        pageSize: 5,
+        sortBy: [{ id: "id_transaction", desc: false }],
+      }, // Ordenação padrão pela coluna "ID da Transação"
     },
     useSortBy,
     usePagination
@@ -138,16 +144,27 @@ const DetalheCliente = () => {
 
   return (
     <div className={stylesDetalheCliente.container}>
-      {loading && <LoadingModal />} {/* Exibe o LoadingModal enquanto os dados estão sendo carregados */}
-      {cliente && (<h1 className={stylesDetalheCliente.title}>DETALHE DO CLIENTE {cliente.id}</h1>)}
-
+      {loading && <LoadingModal />}{" "}
+      {/* Exibe o LoadingModal enquanto os dados estão sendo carregados */}
+      {cliente && (
+        <h1 className={stylesDetalheCliente.title}>
+          DETALHE DO CLIENTE {cliente.id}
+        </h1>
+      )}
       <div className={stylesDetalheCliente.split}>
         <div className={stylesDetalheCliente.left}>
           {/* Informações do cliente */}
           {cliente && (
             <div className={stylesDetalheCliente.clientDetails}>
-              <h2 className={stylesDetalheCliente.clientId}>ID do Cliente: <span className={stylesDetalheCliente.id}>{id}</span></h2> 
-              <h2 className={stylesDetalheCliente.clientType}> <strong>Tipo de Cliente: </strong>{cliente.type}</h2>
+              <h2 className={stylesDetalheCliente.clientId}>
+                ID do Cliente:{" "}
+                <span className={stylesDetalheCliente.id}>{id}</span>
+              </h2>
+              <h2 className={stylesDetalheCliente.clientType}>
+                {" "}
+                <strong>Tipo de Cliente: </strong>
+                {cliente.type}
+              </h2>
               <p>
                 <strong>Descrição do Tipo: </strong> {cliente.description}
               </p>
@@ -258,15 +275,29 @@ const DetalheCliente = () => {
         {/* Gráfico de barras - Soma das compras por mês */}
         <div className={stylesDetalheCliente.chartContainer}>
           {lastPurchasesData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={lastPurchasesData}>
+            <ResponsiveContainer width="100%" height={500}>
+              <BarChart
+                data={lastPurchasesData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 80 }} // Aumente a margem inferior
+              >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis label={{ value: 'Valor Esperado ($)', angle: -90, position: 'insideLeft', dy: 50 }} />
-                <Tooltip 
-                  formatter={(value) => `$${value.toFixed(2)}`} 
+                <XAxis
+                  dataKey="month"
+                  angle={-45} 
+                  textAnchor="end" 
+                  interval={0} 
+                  label={{ value: "Tempo (Mês/Ano)", position: "insideBottom", dy: 75 }} 
                 />
-                <Legend />
+                <YAxis
+                  label={{
+                    value: "Valor Esperado ($)",
+                    angle: -90,
+                    position: "insideLeft",
+                    dy: 50,
+                  }}
+                />
+                <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
+                <Legend verticalAlign="top" height={36} align="center" />
                 <Bar
                   dataKey="total"
                   name="Total ($)"
@@ -281,14 +312,12 @@ const DetalheCliente = () => {
           )}
         </div>
       </div>
-
       <button
         onClick={handleGoBack}
         className={stylesDetalheCliente.backButton}
       >
         Voltar para Clientes
       </button>
-
       {/* Modal de erro */}
       {error && <ErrorModal message={error} onClose={() => setError(null)} />}
     </div>

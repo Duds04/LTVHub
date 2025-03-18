@@ -16,7 +16,7 @@
 /* Ajustes para o Gráfico */
 .chartContainer {
   width: 48%; /* Aumenta o width do gráfico para um pouco menor que a tabela */
-  height: 400px;
+  height: 500px;
   margin-top: 15vmin;
   background-color: #ffffff;
   border-radius: 10px;
