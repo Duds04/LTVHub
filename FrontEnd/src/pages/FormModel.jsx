@@ -17,13 +17,22 @@ const FormModel = () => {
   const [monetaryModel, setMonetaryModel] = useState("");
   const [weeksAhead, setWeeksAhead] = useState(180);
   const [columns, setColumns] = useState([]);
+  const [frequencyModels, setFrequencyModels] = useState([]);
+  const [monetaryModels, setMonetaryModels] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!idColumn || !dateColumn || !amountColumn || !frequencyModel || !monetaryModel || !weeksAhead) {
+    if (
+      !idColumn ||
+      !dateColumn ||
+      !amountColumn ||
+      !frequencyModel ||
+      !monetaryModel ||
+      !weeksAhead
+    ) {
       alert("Todos os campos obrigatórios devem ser preenchidos.");
     } else {
       const formData = {
@@ -51,11 +60,15 @@ const FormModel = () => {
           navigate("/clientes");
         } else {
           console.error(data.error);
-          setError("Não foi possível enviar o formulário. <br />Revise os parâmetros selecionados e tente novamente.");
+          setError(
+            "Não foi possível enviar o formulário. <br />Revise os parâmetros selecionados e tente novamente."
+          );
         }
       } catch (error) {
         console.error("Erro ao processar o formulário:", error);
-        setError("Erro ao processar o formulário.<br />Tente novamente da Tela Inicial.");
+        setError(
+          "Erro ao processar o formulário.<br />Tente novamente da Tela Inicial."
+        );
       } finally {
         setLoading(false);
       }
@@ -70,6 +83,7 @@ const FormModel = () => {
 
   useEffect(() => {
     const fetchColumns = async () => {
+      setLoading(true); // Exibir o modal de carregamento
       try {
         const response = await fetch("/columns");
         const data = await response.json();
@@ -77,15 +91,46 @@ const FormModel = () => {
           setColumns(data.columns.map((col) => ({ label: col, value: col })));
         } else {
           console.error("Erro ao buscar colunas:", data.error);
-          setError("Erro ao buscar colunas.<br />Tente novamente da Tela Inicial.");
+          setError(
+            "Erro ao buscar colunas.<br />Tente novamente da Tela Inicial."
+          );
         }
       } catch (error) {
         console.error("Erro ao buscar colunas:", error);
-        setError("Erro ao buscar colunas.<br />Tente novamente da Tela Inicial.");
+        setError(
+          "Erro ao buscar colunas.<br />Tente novamente da Tela Inicial."
+        );
+      } finally {
+        setLoading(false); // Ocultar o modal de carregamento
+      }
+    };
+
+    const fetchModels = async () => {
+      setLoading(true); // Exibir o modal de carregamento
+      try {
+        const response = await fetch("/models");
+        const data = await response.json();
+        if (response.ok) {
+          setFrequencyModels(data.frequencyModels);
+          setMonetaryModels(data.monetaryModels);
+        } else {
+          console.error("Erro ao buscar modelos:", data.error);
+          setError(
+            "Erro ao buscar modelos.<br />Tente novamente da Tela Inicial."
+          );
+        }
+      } catch (error) {
+        console.error("Erro ao buscar modelos:", error);
+        setError(
+          "Erro ao buscar modelos.<br />Tente novamente da Tela Inicial."
+        );
+      } finally {
+        setLoading(false); // Ocultar o modal de carregamento
       }
     };
 
     fetchColumns();
+    fetchModels();
   }, []);
 
   const customStyles = {
@@ -115,7 +160,11 @@ const FormModel = () => {
       color: "black",
       marginTop: "0px",
       padding: "2px 10px",
-      backgroundColor: state.isSelected ? "#E9E9ED" : state.isFocused ? "#E9E9ED" : null,
+      backgroundColor: state.isSelected
+        ? "#E9E9ED"
+        : state.isFocused
+        ? "#E9E9ED"
+        : null,
       ":hover": { backgroundColor: "#E9E9ED" },
     }),
   };
@@ -163,7 +212,9 @@ const FormModel = () => {
           </label>
           <Select
             id="amountColumn"
-            value={amountColumn ? { label: amountColumn, value: amountColumn } : null}
+            value={
+              amountColumn ? { label: amountColumn, value: amountColumn } : null
+            }
             onChange={(selectedOption) => setAmountColumn(selectedOption.value)}
             options={columns}
             styles={customStyles} // Aplica os estilos personalizados
@@ -178,35 +229,19 @@ const FormModel = () => {
             Selecione o Modelo de Predição de Frequência
           </label>
           <div className={styles.radioGroup}>
-            <input
-              type="radio"
-              id="bgNBD"
-              name="frequencyModel"
-              value="BGFModel"
-              onChange={(e) => setFrequencyModel(e.target.value)}
-              required
-            />
-            <label htmlFor="bgNBD">BG/NBD</label>
-
-            <input
-              type="radio"
-              id="pareto"
-              name="frequencyModel"
-              value="ParetoModel"
-              onChange={(e) => setFrequencyModel(e.target.value)}
-              required
-            />
-            <label htmlFor="pareto">Pareto</label>
-
-            <input
-              type="radio"
-              id="ml"
-              name="frequencyModel"
-              value="MachineLearning"
-              onChange={(e) => setFrequencyModel(e.target.value)}
-              required
-            />
-            <label htmlFor="ml">Machine Learning</label>
+            {frequencyModels.map((model) => (
+              <div key={model.id}>
+                <input
+                  type="radio"
+                  id={model.id}
+                  name="frequencyModel"
+                  value={model.id}
+                  onChange={(e) => setFrequencyModel(e.target.value)}
+                  required
+                />
+                <label htmlFor={model.id}>{model.display_name}</label>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -216,25 +251,19 @@ const FormModel = () => {
             Selecione o Modelo de Predição Monetária
           </label>
           <div className={styles.radioGroup}>
-            <input
-              type="radio"
-              id="gammaGamma"
-              name="monetaryModel"
-              value="GammaGammaModel"
-              onChange={(e) => setMonetaryModel(e.target.value)}
-              required
-            />
-            <label htmlFor="gammaGamma">Gamma-Gamma</label>
-
-            <input
-              type="radio"
-              id="mlMonetary"
-              name="monetaryModel"
-              value="MachineLearning"
-              onChange={(e) => setMonetaryModel(e.target.value)}
-              required
-            />
-            <label htmlFor="mlMonetary">Machine Learning</label>
+            {monetaryModels.map((model) => (
+              <div key={model.id}>
+                <input
+                  type="radio"
+                  id={model.id}
+                  name="monetaryModel"
+                  value={model.id}
+                  onChange={(e) => setMonetaryModel(e.target.value)}
+                  required
+                />
+                <label htmlFor={model.id}>{model.display_name}</label>
+              </div>
+            ))}
           </div>
         </div>
 

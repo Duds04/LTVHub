@@ -1,11 +1,10 @@
 from flask import Flask, render_template, jsonify, send_from_directory, request
 from flask_cors import CORS
 import os
+import json
 
 import pandas as pd
-from pipelines import calculate_LTV_and_Plot, readCSV
-from src.TrasactionModels.TransactionModelRunner import TransactionModelRunner
-from src.MonetaryModels.MonetaryModelRunner import MonetaryModelRunner
+from pipelines import calculate_LTV_and_Plot, readCSV, load_model
 
 # Inicializa a aplicação Flask
 app = Flask(__name__, static_folder="../FrontEnd/public",
@@ -74,6 +73,7 @@ def columns():
     except Exception as e:
         return jsonify({"error": f"Erro ao processar o arquivo: {e}"}), 500
 
+
 # Rota para receber os dados do formulário
 @app.route('/submit_form', methods=['POST'])
 def submit_form():
@@ -84,20 +84,40 @@ def submit_form():
         data = request.json
         data['weeksAhead'] = float(data['weeksAhead'])
         
-        if data['frequencyModel'] == "MachineLearning":
-            transactionModel = TransactionModelRunner("transaction_model", model = data['frequencyModel'], target="frequency", X_Columns=[
-                                                      'frequency', 'recency', 'T', 'monetary_value'])
-        else:
-            transactionModel = TransactionModelRunner(
-                "transaction_model", data['frequencyModel'], isRating=True, numPeriods=data['weeksAhead'])
+        """ Para adicionar um novo modelo, siga os seguintes passos:
+            1. Criar a Classe do Modelo:
+            - A classe deve ser criada no arquivo correspondente:
+                - Para modelos de frequência: `src/TransactionModels/`
+                - Para modelos monetários: `src/MonetaryModels/`
+            - A classe deve herdar de `FrequencyModel`, `MonetaryModel` ou `Task`.
 
-        if data['monetaryModel'] == "MachineLearning":
-            monetaryModel = MonetaryModelRunner(name="monetary_model", model=data['monetaryModel'], target="monetary_value", X_Columns=[
-                                                'frequency', 'recency', 'T', 'monetary_value'])
-        else:
-            monetaryModel = MonetaryModelRunner(
-                name="monetary_model", model = data['monetaryModel'], isRating=True)
+            2. Adicionar ao arquivo `Models.json`:
+            - Adicione a entrada do modelo no respectivo grupo (`frequencyModels` ou `monetaryModels`):
+            - O modelo deve conter as seguintes propriedades:
+                - `id`: ID único do modelo
+                - `model_task_name`: Nome da classe do modelo
+                - `importer`: Import dinâmico da classe do modelo
+                - `props`: Propriedades padrão do modelo (colocar todas as propriedades necessárias para o modelo executar)
 
+            3. Carregar o Modelo Usando `load_model`:
+                - Para carregar o modelo e usar no pipeline:
+                - Exemplo:
+                    model = load_model("frequencyModels",
+                                        "NovoModeloID", {"param": 20})
+     """
+        transactionModel = load_model(
+            "frequencyModels",
+            data["frequencyModel"],
+            # Se o modelo aceitar essa prop, ela será usada
+            {"numPeriods": data["weeksAhead"]}
+        )
+
+        monetaryModel = load_model(
+            "monetaryModels",
+            data["monetaryModel"],
+            # Se o modelo aceitar essa prop, ela será usada
+            {"numPeriods": data["weeksAhead"]}
+    )
         dfLTV = calculate_LTV_and_Plot(transactionModel, monetaryModel, csv_file_path,
                       data['idColumn'], data['dateColumn'], data['amountColumn'])
         
@@ -145,6 +165,16 @@ def get_cliente(id):
 @app.route('/images/<path:filename>', methods=['GET'])
 def get_image(filename):
     return send_from_directory(app.config['IMAGE_FOLDER'], filename)
+
+# Rota para retornar os modelos de frequência e monetário
+@app.route('/models', methods=['GET'])
+def get_models():
+    try:
+        with open('./jsons/Models.json', 'r') as file:
+            models = json.load(file)
+        return jsonify(models), 200
+    except Exception as e:
+        return jsonify({"error": f"Erro ao carregar os modelos: {e}"}), 500
 
 # Inicia a aplicação Flask
 if __name__ == "__main__":

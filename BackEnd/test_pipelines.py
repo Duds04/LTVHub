@@ -1,3 +1,5 @@
+import os
+import json
 import pandas as pd
 from src.workflows.pipeline import Pipeline
 
@@ -9,9 +11,6 @@ from src.MonetaryModels.GammaGammaModel import GammaGammaModelTask
 from src.GenericModels.MachineLearning import MachineLearningModel
 from src.LTV.LtvModel import LTVTask
 from src.DataVisualization.Plot import PlotTask
-
-from src.TrasactionModels.TransactionModelRunner import TransactionModelRunner
-from src.MonetaryModels.MonetaryModelRunner import MonetaryModelRunner
 
 #  @classmethod --> não precisa passar a instancia não usa o self
 
@@ -153,84 +152,81 @@ def __pipeline_gammaGamma_TEST_CLV():
     read_dt >> rfm_data >> gammaGamma_model >> ltv
 
 
-def __pipeline_transaction():
-    typeModels = {
-        "1": "ParetoModel",
-        "2": "MachineLearning",
-        "3": "BGFModel",
-    }
+# def __pipeline_transaction():
+#     typeModels = {
+#         "1": "ParetoModel",
+#         "2": "MachineLearning",
+#         "3": "BGFModel",
+#     }
 
-    print("Escolha o modelo para executar:")
-    for key, value in typeModels.items():
-        print(f"{key}: {value.value}")
+#     print("Escolha o modelo para executar:")
+#     for key, value in typeModels.items():
+#         print(f"{key}: {value.value}")
 
-    typeModel = input("\nDigite o número do modelo:")
+#     typeModel = input("\nDigite o número do modelo:")
 
-    if typeModel in typeModels:
-        typeModel = typeModels[typeModel]
-    else:
-        print("\nEscolha inválida.")
-        return
+#     if typeModel in typeModels:
+#         typeModel = typeModels[typeModel]
+#     else:
+#         print("\nEscolha inválida.")
+#         return
 
-    read_dt = CsvReadTask(
-        "read_dt", "data/transactions.csv", "customer_id", "date", "amount"
-    )
-    rfm_data = RFMTask("split_data", isTraining=True)
-    if (typeModel == "MachineLearning"):
-        transaction_use = TransactionModelRunner("model", typeModel, isTraining=True, isRating=True, target="frequency_holdout", X_Columns=[
-            'frequency_cal', 'recency_cal', 'T_cal', 'monetary_value_cal', 'duration_holdout'])
-    else:
-        transaction_use = TransactionModelRunner(
-            "model", typeModel, isTraining=True, isRating=True)
-    model = transaction_use.run()
+#     read_dt = CsvReadTask(
+#         "read_dt", "data/transactions.csv", "customer_id", "date", "amount"
+#     )
+#     rfm_data = RFMTask("split_data", isTraining=True)
+#     if (typeModel == "MachineLearning"):
+#         transaction_use = TransactionModelRunner("model", typeModel, isTraining=True, isRating=True, target="frequency_holdout", X_Columns=[
+#             'frequency_cal', 'recency_cal', 'T_cal', 'monetary_value_cal', 'duration_holdout'])
+#     else:
+#         transaction_use = TransactionModelRunner(
+#             "model", typeModel, isTraining=True, isRating=True)
+#     model = transaction_use.run()
 
-    read_dt >> rfm_data >> model
-
-
-def __pipeline_monetary():
-    typeModels = {
-        "1": "GammaGammaModel",
-        "2": "MachineLearning",
-    }
-
-    print("Escolha o modelo para executar:")
-    for key, value in typeModels.items():
-        print(f"{key}: {value.value}")
-
-    typeModel = input("\nDigite o número do modelo:")
-
-    if typeModel in typeModels:
-        typeModel = typeModels[typeModel]
-    else:
-        print("\nEscolha inválida.")
-        return
-
-    read_dt = CsvReadTask(
-        "read_dt", "data/transactions.csv", "customer_id", "date", "amount"
-    )
-    rfm_data = RFMTask("split_data", isTraining=True)
-    if (typeModel == "MachineLearning"):
-        monetary_use = MonetaryModelRunner("model", typeModel, isTraining=True, isRating=True, target="frequency_holdout", X_Columns=[
-                                           'frequency_cal', 'recency_cal', 'T_cal', 'monetary_value_cal', 'duration_holdout'])
-    else:
-        monetary_use = MonetaryModelRunner(
-            "model", typeModel, isTraining=True, isRating=True)
-
-    model = monetary_use.run()
-
-    read_dt >> rfm_data >> model
+#     read_dt >> rfm_data >> model
 
 
-def calculate_LTV(transactionModel, monetaryModel, file_path="data/transactions.csv", columnID="customer_id", columnDate="date", columnMonetary="amount"):
+# def __pipeline_monetary():
+#     typeModels = {
+#         "1": "GammaGammaModel",
+#         "2": "MachineLearning",
+#     }
+
+#     print("Escolha o modelo para executar:")
+#     for key, value in typeModels.items():
+#         print(f"{key}: {value.value}")
+
+#     typeModel = input("\nDigite o número do modelo:")
+
+#     if typeModel in typeModels:
+#         typeModel = typeModels[typeModel]
+#     else:
+#         print("\nEscolha inválida.")
+#         return
+
+#     read_dt = CsvReadTask(
+#         "read_dt", "data/transactions.csv", "customer_id", "date", "amount"
+#     )
+#     rfm_data = RFMTask("split_data", isTraining=True)
+#     if (typeModel == "MachineLearning"):
+#         monetary_use = MonetaryModelRunner("model", typeModel, isTraining=True, isRating=True, target="frequency_holdout", X_Columns=[
+#                                            'frequency_cal', 'recency_cal', 'T_cal', 'monetary_value_cal', 'duration_holdout'])
+#     else:
+#         monetary_use = MonetaryModelRunner(
+#             "model", typeModel, isTraining=True, isRating=True)
+
+#     model = monetary_use.run()
+
+#     read_dt >> rfm_data >> model
+
+
+def calculate_LTV(transaction_model, monetary_model, file_path="data/transactions.csv", columnID="customer_id", columnDate="date", columnMonetary="amount"):
     with Pipeline() as pipeline:
 
         read_dt = CsvReadTask(
             "read_dt", file_path, columnID, columnDate, columnMonetary
         )
-        rfm_data = RFMTask("split_data")
-
-        transaction_model = transactionModel.run()
-        monetary_model = monetaryModel.run()
+        rfm_data = RFMTask("split_data", isRating=True)
 
         ltv = LTVTask("calculo_ltv", columnFrequency="ExpectedFrequency",
                       columnMonetary="ExpectedMonetary")
@@ -241,12 +237,43 @@ def calculate_LTV(transactionModel, monetaryModel, file_path="data/transactions.
     df = pipeline.run()
     return df
 
-    # TODO: Verificar o fluxo do pipeline (era pra dar merge no df ao invés de passar um para o outro)
-    # read_dt >> rfm_data
-    # rfm_data >> transaction_model
-    # rfm_data >> monetary_model
-    # # transaction_model >> ltv
-    # monetary_model >> ltv
+
+def load_model(model_type, model_id, custom_props=None):
+    """Carrega e inicializa um modelo baseado no JSON e adiciona parâmetros personalizados apenas se necessário
+        Se o parâmetro adicionado não for definido no modelo, ele será ignorado. """
+
+    json_path = os.path.join(os.path.dirname(__file__), "jsons", "Models.json")
+
+    with open(json_path, "r") as file:
+        models_data = json.load(file)
+
+    # Encontrar a lista correta (frequencyModels ou monetaryModels)
+    model_list = models_data.get(model_type, [])
+
+    # Buscar o modelo específico pelo ID
+    model_config = next((m for m in model_list if m["id"] == model_id), None)
+
+    if not model_config:
+        raise ValueError(f"Modelo '{model_id}' não encontrado no JSON!")
+
+    # Executa o import dinâmico do chamador
+    exec(model_config["importer"], globals())
+
+    # Atualiza os props com valores customizados, se existirem
+    model_props = model_config["props"]
+
+    # Itera sobre os custom_props e adiciona apenas os que são usados no modelo
+    if custom_props:
+        for key, value in custom_props.items():
+            # Adiciona o parâmetro somente se a chave existir nos props do modelo
+            if key in model_props:
+                model_props[key] = value
+
+    # Inicializa o modelo dinamicamente
+    model_class = globals()[model_config["model_task_name"]]
+    model_instance = model_class(**model_props)
+
+    return model_instance
 
 
 def __use_calculate():
@@ -259,26 +286,29 @@ def __use_calculate():
         'weeksAhead': 180
     }
     csv_file_path = "data/transactions.csv"
-    print(csv_file_path, data['idColumn'], data['dateColumn'], data['amountColumn'],
-          data['weeksAhead'], data['frequencyModel'], data['monetaryModel'])
 
-    if data['frequencyModel'] == "MachineLearning":
-        transactionModel = TransactionModelRunner("transaction_model", model=data['frequencyModel'], target="frequency", X_Columns=[
-                                                  'frequency', 'recency', 'T', 'monetary_value'])
-    else:
-        transactionModel = TransactionModelRunner(
-            "transaction_model", data['frequencyModel'], isRating=True, numPeriods=data['weeksAhead'])
+    # Criando modelos dinâmicos e passando numPeriods apenas quando necessário
+    transactionModel = load_model(
+        "frequencyModels",
+        data["frequencyModel"],
+        # Se o modelo aceitar essa prop, ela será usada
+        {"numPeriods": data["weeksAhead"]}
+    )
 
-    if data['monetaryModel'] == "MachineLearning":
-        monetaryModel = MonetaryModelRunner(name="monetary_model", model=data['monetaryModel'], target="monetary_value", X_Columns=[
-                                            'frequency', 'recency', 'T', 'monetary_value'])
-    else:
-        monetaryModel = MonetaryModelRunner(
-            name="monetary_model", model=data['monetaryModel'], isRating=True)
+    monetaryModel = load_model(
+        "monetaryModels",
+        data["monetaryModel"],
+        # Se o modelo aceitar essa prop, ela será usada
+        {"numPeriods": data["weeksAhead"]}
+    )
 
     print(transactionModel, monetaryModel)
-    calculate_LTV(transactionModel, monetaryModel, csv_file_path,
-                  data['idColumn'], data['dateColumn'], data['amountColumn'])
+
+    df = calculate_LTV(transactionModel, monetaryModel, csv_file_path,
+                       data['idColumn'], data['dateColumn'], data['amountColumn'])
+    
+
+    return df
 
 
 def calculate_Rating(file_path="data/transactions.csv", columnID="customer_id", columnDate="date", columnMonetary="amount"):
@@ -288,14 +318,15 @@ def calculate_Rating(file_path="data/transactions.csv", columnID="customer_id", 
             "read_dt", file_path, columnID, columnDate, columnMonetary
         )
         rfm_data = RFMTask("split_data", isRating=True)
-        
+
         plot_data = PlotTask("plot", plot_all=True)
 
         # Lembrando (>> só associa, executa apenas apos rodar pipeline.run())
         read_dt >> rfm_data >> plot_data
+        
 
     rfm = pipeline.run()['plot']
-    
+
     return rfm
 
 
@@ -316,7 +347,8 @@ def __test_rating():
         csv_file_path, data['idColumn'], data['dateColumn'], data['amountColumn'])
 
     return df
-    
+
+
 """ Para adicionar um novo modelo é necessário:
         Criar uma Task para aquele modelo (herdando da Task generica de seu tipo)
         Adicionar os novos atributos necessários para se usar esse modelo no seu respectivo ModelRunner (TransactionModelRunner ou Monetary Model Runner)
@@ -338,8 +370,8 @@ def menu():
             "8": __pipeline_MLMonetary,
             "9": __pipeline_MLMonetary_Enriquecido,
             "10": __pipeline_pareto_CLV,
-            "11": __pipeline_transaction,
-            "12": __pipeline_monetary,
+            # "11": __pipeline_transaction,
+            # "12": __pipeline_monetary,
             "13": __pipeline_gammaGamma_TEST_CLV,
             "14": __pipeline_MLMonetary_NOT_Training,
             "15": __pipeline_MLTrasaction_NOT_Training,
@@ -402,10 +434,9 @@ dictClassificacao = {
 
 def main():
     # menu()
-    rfm = __test_rating()
-    
+    rfm = __use_calculate()
     print(rfm)
-    
+
     # plotPorcentagemClientes(rfm)
     # plotMonetaryClientes(rfm)
     # plotFrequencyClientes(rfm)
