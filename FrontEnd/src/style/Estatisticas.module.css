@@ -6,9 +6,7 @@
   background-color: #f9f9f9;
   font-family: "Roboto", sans-serif;
   margin-left: 250px;
-  min-height: 100vh;
-  /* Top, Rigth, Bottom, Left */
-  padding: 0px 20px;
+  padding: 20px;
 }
 
 .title {
@@ -19,41 +17,23 @@
   font-weight: 900;
 }
 
-/* Título de cada gráfico */
-.graphTitle {
-  margin-bottom: 1.5vmin; /* Aumenta o espaçamento inferior para mais clareza */
-  font-size: 2vmin; /* Tamanho ajustado para uma leitura mais fluida */
-  color: #09292a; /* Cor mais intensa e atraente */
-  font-weight: 700; /* Título mais destacado */
-  line-height: 1.4; /* Melhor espaçamento entre as linhas para uma leitura mais confortável */
-  text-align: center; /* Alinha o texto ao centro */
-  letter-spacing: 0.8px; /* Aumenta o espaçamento entre as letras para uma leitura mais clara */
-  padding-bottom: 5px; /* Adiciona um pequeno espaço abaixo do título */
-  text-transform: uppercase;
-  padding: 0px 15%;
-}
-
-/* Linha de gráficos - flexbox para 2 gráficos por linha */
+/* Linha de gráficos */
 .graphRow {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10%;
-  justify-content: center; /* Garante que os gráficos fiquem centralizados */
-  width: 100%;
-  margin-bottom: 40px; /* Espaçamento entre as linhas de gráficos */
+  justify-content: space-around;
+  width: 95%;
+  gap: 20px;
 }
 
 /* Contêiner de cada gráfico */
 .graphContainer {
-  width: 100%; /* Ajusta para ocupar toda a largura disponível */
-  max-width: 62vmin; /* Limita a largura máxima dos gráficos */
+  width: 30%;
   text-align: center;
-  margin-bottom: 20px;
-  padding: 20px; /* Aumenta o espaçamento interno para uma sensação mais arejada */
-  background-color: #fff; /* Fundo branco para destacar os gráficos */
-  border-radius: 12px; /* Bordas mais arredondadas */
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1); /* Sombra mais suave e grande */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Efeito de transição suave */
+  padding: 10px 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Efeito de hover para os contêineres de gráficos */
@@ -69,25 +49,26 @@
   align-items: center; /* Alinha os itens verticalmente */
 }
 
-/* Imagem dos gráficos */
-.graphImage {
-  width: 100%;
-  max-width: 58vmin;
-  height: auto;
-  border-radius: 8px; /* Bordas arredondadas para suavizar */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Adiciona uma sombra mais suave à imagem */
-  margin-bottom: 15px; /* Espaço entre a imagem e a legenda */
+.legendContainer {
+  width: 45%; /* Ajusta a legenda para ocupar 45% da largura */
+  text-align: left; /* Alinha a legenda à esquerda */
+  margin-left: 20px; /* Adiciona um pequeno espaço entre os gráficos e a legenda */
+  margin-top: 5vmin;
 }
 
-/* Estilo para a legenda do gráfico */
-.graphLegend {
-  width: 100%;
-  max-width: 58vmin;
-  height: auto;
-  margin-top: 10px; /* Espaçamento acima da legenda */
-  border-radius: 8px; /* Bordas arredondadas */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
-  overflow: visible;
+.legendList {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px; /* Aumenta o espaçamento entre os itens da legenda */
+}
+
+.legendList li {
+  font-size: 1.5vmin;
+  font-weight: bold;
+  text-align: center; /* Garante que o texto fique centralizado */
 }
 
 /* Estilos para responsividade */
@@ -110,5 +91,17 @@
   .graphImage,
   .graphLegend {
     max-width: 100%; /* Permite que as imagens ocupem toda a largura disponível em telas pequenas */
+  }
+}
+
+@media (max-width: 1440px) {
+  .graphRow {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .graphContainer {
+    width: 50%;
+    margin-bottom: 20px;
   }
 }

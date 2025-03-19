@@ -16,7 +16,7 @@ from src.DataVisualization.Plot import PlotTask
 
 
 def __pipeline_readCSV():
-    read_dt = CsvReadTask("read_dt", "data/transactions.csv",
+    read_dt = CsvReadTask("read_dt", "output/data/transactions.csv",
                           "customer_id", "date", "amount")
     df = read_dt.run()
     return df
@@ -24,7 +24,7 @@ def __pipeline_readCSV():
 
 def __pipeline_RFM():
     read_dt = CsvReadTask(
-        "read_dt", "data/transactions.csv", "customer_id", "date", "amount"
+        "read_dt", "output/data/transactions.csv", "customer_id", "date", "amount"
     )
     rfm_data = RFMTask("split_data", isTraining=True)
     read_dt >> rfm_data
@@ -32,7 +32,7 @@ def __pipeline_RFM():
 
 def __pipeline_RFM_Enriquecido():
     read_dt = CsvReadTask(
-        "read_dt", "data/transactions.csv", "customer_id", "date", "amount"
+        "read_dt", "output/data/transactions.csv", "customer_id", "date", "amount"
     )
     rfm_data_enriquecido = RFMTask(
         "split_data_enriquecido", predictInterval=4,  isTraining=True)
@@ -41,7 +41,7 @@ def __pipeline_RFM_Enriquecido():
 
 def __pipeline_pareto():
     read_dt = CsvReadTask(
-        "read_dt", "data/transactions.csv", "customer_id", "date", "amount"
+        "read_dt", "output/data/transactions.csv", "customer_id", "date", "amount"
     )
     rfm_data = RFMTask("split_data", isTraining=True)
     pareto_model = ParetoModelTask(
@@ -52,7 +52,7 @@ def __pipeline_pareto():
 
 def __pipeline_bgf():
     read_dt = CsvReadTask(
-        "read_dt", "data/transactions.csv", "customer_id", "date", "amount"
+        "read_dt", "output/data/transactions.csv", "customer_id", "date", "amount"
     )
     rfm_data = RFMTask("split_data")
     bgf_model = BGFModelTask("bgf_model", isRating=True)
@@ -62,7 +62,7 @@ def __pipeline_bgf():
 
 def __pipeline_gammmaGamma():
     read_dt = CsvReadTask(
-        "read_dt", "data/transactions.csv", "customer_id", "date", "amount"
+        "read_dt", "output/data/transactions.csv", "customer_id", "date", "amount"
     )
     rfm_data = RFMTask("split_data", isTraining=True)
     gammaGamma_model = GammaGammaModelTask(
@@ -73,7 +73,7 @@ def __pipeline_gammmaGamma():
 
 def __pipeline_MLTrasaction():
     read_dt = CsvReadTask(
-        "read_dt", "data/transactions.csv", "customer_id", "date", "amount"
+        "read_dt", "output/data/transactions.csv", "customer_id", "date", "amount"
     )
     rfm_data = RFMTask("split_data", isTraining=True)
     ml_model_transaction = MachineLearningModel("machine_learning_model_transaction", "frequency_holdout", isMonetary=False, X_Columns=[
@@ -84,7 +84,7 @@ def __pipeline_MLTrasaction():
 
 def __pipeline_MLMonetary():
     read_dt = CsvReadTask(
-        "read_dt", "data/transactions.csv", "customer_id", "date", "amount"
+        "read_dt", "output/data/transactions.csv", "customer_id", "date", "amount"
     )
     rfm_data = RFMTask("split_data", isTraining=True)
     ml_model_monetary = MachineLearningModel("machine_learning_monetary", "monetary_value_holdout", X_Columns=[
@@ -95,7 +95,7 @@ def __pipeline_MLMonetary():
 
 def __pipeline_MLMonetary_Enriquecido():
     read_dt = CsvReadTask(
-        "read_dt", "data/transactions.csv", "customer_id", "date", "amount"
+        "read_dt", "output/data/transactions.csv", "customer_id", "date", "amount"
     )
     rfm_data_enriquecido = RFMTask(
         "split_data_enriquecido", predictInterval=4, isTraining=True)
@@ -106,7 +106,7 @@ def __pipeline_MLMonetary_Enriquecido():
 
 def __pipeline_MLMonetary_NOT_Training():
     read_dt = CsvReadTask(
-        "read_dt", "data/transactions.csv", "customer_id", "date", "amount"
+        "read_dt", "output/data/transactions.csv", "customer_id", "date", "amount"
     )
     rfm_data = RFMTask("split_data")
     ml_model_monetary = MachineLearningModel("machine_learning_monetary", "monetary_value", X_Columns=[
@@ -117,7 +117,7 @@ def __pipeline_MLMonetary_NOT_Training():
 
 def __pipeline_MLTrasaction_NOT_Training():
     read_dt = CsvReadTask(
-        "read_dt", "data/transactions.csv", "customer_id", "date", "amount"
+        "read_dt", "output/data/transactions.csv", "customer_id", "date", "amount"
     )
     rfm_data = RFMTask("split_data")
     ml_model_transaction = MachineLearningModel("machine_learning_model_transaction", "frequency", X_Columns=[
@@ -128,7 +128,7 @@ def __pipeline_MLTrasaction_NOT_Training():
 
 def __pipeline_pareto_CLV():
     read_dt = CsvReadTask(
-        "read_dt", "data/transactions.csv", "customer_id", "date", "amount"
+        "read_dt", "output/data/transactions.csv", "customer_id", "date", "amount"
     )
     rfm_data = RFMTask("split_data")
 
@@ -140,7 +140,7 @@ def __pipeline_pareto_CLV():
 
 def __pipeline_gammaGamma_TEST_CLV():
     read_dt = CsvReadTask(
-        "read_dt", "data/transactions.csv", "customer_id", "date", "amount"
+        "read_dt", "output/data/transactions.csv", "customer_id", "date", "amount"
     )
     rfm_data = RFMTask("split_data", isTraining=True)
 
@@ -172,7 +172,7 @@ def __pipeline_gammaGamma_TEST_CLV():
 #         return
 
 #     read_dt = CsvReadTask(
-#         "read_dt", "data/transactions.csv", "customer_id", "date", "amount"
+#         "read_dt", "output/data/transactions.csv", "customer_id", "date", "amount"
 #     )
 #     rfm_data = RFMTask("split_data", isTraining=True)
 #     if (typeModel == "MachineLearning"):
@@ -205,7 +205,7 @@ def __pipeline_gammaGamma_TEST_CLV():
 #         return
 
 #     read_dt = CsvReadTask(
-#         "read_dt", "data/transactions.csv", "customer_id", "date", "amount"
+#         "read_dt", "output/data/transactions.csv", "customer_id", "date", "amount"
 #     )
 #     rfm_data = RFMTask("split_data", isTraining=True)
 #     if (typeModel == "MachineLearning"):
@@ -220,7 +220,7 @@ def __pipeline_gammaGamma_TEST_CLV():
 #     read_dt >> rfm_data >> model
 
 
-def calculate_LTV(transaction_model, monetary_model, file_path="data/transactions.csv", columnID="customer_id", columnDate="date", columnMonetary="amount"):
+def calculate_LTV(transaction_model, monetary_model, file_path="output/data/transactions.csv", columnID="customer_id", columnDate="date", columnMonetary="amount"):
     with Pipeline() as pipeline:
 
         read_dt = CsvReadTask(
@@ -285,7 +285,7 @@ def __use_calculate():
         'monetaryModel': 'GammaGammaModel',
         'weeksAhead': 180
     }
-    csv_file_path = "data/transactions.csv"
+    csv_file_path = "output/data/transactions.csv"
 
     # Criando modelos dinâmicos e passando numPeriods apenas quando necessário
     transactionModel = load_model(
@@ -311,7 +311,7 @@ def __use_calculate():
     return df
 
 
-def calculate_Rating(file_path="data/transactions.csv", columnID="customer_id", columnDate="date", columnMonetary="amount"):
+def calculate_Rating(file_path="output/data/transactions.csv", columnID="customer_id", columnDate="date", columnMonetary="amount"):
     with Pipeline() as pipeline:
 
         read_dt = CsvReadTask(
@@ -339,7 +339,7 @@ def __test_rating():
         'monetaryModel': 'GammaGammaModel',
         'weeksAhead': 180
     }
-    csv_file_path = "data/transactions.csv"
+    csv_file_path = "output/data/transactions.csv"
     print(csv_file_path, data['idColumn'], data['dateColumn'], data['amountColumn'],
           data['weeksAhead'], data['frequencyModel'], data['monetaryModel'])
 

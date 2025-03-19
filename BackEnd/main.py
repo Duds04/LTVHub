@@ -14,7 +14,7 @@ app = Flask(__name__, static_folder="../FrontEnd/public",
 CORS(app)
 
 # Define a pasta onde os arquivos enviados serão armazenados
-UPLOAD_FOLDER = './data'
+UPLOAD_FOLDER = './output/data'
 IMAGE_FOLDER = './images'  # Adicione esta linha para definir a pasta de imagens
 
 if not os.path.exists(UPLOAD_FOLDER):
@@ -175,6 +175,16 @@ def get_models():
         return jsonify(models), 200
     except Exception as e:
         return jsonify({"error": f"Erro ao carregar os modelos: {e}"}), 500
+
+# Rota para retornar os dados de plotagem
+@app.route('/plot_data', methods=['GET'])
+def get_plot_data():
+    try:
+        with open('./output/plot_data.json', 'r') as file:
+            plot_data = json.load(file)
+        return jsonify(plot_data), 200
+    except Exception as e:
+        return jsonify({"error": f"Erro ao carregar os dados de plotagem: {e}"}), 500
 
 # Inicia a aplicação Flask
 if __name__ == "__main__":

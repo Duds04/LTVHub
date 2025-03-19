@@ -1,0 +1,128 @@
+{
+    "clients": {
+        "7": {
+            "Tipo": "Cliente de alto valor",
+            "Porcentagem": 21.49200710479574,
+            "ValorAbsoluto": 242
+        },
+        "0": {
+            "Tipo": "Cliente perdido",
+            "Porcentagem": 21.04795737122558,
+            "ValorAbsoluto": 237
+        },
+        "1": {
+            "Tipo": "Cliente de reten\u00e7\u00e3o cr\u00edtica",
+            "Porcentagem": 17.140319715808168,
+            "ValorAbsoluto": 193
+        },
+        "6": {
+            "Tipo": "Cliente de valor geral",
+            "Porcentagem": 12.788632326820604,
+            "ValorAbsoluto": 144
+        },
+        "2": {
+            "Tipo": "Cliente de reten\u00e7\u00e3o geral",
+            "Porcentagem": 9.236234458259325,
+            "ValorAbsoluto": 104
+        },
+        "3": {
+            "Tipo": "Cliente de desenvolvimento estrat\u00e9gico",
+            "Porcentagem": 8.081705150976909,
+            "ValorAbsoluto": 91
+        },
+        "5": {
+            "Tipo": "Cliente em fase de prote\u00e7\u00e3o",
+            "Porcentagem": 5.328596802841918,
+            "ValorAbsoluto": 60
+        },
+        "4": {
+            "Tipo": "Cliente em desenvolvimento",
+            "Porcentagem": 4.8845470692717585,
+            "ValorAbsoluto": 55
+        }
+    },
+    "monetary": {
+        "0": {
+            "Tipo": "Cliente perdido",
+            "Porcentagem": 9.1326513353692,
+            "ValorAbsoluto": 3919.62
+        },
+        "1": {
+            "Tipo": "Cliente de reten\u00e7\u00e3o cr\u00edtica",
+            "Porcentagem": 25.68894579492303,
+            "ValorAbsoluto": 11025.375
+        },
+        "2": {
+            "Tipo": "Cliente de reten\u00e7\u00e3o geral",
+            "Porcentagem": 4.15716885203729,
+            "ValorAbsoluto": 1784.205
+        },
+        "3": {
+            "Tipo": "Cliente de desenvolvimento estrat\u00e9gico",
+            "Porcentagem": 12.147487350690653,
+            "ValorAbsoluto": 5213.55
+        },
+        "4": {
+            "Tipo": "Cliente em desenvolvimento",
+            "Porcentagem": 2.6043678070918874,
+            "ValorAbsoluto": 1117.7621666666666
+        },
+        "5": {
+            "Tipo": "Cliente em fase de prote\u00e7\u00e3o",
+            "Porcentagem": 10.791646881772825,
+            "ValorAbsoluto": 4631.640188311689
+        },
+        "6": {
+            "Tipo": "Cliente de valor geral",
+            "Porcentagem": 6.945070374373113,
+            "ValorAbsoluto": 2980.737547197717
+        },
+        "7": {
+            "Tipo": "Cliente de alto valor",
+            "Porcentagem": 28.532661603742,
+            "ValorAbsoluto": 12245.86234253057
+        }
+    },
+    "frequency": {
+        "0": {
+            "Tipo": "Cliente perdido",
+            "Porcentagem": 7.317682317682318,
+            "ValorAbsoluto": 293.0
+        },
+        "1": {
+            "Tipo": "Cliente de reten\u00e7\u00e3o cr\u00edtica",
+            "Porcentagem": 6.218781218781219,
+            "ValorAbsoluto": 249.0
+        },
+        "2": {
+            "Tipo": "Cliente de reten\u00e7\u00e3o geral",
+            "Porcentagem": 4.020979020979021,
+            "ValorAbsoluto": 161.0
+        },
+        "3": {
+            "Tipo": "Cliente de desenvolvimento estrat\u00e9gico",
+            "Porcentagem": 3.5464535464535465,
+            "ValorAbsoluto": 142.0
+        },
+        "4": {
+            "Tipo": "Cliente em desenvolvimento",
+            "Porcentagem": 5.1448551448551445,
+            "ValorAbsoluto": 206.0
+        },
+        "5": {
+            "Tipo": "Cliente em fase de prote\u00e7\u00e3o",
+            "Porcentagem": 7.142857142857142,
+            "ValorAbsoluto": 286.0
+        },
+        "6": {
+            "Tipo": "Cliente de valor geral",
+            "Porcentagem": 21.753246753246753,
+            "ValorAbsoluto": 871.0
+        },
+        "7": {
+            "Tipo": "Cliente de alto valor",
+            "Porcentagem": 44.85514485514486,
+            "ValorAbsoluto": 1796.0
+        }
+    }
+}

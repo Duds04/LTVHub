@@ -9,7 +9,7 @@ from src.LTV.LtvModel import LTVTask
 
 from src.DataVisualization.Plot import PlotTask
 
-def readCSV(file_path="data/transactions.csv", columnID="customer_id", columnDate="date", columnMonetary="amount"):
+def readCSV(file_path="output/data/transactions.csv", columnID="customer_id", columnDate="date", columnMonetary="amount"):
     read_dt = CsvReadTask("read_dt", file_path, columnID,
                           columnDate, columnMonetary)
     df = read_dt.run()
@@ -17,7 +17,7 @@ def readCSV(file_path="data/transactions.csv", columnID="customer_id", columnDat
     return df
 
 
-def calculate_LTV_and_Plot(transaction_model, monetary_model, file_path="data/transactions.csv", columnID="customer_id", columnDate="date", columnMonetary="amount"):
+def calculate_LTV_and_Plot(transaction_model, monetary_model, file_path="output/data/transactions.csv", columnID="customer_id", columnDate="date", columnMonetary="amount"):
     """ Para adicionar um novo modelo, siga os seguintes passos:
          1. Criar a Classe do Modelo:
          - A classe deve ser criada no arquivo correspondente:
@@ -106,7 +106,7 @@ def __use_calculate():
         'monetaryModel': 'GammaGammaModel',
         'weeksAhead': 180
     }
-    csv_file_path = "data/transactions.csv"
+    csv_file_path = "output/data/transactions.csv"
 
     # Criando modelos dinâmicos e passando numPeriods apenas quando necessário
     transactionModel = load_model(
