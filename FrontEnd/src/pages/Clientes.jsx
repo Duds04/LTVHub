@@ -115,8 +115,17 @@ const Clientes = () => {
     }
   };
 
-  // Função para pegar os tipos de clientes únicos
-  const clientTypes = [...new Set(clientes.map((client) => client.type))];
+  // Ordem desejada para os tipos de clientes
+  const clientOrder = [
+    "Cliente de alto valor",
+    "Cliente de desenvolvimento estratégico",
+    "Cliente em fase de proteção",
+    "Cliente de retenção crítica",
+    "Cliente de valor geral",
+    "Cliente em desenvolvimento",
+    "Cliente de retenção geral",
+    "Cliente perdido",
+  ];
 
   return (
     <div className={stylesCliente.container}>
@@ -155,14 +164,13 @@ const Clientes = () => {
               value={filter}
               onChange={handleFilterChange} // Atualiza o filtro
             >
-              <option value="" disabled>
-                Filtros
-              </option>
-              {clientTypes.map((type, index) => (
+              <option value="" disabled>Filtros </option>
+              {clientOrder.map((type, index) => (
                 <option key={index} value={type}>
                   {type}
                 </option>
               ))}
+              <option value="">Nenhum Filtro</option> {/* Opção para limpar o filtro */}
             </select>
           </div>
         </span>

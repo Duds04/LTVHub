@@ -8,7 +8,7 @@ const Estatisticas = () => {
   const [error, setError] = useState(null);
   const [hiddenCategories, setHiddenCategories] = useState([]);
 
-  const order = [
+  const clientOrder = [
     "Cliente de alto valor",
     "Cliente de desenvolvimento estratégico",
     "Cliente em fase de proteção",
@@ -105,7 +105,7 @@ const Estatisticas = () => {
       {/* Legenda compartilhada */}
       <div className={stylesEstatisticas.legendContainer}>
         <ul className={stylesEstatisticas.legendList}>
-          {order.map((tipo, index) => (
+          {clientOrder.map((tipo, index) => (
             <li
               key={tipo}
               style={{
