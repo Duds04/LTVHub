@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "../style/FormModel.module.css";
 import isFileUploaded from "../components/isFileUploaded";
 import { useNavigate } from "react-router-dom";
-import LoadingModal from "../components/LoadingModal";
+import LoadingModalMessage from "../components/LoadingModalMessage";
 import ErrorModal from "../components/ErrorModal";
 import Select from "react-select";
 
@@ -15,12 +15,14 @@ const FormModel = () => {
   const [amountColumn, setAmountColumn] = useState("");
   const [frequencyModel, setFrequencyModel] = useState("");
   const [monetaryModel, setMonetaryModel] = useState("");
-  const [weeksAhead, setWeeksAhead] = useState(180);
+  const [weeksAhead, setWeeksAhead] = useState(1);
   const [columns, setColumns] = useState([]);
   const [frequencyModels, setFrequencyModels] = useState([]);
   const [monetaryModels, setMonetaryModels] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [loadingMessage, setLoadingMessage] = useState("Carregando...");
+  const [lastUpdate, setLastUpdate] = useState(0); // Timestamp da última atualização
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,6 +47,7 @@ const FormModel = () => {
       };
 
       setLoading(true);
+      setLoadingMessage("Carregando...");
 
       try {
         const response = await fetch("/submit_form", {
@@ -56,6 +59,7 @@ const FormModel = () => {
         const data = await response.json();
         if (response.ok) {
           console.log("Formulário enviado com sucesso:", data);
+          setLoadingMessage(data.task_message || "Processando...");
           localStorage.setItem("configurateModel", "true");
           navigate("/clientes");
         } else {
@@ -132,6 +136,27 @@ const FormModel = () => {
     fetchColumns();
     fetchModels();
   }, []);
+
+  useEffect(() => {
+    let interval;
+    if (loading) {
+      interval = setInterval(async () => {
+        try {
+          const response = await fetch(`/progress?last_update=${lastUpdate}`);
+          if (response.status === 200) {
+            const data = await response.json();
+            if (data.messages.length > 0) {
+              setLoadingMessage(data.messages[data.messages.length - 1]);
+              setLastUpdate(data.last_update); // Atualizar o timestamp
+            }
+          }
+        } catch (error) {
+          console.error("Erro ao buscar mensagens de progresso:", error);
+        }
+      }, 1000); // Atualiza a cada 1 segundo
+    }
+    return () => clearInterval(interval);
+  }, [loading, lastUpdate]);
 
   const customStyles = {
     control: (styles) => ({
@@ -292,7 +317,7 @@ const FormModel = () => {
       </form>
 
       {/* Renderizar o modal de carregamento */}
-      {loading && <LoadingModal />}
+      {loading && <LoadingModalMessage message={loadingMessage} />}
 
       {/* Renderizar o ErrorModal */}
       <ErrorModal message={error} onClose={() => setError(null)} />

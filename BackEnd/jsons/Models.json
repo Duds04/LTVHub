@@ -1,63 +1,59 @@
 {
-    "frequencyModels": [
-      {
-        "display_name": "BG/NBD",
-        "id": "BGFModel",
-        "importer": "from src.TrasactionModels.BGFModel import BGFModelTask", 
-        "model_task_name": "BGFModelTask",
-        "props": {
-          "name": "transaction_model",
-          "isRating": true,
-          "numPeriods": 180
-        }
-      },
-      {
-        "display_name": "Pareto",
-        "id": "ParetoModel",
-        "importer": "from src.TrasactionModels.ParetoModel import ParetoModelTask",
-        "model_task_name": "ParetoModelTask",
-        "props": {
-          "name": "transaction_model",
-          "isRating": true,
-          "numPeriods": 180
-        }
-      },
-      {
-        "display_name": "Machine Learning",
-        "id": "MachineLearning",
-        "importer": "from src.GenericModels.MachineLearning import MachineLearningModel",
-        "model_task_name": "MachineLearningModel",
-        "props": {
-          "name": "transaction_model",
-          "target": "frequency",
-          "X_Columns": ["frequency", "recency", "T", "monetary_value"],
-          "isMonetary": false
-        }
+  "frequencyModels": [
+    {
+      "display_name": "BG/NBD",
+      "id": "BGFModel",
+      "importer": "from src.TrasactionModels.BGFModel import BGFModelTask",
+      "model_task_name": "BGFModelTask",
+      "props": {
+        "name": "transaction_model",
+        "numPeriods": 3
       }
-    ],
-    "monetaryModels": [
-      {
-        "display_name": "Gamma-Gamma",
-        "id": "GammaGammaModel",
-        "importer": "from src.MonetaryModels.GammaGammaModel import GammaGammaModelTask",
-        "model_task_name": "GammaGammaModelTask",
-        "props": {
-          "name": "monetary_model",
-          "isRating": true
-        }
-      },
-      {
-        "display_name": "Machine Learning",
-        "id": "MachineLearning",
-        "importer": "from src.GenericModels.MachineLearning import MachineLearningModel",
-        "model_task_name": "MachineLearningModel",
-        "props": {
-          "name": "monetary_model",
-          "target": "monetary_value",
-          "X_Columns": ["frequency", "recency", "T", "monetary_value"],
-          "isMonetary": true
-        }
+    },
+    {
+      "display_name": "Pareto",
+      "id": "ParetoModel",
+      "importer": "from src.TrasactionModels.ParetoModel import ParetoModelTask",
+      "model_task_name": "ParetoModelTask",
+      "props": {
+        "name": "transaction_model",
+        "numPeriods": 3
       }
-    ]
-  }
-  
+    },
+    {
+      "display_name": "Machine Learning",
+      "id": "MachineLearning",
+      "importer": "from src.GenericModels.MachineLearning import MachineLearningModel",
+      "model_task_name": "MachineLearningModel",
+      "props": {
+        "name": "transaction_model",
+        "target": "frequency_holdout",
+        "X_Columns": ["frequency_cal", "recency_cal", "T_cal", "monetary_value_cal"],
+        "isMonetary": false
+      }
+    }
+  ],
+  "monetaryModels": [
+    {
+      "display_name": "Gamma-Gamma",
+      "id": "GammaGammaModel",
+      "importer": "from src.MonetaryModels.GammaGammaModel import GammaGammaModelTask",
+      "model_task_name": "GammaGammaModelTask",
+      "props": {
+        "name": "monetary_model"
+      }
+    },
+    {
+      "display_name": "Machine Learning",
+      "id": "MachineLearning",
+      "importer": "from src.GenericModels.MachineLearning import MachineLearningModel",
+      "model_task_name": "MachineLearningModel",
+      "props": {
+        "name": "monetary_model",
+        "target": "monetary_value_holdout",
+        "X_Columns": ["frequency_cal", "recency_cal", "T_cal", "monetary_value_cal"],
+        "isMonetary": true
+      }
+    }
+  ]
+}

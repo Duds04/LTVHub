@@ -283,7 +283,7 @@ def __use_calculate():
         'amountColumn': 'amount',
         'frequencyModel': 'MachineLearning',
         'monetaryModel': 'GammaGammaModel',
-        'weeksAhead': 180
+        'weeksAhead': 4
     }
     csv_file_path = "output/data/transactions.csv"
 
@@ -337,7 +337,7 @@ def __test_rating():
         'amountColumn': 'amount',
         'frequencyModel': 'MachineLearning',
         'monetaryModel': 'GammaGammaModel',
-        'weeksAhead': 180
+        'weeksAhead': 4
     }
     csv_file_path = "output/data/transactions.csv"
     print(csv_file_path, data['idColumn'], data['dateColumn'], data['amountColumn'],

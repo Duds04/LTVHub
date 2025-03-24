@@ -2,9 +2,11 @@ from flask import Flask, render_template, jsonify, send_from_directory, request
 from flask_cors import CORS
 import os
 import json
+import time
 
 import pandas as pd
 from pipelines import calculate_LTV_and_Plot, readCSV, load_model
+from src.DataTransformation.RFM import RFMTask
 
 # Inicializa a aplicação Flask
 app = Flask(__name__, static_folder="../FrontEnd/public",
@@ -24,24 +26,35 @@ if not os.path.exists(IMAGE_FOLDER):
     os.makedirs(IMAGE_FOLDER)  # Cria a pasta de imagens se ela não existir
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['IMAGE_FOLDER'] = IMAGE_FOLDER  # Adicione esta linha para configurar a pasta de imagens
+# Adicione esta linha para configurar a pasta de imagens
+app.config['IMAGE_FOLDER'] = IMAGE_FOLDER
 
 # Variáveis globais
 csv_file_path = None
-dfLTV = None 
+dfLTV = None
 dfOriginal = None
 
+# Variável global para mensagens de progresso
+app.config['PROGRESS_MESSAGES'] = []
+app.config['LAST_UPDATE'] = time.time()  # Timestamp da última atualização
+
 # Rota para a página inicial
+
+
 @app.route("/")
 def index():
     return render_template("index.html")
 
 # Rota para servir arquivos estáticos
+
+
 @app.route('/<path:path>', methods=['GET'])
 def static_proxy(path):
     return send_from_directory(app.static_folder, path)
 
 # Rota para upload de arquivos
+
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
     global csv_file_path
@@ -59,6 +72,8 @@ def upload_file():
     return jsonify({"message": "Arquivo enviado com sucesso."}), 200
 
 # Rota para retornar as colunas do arquivo CSV
+
+
 @app.route('/columns', methods=['GET'])
 def columns():
     global csv_file_path
@@ -79,12 +94,8 @@ def columns():
 def submit_form():
     global dfLTV
     global dfOriginal
-
-    try:
-        data = request.json
-        data['weeksAhead'] = float(data['weeksAhead'])
-        
-        """ Para adicionar um novo modelo, siga os seguintes passos:
+    
+    """ Para adicionar um novo modelo, siga os seguintes passos:
             1. Criar a Classe do Modelo:
             - A classe deve ser criada no arquivo correspondente:
                 - Para modelos de frequência: `src/TransactionModels/`
@@ -105,24 +116,19 @@ def submit_form():
                     model = load_model("frequencyModels",
                                         "NovoModeloID", {"param": 20})
      """
-        transactionModel = load_model(
-            "frequencyModels",
-            data["frequencyModel"],
-            # Se o modelo aceitar essa prop, ela será usada
-            {"numPeriods": data["weeksAhead"]}
+
+    try:
+        data = request.json
+        data['weeksAhead'] = int(data['weeksAhead'])
+
+        dfLTV = calculate_LTV_and_Plot(
+            data, csv_file_path, data['idColumn'], data['dateColumn'], data['amountColumn'], data["weeksAhead"]
         )
 
-        monetaryModel = load_model(
-            "monetaryModels",
-            data["monetaryModel"],
-            # Se o modelo aceitar essa prop, ela será usada
-            {"numPeriods": data["weeksAhead"]}
-    )
-        dfLTV = calculate_LTV_and_Plot(transactionModel, monetaryModel, csv_file_path,
-                      data['idColumn'], data['dateColumn'], data['amountColumn'])
-        
-        dfOriginal = readCSV(csv_file_path, data['idColumn'], data['dateColumn'], data['amountColumn'])
-        
+        dfOriginal = readCSV(
+            csv_file_path, data['idColumn'], data['dateColumn'], data['amountColumn']
+        )
+
         return jsonify({"message": "Dados recebidos com sucesso."}), 200
 
     except Exception as e:
@@ -140,20 +146,24 @@ def get_clientes():
         return jsonify({"error": "O cálculo do LTV ainda não foi realizado.<br />Por favor, volte à tela 'Modelo' e envie as informações para continuar."}), 400
 
 # Rota para retornar os dados de um cliente específico
+
+
 @app.route('/cliente/<int:id>', methods=['GET'])
 def get_cliente(id):
     global dfLTV
     global dfOriginal
-    
+
     if dfLTV is not None and dfOriginal is not None:
         cliente = dfLTV[dfLTV.index == id].to_dict(orient='records')
-        
+
         if cliente:
             compras_cliente = dfOriginal[dfOriginal['id'] == id]
             compras_cliente = compras_cliente.reset_index(drop=True)
             compras_cliente['id_transaction'] = compras_cliente.index
-            compras_cliente['date'] = compras_cliente['date'].apply(lambda x: x.strftime('%d/%m/%Y') if isinstance(x, pd.Timestamp) else x)
-            transactions = compras_cliente[['id_transaction', 'monetary', 'date']].to_dict(orient='records')
+            compras_cliente['date'] = compras_cliente['date'].apply(
+                lambda x: x.strftime('%d/%m/%Y') if isinstance(x, pd.Timestamp) else x)
+            transactions = compras_cliente[[
+                'id_transaction', 'monetary', 'date']].to_dict(orient='records')
             cliente[0]['transactions'] = transactions
             return jsonify(cliente[0]), 200
         else:
@@ -162,11 +172,15 @@ def get_cliente(id):
         return jsonify({"error": "O cálculo do LTV ainda não foi realizado.<br />Por favor, volte à tela 'Modelo' e envie as informações para continuar."}), 400
 
 # Rota para servir imagens da pasta de imagens
+
+
 @app.route('/images/<path:filename>', methods=['GET'])
 def get_image(filename):
     return send_from_directory(app.config['IMAGE_FOLDER'], filename)
 
 # Rota para retornar os modelos de frequência e monetário
+
+
 @app.route('/models', methods=['GET'])
 def get_models():
     try:
@@ -177,6 +191,8 @@ def get_models():
         return jsonify({"error": f"Erro ao carregar os modelos: {e}"}), 500
 
 # Rota para retornar os dados de plotagem
+
+
 @app.route('/plot_data', methods=['GET'])
 def get_plot_data():
     try:
@@ -185,6 +201,26 @@ def get_plot_data():
         return jsonify(plot_data), 200
     except Exception as e:
         return jsonify({"error": f"Erro ao carregar os dados de plotagem: {e}"}), 500
+
+@app.route('/progress', methods=['GET'])
+def get_progress():
+    # Obter o timestamp da última atualização enviado pelo frontend
+    last_request_time = float(request.args.get('last_update', 0))
+
+    # Verificar se há novas mensagens
+    if app.config['LAST_UPDATE'] > last_request_time:
+        return jsonify({
+            "messages": app.config['PROGRESS_MESSAGES'],
+            "last_update": app.config['LAST_UPDATE']
+        }), 200
+    else:
+        # Nenhuma atualização
+        return jsonify({"messages": [], "last_update": app.config['LAST_UPDATE']}), 204
+
+# Exemplo de função que atualiza as mensagens de progresso
+def add_progress_message(message):
+    app.config['PROGRESS_MESSAGES'].append(message)
+    app.config['LAST_UPDATE'] = time.time()  # Atualizar o timestamp
 
 # Inicia a aplicação Flask
 if __name__ == "__main__":

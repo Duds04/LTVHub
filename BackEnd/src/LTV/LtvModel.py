@@ -47,10 +47,12 @@ class LTVTask(Task):
             self.columnMonetary = "monetary_value_holdout"
             self.columnFrequency = "frequency_holdout"
             df[f"CLV_holdout"] = (df[self.columnMonetary] * df[self.columnFrequency]) / (1 + self.discountRate) ** (self.numPeriods / factor)
-
+            df[f"CLV_holdout"] = df[f"CLV_holdout"].apply(lambda x: max(x, 0))  # Ajusta valores negativos para 0
         else:
             assert self.columnMonetary in df.columns, f"Monetary column '{self.columnMonetary}' not found in DataFrame columns: {df.columns}"
             assert self.columnFrequency in df.columns, f"Frequency column '{self.columnFrequency}' not found in DataFrame columns: {df.columns}"
+            # (Numero de transações *  Valor de Cada Transação) / Correção monetaria
             df[f"CLV"] = (df[self.columnMonetary] * df[self.columnFrequency]) / (1 + self.discountRate) ** (self.numPeriods / factor)
+            df[f"CLV"] = df[f"CLV"].apply(lambda x: max(x, 0))  # Ajusta valores negativos para 0
     
         return df

@@ -10,8 +10,7 @@ class TransactionModelTask(Task):
         name: str,
         isTraining: bool = False,
         penalizer: float = 0.1,
-        isRating: bool = False,
-        numPeriods: int = 180,
+        numPeriods: int = 1,
     ) -> None:
         """
         Args:
@@ -23,7 +22,6 @@ class TransactionModelTask(Task):
         self.model = None
         self.isTraining = isTraining
         self.penalizer = penalizer
-        self.isRating = isRating
         self.numPeriods = numPeriods
 
     @abstractmethod
@@ -31,18 +29,19 @@ class TransactionModelTask(Task):
         """
             Dado um dataset com os valores de RFM, retorna a predição do número de transações esperadas
         """
-        pass
+        self.data_predict = self.task_in["data_predict"].output
+        self.data_training = self.task_in["data_training"].output
 
     @abstractmethod
     def createModel(self, df: pd.DataFrame):
         pass
 
     @abstractmethod
-    def predict(self, df: pd.DataFrame) -> pd.DataFrame:
+    def predict(self, df: pd.DataFrame, isTraining: bool = False) -> pd.DataFrame:
         """
             Dado um período, retorna o número de transações esperadas até ele
         """
-        if self.isTraining:
+        if isTraining:
             # No período de Treino e no periodo de Validação
             return self.model.conditional_expected_number_of_purchases_up_to_time(
                 self.numPeriods,
@@ -65,10 +64,4 @@ class TransactionModelTask(Task):
         """
         pass
 
-    @abstractmethod
-    def rating(self, nameModel: str, df: pd.DataFrame, xExpected: str, xReal: str = 'frequency_holdout') -> pd.DataFrame:
-        """
-            Retorna a classificação do cliente
-        """
-        print("Model ", nameModel, "Mean Squared Error:",
-              mean_squared_error(df[xReal], df[xExpected]))
+   

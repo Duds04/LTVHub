@@ -55,7 +55,6 @@ class RFMTask(Task):
         minTrainin: int = -1,
         maxTraining: int = -1,
         predictInterval: int = -1,
-        numPeriods: int = -1,
         columnID: str = "id",
         columnDate: str = "date",
         columnMonetary: str = "monetary",
@@ -64,12 +63,10 @@ class RFMTask(Task):
         observationEnd=None,
         split: float = 0.8,
         isTraining: bool = False,
-        apply_calibration_split: bool = False,
         isRating: bool = False,
     ) -> None:
         """
         Args:
-                numPeriods # Quantos periodos queremos prever
                 columnID #Nome da coluna onde encontra-se os identificadores
                 columnDate  #Nome da coluna onde encontra-se as datas
                 columnMonetary  #Nome da coluna onde encontra-se os valores monetários
@@ -79,7 +76,7 @@ class RFMTask(Task):
                 split = 0.8 # Porcentagem da divisão dos dados para separar em Obsersvação e calibração
                 minTrainin: int, # Qual é o periodo mínimo que será usado para treino
                 maxTraining: int, # Qual será o último período que será usado para o treino
-                predictInterval: int = 4, # Define quantos períodos serão os intervalos de predição
+                predictInterval: int = 4, # Define quantos períodos serão os intervalos de predição (Quantos periodos queremos prever)
                 apply_calibration_split # Fazer a divisão do dataFrame em calibration e holdout (se for Test isso ficara como true)
         """
         super().__init__(name)
@@ -91,13 +88,14 @@ class RFMTask(Task):
         self.observationEnd = observationEnd
         self.split = split
         self.isTraining = isTraining
-        if(isTraining): self.apply_calibration_split = isTraining
-        else: self.apply_calibration_split = apply_calibration_split
-        self.numPeriods = numPeriods
+        if(isTraining): self.apply_calibration_split = True
+        else: self.apply_calibration_split = False
         self.minTrainin = minTrainin
         self.maxTraining = maxTraining
         self.predictInterval = predictInterval
         self.isRating = isRating
+        
+        
 
     def __getPeriodosList(self, df: pd.DataFrame):
         def __to_period(df: pd.DataFrame):
@@ -129,13 +127,10 @@ class RFMTask(Task):
                 df, #Dataframe do Pandas
             """
             if self.calibrationEnd is None:
-                calibrationEnd, observationEnd = self.__getPeriodos(
+                self.calibrationEnd, self.observationEnd = self.__getPeriodos(
                     df
                 )
-            else:
-                calibrationEnd = self.calibrationEnd
-                observationEnd = self.observationEnd
-
+            
             if self.apply_calibration_split is False:
                 return summary_data_from_transaction_data(
                     transactions=df,
@@ -151,8 +146,8 @@ class RFMTask(Task):
                     datetime_col=self.columnDate,
                     monetary_value_col=self.columnMonetary,
                     freq=self.frequency,
-                    calibration_period_end=calibrationEnd,
-                    observation_period_end=observationEnd,
+                    calibration_period_end=self.calibrationEnd,
+                    observation_period_end=self.observationEnd,
                 )
             return rfm_cal_holdout
         
@@ -186,7 +181,7 @@ class RFMTask(Task):
         assert self.columnDate in df.columns, f"Date column '{self.columnDate}' not found in DataFrame columns: {df.columns}"
         
         dfReturn = pd.DataFrame()
-        if self.predictInterval == -1:
+        if self.apply_calibration_split:
             dfReturn = self.__rfm_data_filler(df)
         else:
             periods = self.__getPeriodosList(df)
@@ -199,7 +194,7 @@ class RFMTask(Task):
             for period in range(self.minTrainin, self.maxTraining, self.predictInterval):
                 self.calibrationEnd = periods[period].to_timestamp()
                 self.observationEnd = periods[period + self.predictInterval].to_timestamp()
-                dfReturn = pd.concat([dfReturn, self.__rfm_data_filler(df)], ignore_index=True)
+                dfReturn = pd.concat([dfReturn, self.__rfm_data_filler(df)])
                 
         if self.isRating:
             dfReturn = self.rating(dfReturn)

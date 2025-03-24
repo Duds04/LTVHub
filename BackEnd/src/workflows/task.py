@@ -3,6 +3,8 @@ from abc import ABC, abstractmethod
 from src.workflows.schema import Schema
 from typing import Annotated, get_type_hints, get_origin, get_args
 import pandas as pd
+from flask import current_app
+import time
 
 
 class Depends:
@@ -41,7 +43,13 @@ class Task(ABC):
     def run(self) -> pd.DataFrame:
         if self.output is not None:
             return self.output
-        print(f"Running {self.name} ({self.__class__.__name__})...")
+        message = f"Running {self.name} ({self.__class__.__name__})..."
+        print(message)
+
+        # Enviar mensagem de progresso para o frontend
+        if current_app:
+            current_app.config['PROGRESS_MESSAGES'].append(message)
+            current_app.config['LAST_UPDATE'] = time.time()  # Atualizar o timestamp
 
         kwargs = self.get_dependencies()
         self.output = self.on_run(**kwargs)

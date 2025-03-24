@@ -151,7 +151,7 @@ const Clientes = () => {
               </option>
               <option value="id">ID do Cliente</option>
               <option value="ltv">Lifetime Value (LTV)</option>
-              <option value="frequency">Número Esperado de Compras</option>
+              <option value="frequency">Número Esperado de Transações</option>
               <option value="monetary_value">
                 Valor Esperado por Transação
               </option>
@@ -192,11 +192,11 @@ const Clientes = () => {
                 </p>
                 <p className={stylesCliente.clientInfo}>
                   <strong>Número Esperado de Transações: </strong>
-                  {client.frequency}
+                  {client.ExpectedFrequency.toFixed(2)}
                 </p>
                 <p className={stylesCliente.clientInfo}>
                   <strong>Valor Esperado por Transação:</strong> $
-                  {client.monetary_value.toFixed(2)}
+                  {client.ExpectedMonetary.toFixed(2)}
                 </p>
                 <p className={stylesCliente.clientInfo}>
                   <strong>LTV:</strong> ${client.CLV.toFixed(2)}

@@ -96,7 +96,7 @@ const Estatisticas = () => {
         {/* Gráfico 3 */}
         <div className={stylesEstatisticas.graphContainer}>
           <h3 className={stylesEstatisticas.graphTitle}>
-            Distribuição Percentual das Compras pelos Tipos de Clientes
+            Distribuição Percentual das Transações pelos Tipos de Clientes
           </h3>
           <PieChart data={filteredData(data.frequency)}  className={stylesEstatisticas.graph}/>
         </div>

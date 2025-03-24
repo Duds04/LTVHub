@@ -176,11 +176,11 @@ const DetalheCliente = () => {
               </p>
               <p>
                 <strong>Número Esperado de Transações: </strong>
-                {cliente.frequency}
+                {cliente.ExpectedFrequency}
               </p>
               <p>
                 <strong>Valor Esperado por Transação: </strong> $
-                {cliente.monetary_value.toFixed(2)}
+                {cliente.ExpectedMonetary.toFixed(2)}
               </p>
               <p>
                 <strong>LTV:</strong> ${cliente.CLV.toFixed(2)}

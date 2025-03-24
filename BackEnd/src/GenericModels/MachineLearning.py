@@ -10,6 +10,7 @@ from sklearn.ensemble import GradientBoostingRegressor, HistGradientBoostingRegr
 
 from src.GenericModels.GenericModel import GenericModelTask
 
+
 class MachineLearningModel(GenericModelTask):
     """
         Instância diversos modelos de Machine Learning para prever o target e pega o mais adequado
@@ -21,7 +22,6 @@ class MachineLearningModel(GenericModelTask):
         target: str,
         isMonetary: bool,
         X_Columns: list = None,
-        isTraining: bool = False,
         isTunning: bool = False,
     ) -> None:
         """
@@ -30,7 +30,7 @@ class MachineLearningModel(GenericModelTask):
             target, # Nome da coluna onde está o valor alvo (Y)
             isTunning, # Fazer o Tunning de hyperparâmetros se for True
         """
-        super().__init__(name, target, isMonetary, isTunning, isTraining)
+        super().__init__(name, target, isMonetary, isTunning)
         self.models = self.createModels()
 
         self.bestModel = None
@@ -43,29 +43,34 @@ class MachineLearningModel(GenericModelTask):
         self.Y_test = None
 
     def on_run(self, dfRFM: pd.DataFrame) -> pd.DataFrame:
-        if self.target not in dfRFM.columns:
-            raise ValueError(f"Target column '{self.target}' not found in DataFrame columns: {dfRFM.columns}")
+        super().on_run(dfRFM)
         
+        if self.target not in self.data_training.columns:
+            raise ValueError(
+                f"Target column '{self.target}' not found in DataFrame columns: {self.data_training.columns}")
+
         for x_colum in self.X_Columns:
-            if x_colum not in dfRFM.columns:
-                raise ValueError(f"Feature column '{x_colum}' not found in DataFrame columns: {dfRFM.columns}")
-        
-        X = dfRFM[self.X_Columns]
-        Y = dfRFM[self.target]
+            if x_colum not in self.data_training.columns:
+                raise ValueError(
+                    f"Feature column '{x_colum}' not found in DataFrame columns: {self.data_training.columns}")
+
+        X = self.data_training[self.X_Columns]
+        Y = self.data_training[self.target]
+        Y = Y[Y.index.isin(X.index.values)]
 
         self.X_train, self.X_test, self.Y_train, self.Y_test = train_test_split(
             X.values, np.ravel(Y.values), random_state=42)
-
-        self.bestModel = self.selectBestModel()
         
+        self.bestModel = self.selectBestModel()
+
         if self.isMonetary:
             xExpected = "ExpectedMonetary"
         else:
             xExpected = "ExpectedFrequency"
-            
-        dfRFM[xExpected] = self.bestModel.predict(dfRFM[self.X_Columns])
+
+        self.data_predict[xExpected] = self.bestModel.predict(self.data_predict[["frequency", "recency", "T", "monetary_value"]])
         
-        return dfRFM
+        return self.data_predict
 
     def selectBestModel(self):
         """
@@ -77,15 +82,11 @@ class MachineLearningModel(GenericModelTask):
             if bestScore == None or bestScore > score[0]:
                 bestScore, self.bestModel = score
 
-            if self.isTunning:
-                print(type(model.best_estimator_).__name__,
-                      " mse: {:.4f} \n".format(score[0]))
-            else:
-                print(type(model).__name__, " mse: {:.4f} \n".format(score[0]))
-
         if self.isTunning:
+            # print(type(model.best_estimator_).__name__, " mse: {:.4f} \n".format(score[0]))
             return self.bestModel.best_estimator_
         else:
+            # print(type(model).__name__, " mse: {:.4f} \n".format(score[0]))
             return self.bestModel
 
     def get_grid_params(self, model_name):
@@ -195,4 +196,3 @@ class MachineLearningModel(GenericModelTask):
 
     def predict(self, RegressorModel):
         return RegressorModel.predict(self.X_test)
-
