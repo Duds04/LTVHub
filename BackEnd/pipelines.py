@@ -128,7 +128,7 @@ def __use_calculate():
         'dateColumn': 'date',
         'amountColumn': 'amount',
         'frequencyModel': 'MachineLearningModel',
-        'monetaryModel': 'MachineLearningModel',
+        'monetaryModel': 'GammaGammaModel',
         'weeksAhead': 4,
     }
 

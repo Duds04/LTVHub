@@ -21,8 +21,8 @@ class MonetaryModelTask(Task):
         """
             Dado um dataset com os valores de RFM, retorna a predição do número de transações esperadas
         """
-        self.data_predict = self.task_in["data_predict"].output.copy()
-        self.data_training = self.task_in["data_training"].output.copy()
+        self.data_predict = self.task_in["data_predict"].output
+        self.data_training = self.task_in["data_training"].output
 
     @abstractmethod
     def createModel(self, df: pd.DataFrame):
