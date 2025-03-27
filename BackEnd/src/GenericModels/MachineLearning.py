@@ -11,7 +11,7 @@ from sklearn.ensemble import GradientBoostingRegressor, HistGradientBoostingRegr
 from src.GenericModels.GenericModel import GenericModelTask
 
 
-class MachineLearningModel(GenericModelTask):
+class MachineLearningModelTask(GenericModelTask):
     """
         Instância diversos modelos de Machine Learning para prever o target e pega o mais adequado
     """
@@ -81,13 +81,17 @@ class MachineLearningModel(GenericModelTask):
             score = self.fitAndRating(model)
             if bestScore == None or bestScore > score[0]:
                 bestScore, self.bestModel = score
+                
+        print("\n\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
         if self.isTunning:
-            # print(type(model.best_estimator_).__name__, " mse: {:.4f} \n".format(score[0]))
+            print(type(model.best_estimator_).__name__, " mse: {:.4f} \n".format(score[0]))
             return self.bestModel.best_estimator_
         else:
-            # print(type(model).__name__, " mse: {:.4f} \n".format(score[0]))
+            print(type(model).__name__, " mse: {:.4f} \n".format(score[0]))
             return self.bestModel
+        print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n\n\n")
+
 
     def get_grid_params(self, model_name):
         grids = {

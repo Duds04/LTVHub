@@ -26,8 +26,8 @@ class GenericModelTask(Task):
         """
             Dado um dataset com os valores de RFM, retorna a predição do número de transações esperadas
         """
-        self.data_predict = self.task_in["data_predict"].output
-        self.data_training = self.task_in["data_training"].output
+        self.data_predict = self.task_in["data_predict"].output.copy()
+        self.data_training = self.task_in["data_training"].output.copy()
 
     @abstractmethod
     def predict(self):

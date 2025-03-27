@@ -40,7 +40,7 @@ def calculate_LTV_and_Plot(data, file_path="output/data/transactions.csv", colum
                  model = load_model("frequencyModels",
                                     "NovoModeloID", {"param": 20})
      """
-    daysAhead = data["weeksAhead"] * 7
+    daysAhead = data["weeksAhead"]
     # Criando modelos dinâmicos e passando numPeriods apenas quando necessário
     transactionModel = load_model(
         "frequencyModels",
@@ -127,8 +127,8 @@ def __use_calculate():
         'idColumn': 'customer_id',
         'dateColumn': 'date',
         'amountColumn': 'amount',
-        'frequencyModel': 'ParetoModel',
-        'monetaryModel': 'GammaGammaModel',
+        'frequencyModel': 'MachineLearningModel',
+        'monetaryModel': 'MachineLearningModel',
         'weeksAhead': 4,
     }
 

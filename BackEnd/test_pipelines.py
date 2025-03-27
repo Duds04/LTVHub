@@ -8,7 +8,7 @@ from src.DataTransformation.RFM import RFMTask
 from src.TrasactionModels.ParetoModel import ParetoModelTask
 from src.TrasactionModels.BGFModel import BGFModelTask
 from src.MonetaryModels.GammaGammaModel import GammaGammaModelTask
-from src.GenericModels.MachineLearning import MachineLearningModel
+from src.GenericModels.MachineLearning import MachineLearningModelTask
 from src.LTV.LtvModel import LTVTask
 from src.DataVisualization.Plot import PlotTask
 
@@ -76,7 +76,7 @@ def __pipeline_MLTrasaction():
         "read_dt", "output/data/transactions.csv", "customer_id", "date", "amount"
     )
     rfm_data = RFMTask("split_data", isTraining=True)
-    ml_model_transaction = MachineLearningModel("machine_learning_model_transaction", "frequency_holdout", isMonetary=False, X_Columns=[
+    ml_model_transaction = MachineLearningModelTask("machine_learning_model_transaction", "frequency_holdout", isMonetary=False, X_Columns=[
         'frequency_cal', 'recency_cal', 'T_cal', 'monetary_value_cal', 'duration_holdout'], isTraining=True)
 
     read_dt >> rfm_data >> ml_model_transaction
@@ -87,7 +87,7 @@ def __pipeline_MLMonetary():
         "read_dt", "output/data/transactions.csv", "customer_id", "date", "amount"
     )
     rfm_data = RFMTask("split_data", isTraining=True)
-    ml_model_monetary = MachineLearningModel("machine_learning_monetary", "monetary_value_holdout", X_Columns=[
+    ml_model_monetary = MachineLearningModelTask("machine_learning_monetary", "monetary_value_holdout", X_Columns=[
                                              'frequency_cal', 'recency_cal', 'T_cal', 'monetary_value_cal', 'duration_holdout'], isTraining=True, isMonetary=True)
 
     read_dt >> rfm_data >> ml_model_monetary
@@ -99,7 +99,7 @@ def __pipeline_MLMonetary_Enriquecido():
     )
     rfm_data_enriquecido = RFMTask(
         "split_data_enriquecido", predictInterval=4, isTraining=True)
-    ml_model_monetary = MachineLearningModel("machine_learning_monetary", "monetary_value_holdout", X_Columns=[
+    ml_model_monetary = MachineLearningModelTask("machine_learning_monetary", "monetary_value_holdout", X_Columns=[
                                              'frequency_cal', 'recency_cal', 'T_cal', 'monetary_value_cal', 'duration_holdout'], isTraining=True, isMonetary=True)
     read_dt >> rfm_data_enriquecido >> ml_model_monetary
 
@@ -109,7 +109,7 @@ def __pipeline_MLMonetary_NOT_Training():
         "read_dt", "output/data/transactions.csv", "customer_id", "date", "amount"
     )
     rfm_data = RFMTask("split_data")
-    ml_model_monetary = MachineLearningModel("machine_learning_monetary", "monetary_value", X_Columns=[
+    ml_model_monetary = MachineLearningModelTask("machine_learning_monetary", "monetary_value", X_Columns=[
                                              'frequency', 'recency', 'T', 'monetary_value'], isMonetary=True)
 
     read_dt >> rfm_data >> ml_model_monetary
@@ -120,7 +120,7 @@ def __pipeline_MLTrasaction_NOT_Training():
         "read_dt", "output/data/transactions.csv", "customer_id", "date", "amount"
     )
     rfm_data = RFMTask("split_data")
-    ml_model_transaction = MachineLearningModel("machine_learning_model_transaction", "frequency", X_Columns=[
+    ml_model_transaction = MachineLearningModelTask("machine_learning_model_transaction", "frequency", X_Columns=[
                                                 'frequency', 'recency', 'T', 'monetary_value'], isMonetary=False)
 
     read_dt >> rfm_data >> ml_model_transaction

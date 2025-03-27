@@ -22,9 +22,9 @@
     },
     {
       "display_name": "Machine Learning",
-      "id": "MachineLearning",
-      "importer": "from src.GenericModels.MachineLearning import MachineLearningModel",
-      "model_task_name": "MachineLearningModel",
+      "id": "MachineLearningModel",
+      "importer": "from src.GenericModels.MachineLearning import MachineLearningModelTask",
+      "model_task_name": "MachineLearningModelTask",
       "props": {
         "name": "transaction_model",
         "target": "frequency_holdout",
@@ -45,9 +45,9 @@
     },
     {
       "display_name": "Machine Learning",
-      "id": "MachineLearning",
-      "importer": "from src.GenericModels.MachineLearning import MachineLearningModel",
-      "model_task_name": "MachineLearningModel",
+      "id": "MachineLearningModel",
+      "importer": "from src.GenericModels.MachineLearning import MachineLearningModelTask",
+      "model_task_name": "MachineLearningModelTask",
       "props": {
         "name": "monetary_model",
         "target": "monetary_value_holdout",
