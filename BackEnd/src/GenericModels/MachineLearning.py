@@ -44,7 +44,7 @@ class MachineLearningModelTask(GenericModelTask):
 
     def on_run(self, dfRFM: pd.DataFrame) -> pd.DataFrame:
         super().on_run(dfRFM)
-        
+
         if self.target not in self.data_training.columns:
             raise ValueError(
                 f"Target column '{self.target}' not found in DataFrame columns: {self.data_training.columns}")
@@ -60,7 +60,7 @@ class MachineLearningModelTask(GenericModelTask):
 
         self.X_train, self.X_test, self.Y_train, self.Y_test = train_test_split(
             X.values, np.ravel(Y.values), random_state=42)
-        
+
         self.bestModel = self.selectBestModel()
 
         if self.isMonetary:
@@ -68,8 +68,9 @@ class MachineLearningModelTask(GenericModelTask):
         else:
             xExpected = "ExpectedFrequency"
 
-        self.data_predict[xExpected] = self.bestModel.predict(self.data_predict[["frequency", "recency", "T", "monetary_value"]])
-        
+        self.data_predict[xExpected] = self.bestModel.predict(
+            self.data_predict[["frequency", "recency", "T", "monetary_value"]])
+
         return self.data_predict
 
     def selectBestModel(self):
@@ -81,17 +82,14 @@ class MachineLearningModelTask(GenericModelTask):
             score = self.fitAndRating(model)
             if bestScore == None or bestScore > score[0]:
                 bestScore, self.bestModel = score
-                
-        print("\n\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
         if self.isTunning:
-            print(type(model.best_estimator_).__name__, " mse: {:.4f} \n".format(score[0]))
+            print(type(model.best_estimator_).__name__,
+                  " mse: {:.4f} \n".format(score[0]))
             return self.bestModel.best_estimator_
         else:
             print(type(model).__name__, " mse: {:.4f} \n".format(score[0]))
             return self.bestModel
-        print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n\n\n")
-
 
     def get_grid_params(self, model_name):
         grids = {
