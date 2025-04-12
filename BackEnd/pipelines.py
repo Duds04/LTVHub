@@ -64,7 +64,7 @@ def calculate_LTV_and_Plot(data, file_path="output/data/transactions.csv", colum
         ltv = LTVTask("calculo_ltv", columnFrequency="ExpectedFrequency",
                       columnMonetary="ExpectedMonetary")
 
-        plot_data = PlotTask("plot", plot_all=True)
+        plot_data = PlotTask("plot", plot_all=True, save_outliers_plots=True)
 
         # Lembrando (>> só associa, executa apenas apos rodar pipeline.run())
         read_dt >> rfm_training
@@ -127,12 +127,13 @@ def __use_calculate():
         'idColumn': 'customer_id',
         'dateColumn': 'date',
         'amountColumn': 'amount',
-        'frequencyModel': 'MachineLearningModel',
-        'monetaryModel': 'GammaGammaModel',
+        'frequencyModel': 'BGFModel',
+        'monetaryModel': 'MachineLearningModel',
         'weeksAhead': 4,
     }
 
     csv_file_path = "output/data/transactions.csv"
+    
 
     df = calculate_LTV_and_Plot(data, csv_file_path,
                                 data['idColumn'], data['dateColumn'], data['amountColumn'], data['weeksAhead'])

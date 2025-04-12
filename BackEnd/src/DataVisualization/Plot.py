@@ -1,15 +1,18 @@
 import os
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 from src.workflows.task import Task
 from src.DataTransformation.RFM import dictClassificacao
 import json
 
 
 class PlotTask(Task):
-    def __init__(self, name: str, plot_all: bool = False, isTraining: bool = False, plot_type: str = None) -> None:
+    def __init__(self, name: str, plot_all: bool = False, isTraining: bool = False, plot_type: str = None, save_outliers_plots: bool = False) -> None:
         super().__init__(name)
         self.plot_all = plot_all
         self.plot_type = plot_type
+        self.save_outliers_plots = save_outliers_plots
         self.colRank = 'rankingClients'
 
         if isTraining:
@@ -34,6 +37,33 @@ class PlotTask(Task):
             }
 
         return pie_data
+
+    def calculate_outliers(self, df, column):
+        Q1 = df[column].quantile(0.25)  # Primeiro quartil
+        Q3 = df[column].quantile(0.75)  # Terceiro quartil
+        IQR = Q3 - Q1  # Intervalo interquartil
+        upper_bound = Q3 + 1.5 * IQR  # Limite superior
+        outliers = df[df[column] > upper_bound]  # Apenas outliers superiores
+        if not outliers.empty:
+            min_outlier = outliers[column].min()
+            print(f"Menor valor de outlier em '{column}': {min_outlier}")
+        else:
+            print(f"Não há outliers em '{column}'.")
+        return outliers
+
+    def save_outliers_plot(self, df, column, color, output_dir, return_min_outlier=False):
+        if return_min_outlier:
+            print()
+            min_outlier = self.calculate_outliers(df, column)
+            print()
+            
+        plt.figure(figsize=(10, 5))
+        sns.boxplot(x=df[column], color=color)
+        plt.title(f'Outliers em {column}')
+        plt.xlabel(column)
+        os.makedirs(output_dir, exist_ok=True)
+        plt.savefig(os.path.join(output_dir, f"outliers_{column}.png"))
+        plt.close()
 
     def plotPorcentagemClientes(self, df: pd.DataFrame):
         data = df[self.colRank].value_counts()
@@ -65,7 +95,18 @@ class PlotTask(Task):
         else:
             raise ValueError(f"Plot type '{self.plot_type}' is not supported.")
 
-        # Save the result as a JSON file for future use (to create a graph via frontend)
+        if self.save_outliers_plots:
+            output_dir = "./plots"
+            if 'ExpectedFrequency' in df.columns:
+                self.save_outliers_plot(df, 'ExpectedFrequency', 'blue', output_dir)
+            if 'ExpectedMonetary' in df.columns:
+                self.save_outliers_plot(df, 'ExpectedMonetary', 'green', output_dir)
+            if 'frequency' in df.columns:
+                self.save_outliers_plot(df, 'frequency', 'orange', output_dir)
+            if 'monetary_value' in df.columns:
+                self.save_outliers_plot(df, 'monetary_value', 'purple', output_dir)
+
+        # Salvar o resultado como um arquivo JSON
         json_path = "./output/plot_data.json"
         os.makedirs(os.path.dirname(json_path), exist_ok=True)
         with open(json_path, 'w') as json_file:

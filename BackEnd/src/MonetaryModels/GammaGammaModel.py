@@ -1,3 +1,4 @@
+from sklearn.metrics import mean_squared_error
 from src.workflows.task import Task
 import pandas as pd
 from lifetimes import GammaGammaFitter
@@ -8,7 +9,8 @@ class GammaGammaModelTask(MonetaryModelTask):
         self,
         name: str,
         isTunning: bool = False,
-        penalizer: float = 0.1,
+        penalizer: float = 0.01,
+        isRating: bool = False,
     ) -> None:
         """
         Args:
@@ -16,7 +18,7 @@ class GammaGammaModelTask(MonetaryModelTask):
             isTunning = None # Fazer o Tunning de hyperparâmetros se for True
             penalizer = 0.1 # Coeficiente de penalização usado pelo modelo
         """
-        super().__init__(name, isTunning)
+        super().__init__(name, isTunning, isRating)
         self.penalizer = penalizer
         self.model = self.createModel()
 
@@ -30,7 +32,10 @@ class GammaGammaModelTask(MonetaryModelTask):
         self.fit(self.data_predict, monetary, frequency)
 
         self.data_predict['ExpectedMonetary'] = self.predict(self.data_predict, monetary, frequency)
-
+        
+        if self.isRating:
+            self.rating(self.data_predict)
+        
         return self.data_predict
 
     def createModel(self) -> pd.DataFrame:
@@ -49,3 +54,10 @@ class GammaGammaModelTask(MonetaryModelTask):
             Dado um período, retorna o número de transações esperadas até ele
         """
         return self.model.conditional_expected_average_profit(df[frequency], df[monetary])
+    
+    def rating(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Retorna a classificação do cliente e calcula métricas de erro
+        """
+        print("\n\nMetricas do modelo Gamma-Gamma")
+        return super().rating(df['ExpectedMonetary'], df["monetary_value"])

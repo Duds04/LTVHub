@@ -7,7 +7,8 @@
       "model_task_name": "BGFModelTask",
       "props": {
         "name": "transaction_model",
-        "numPeriods": 3
+        "numPeriods": 3,
+        "isRating": true
       }
     },
     {
@@ -17,7 +18,8 @@
       "model_task_name": "ParetoModelTask",
       "props": {
         "name": "transaction_model",
-        "numPeriods": 3
+        "numPeriods": 3,
+        "isRating": true
       }
     },
     {
@@ -29,7 +31,8 @@
         "name": "transaction_model",
         "target": "frequency_holdout",
         "X_Columns": ["frequency_cal", "recency_cal", "T_cal", "monetary_value_cal"],
-        "isMonetary": false
+        "isMonetary": false,
+        "isRating": true
       }
     }
   ],
@@ -40,7 +43,8 @@
       "importer": "from src.MonetaryModels.GammaGammaModel import GammaGammaModelTask",
       "model_task_name": "GammaGammaModelTask",
       "props": {
-        "name": "monetary_model"
+        "name": "monetary_model",
+        "isRating": true
       }
     },
     {
@@ -52,7 +56,8 @@
         "name": "monetary_model",
         "target": "monetary_value_holdout",
         "X_Columns": ["frequency_cal", "recency_cal", "T_cal", "monetary_value_cal"],
-        "isMonetary": true
+        "isMonetary": true,
+        "isRating": true
       }
     }
   ]
