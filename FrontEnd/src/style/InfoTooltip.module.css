@@ -8,12 +8,11 @@
 
 .infoIcon {
   font-size: 1rem;
-  color: #046320;
   transition: color 0.3s ease;
 }
 
 .infoIcon:hover {
-  color: #034b24;
+  color: #128a4c;
 }
 
 .tooltip {

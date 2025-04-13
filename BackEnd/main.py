@@ -33,6 +33,7 @@ app.config['IMAGE_FOLDER'] = IMAGE_FOLDER
 csv_file_path = None
 dfLTV = None
 dfOriginal = None
+weeksAhead = None
 
 # Variável global para mensagens de progresso
 app.config['PROGRESS_MESSAGES'] = []
@@ -94,6 +95,7 @@ def columns():
 def submit_form():
     global dfLTV
     global dfOriginal
+    global weeksAhead
     
     """ Para adicionar um novo modelo, siga os seguintes passos:
             1. Criar a Classe do Modelo:
@@ -120,6 +122,7 @@ def submit_form():
     try:
         data = request.json
         data['weeksAhead'] = int(data['weeksAhead'])
+        weeksAhead = data['weeksAhead']
 
         dfLTV = calculate_LTV_and_Plot(
             data, csv_file_path, data['idColumn'], data['dateColumn'], data['amountColumn'], data["weeksAhead"]
@@ -146,8 +149,6 @@ def get_clientes():
         return jsonify({"error": "O cálculo do LTV ainda não foi realizado.<br />Por favor, volte à tela 'Modelo' e envie as informações para continuar."}), 400
 
 # Rota para retornar os dados de um cliente específico
-
-
 @app.route('/cliente/<int:id>', methods=['GET'])
 def get_cliente(id):
     global dfLTV
@@ -171,16 +172,21 @@ def get_cliente(id):
     else:
         return jsonify({"error": "O cálculo do LTV ainda não foi realizado.<br />Por favor, volte à tela 'Modelo' e envie as informações para continuar."}), 400
 
+@app.route('/weeksahead', methods=['GET'])
+def get_weeks_ahead():
+    global weeksAhead
+    if weeksAhead is not None:
+        return jsonify({"weeksAhead": weeksAhead}), 200
+    else:
+        return jsonify({"error": "O cálculo do LTV ainda não foi realizado.<br />Por favor, volte à tela 'Modelo' e envie as informações para continuar."}), 400
+
+
 # Rota para servir imagens da pasta de imagens
-
-
 @app.route('/images/<path:filename>', methods=['GET'])
 def get_image(filename):
     return send_from_directory(app.config['IMAGE_FOLDER'], filename)
 
 # Rota para retornar os modelos de frequência e monetário
-
-
 @app.route('/models', methods=['GET'])
 def get_models():
     try:

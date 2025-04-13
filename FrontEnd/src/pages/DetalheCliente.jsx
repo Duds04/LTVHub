@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTable, usePagination, useSortBy } from "react-table";
 import {
@@ -11,24 +11,22 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa"; // Importando os ícones do React Icons
+import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import stylesDetalheCliente from "../style/DetalheCliente.module.css";
-import ErrorModal from "../components/ErrorModal"; // Importando o ErrorModal
-import LoadingModal from "../components/LoadingModal"; // Importando o LoadingModal
+import ErrorModal from "../components/ErrorModal";
+import LoadingModal from "../components/LoadingModal";
 import InfoTooltip from "../components/InfoTooltip";
 
-
 const DetalheCliente = () => {
-  const { id } = useParams(); // Captura o ID do cliente da URL
-  const navigate = useNavigate(); // Hook de navegação
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-  // Estado para armazenar os dados do cliente e compras
   const [cliente, setCliente] = useState(null);
   const [compras, setCompras] = useState([]);
-  const [error, setError] = useState(null); // Estado para controlar a mensagem de erro
-  const [loading, setLoading] = useState(true); // Estado para controlar o carregamento
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [weeksAhead, setWeeksAhead] = useState(null);
 
-  // Função para buscar os dados do cliente do backend
   useEffect(() => {
     const fetchClienteData = async () => {
       try {
@@ -36,63 +34,77 @@ const DetalheCliente = () => {
         const data = await response.json();
         if (response.ok) {
           setCliente(data);
-          setCompras(data.transactions); // Atualiza o estado de compras com os dados de transactions
+          setCompras(data.transactions);
         } else {
-          console.error("Erro ao buscar dados do cliente:", data.error);
           setError(data.error || "Erro ao buscar dados do cliente.");
         }
       } catch (error) {
-        console.error("Erro ao buscar dados do cliente:", error);
         setError("Erro ao buscar dados do cliente.");
       } finally {
-        setLoading(false); // Define o estado de carregamento como falso após a conclusão da solicitação
+        setLoading(false);
       }
     };
 
     fetchClienteData();
   }, [id]);
 
-  // Função para obter dados para o gráfico de barras (soma das compras por mês e por ano)
-  const getLastPurchasesData = () => {
-    const purchasesByYearMonth = {};
-
-    compras.forEach((compra) => {
-      const dateParts = compra.date.split("/");
-      const year = dateParts[2];
-      const month = parseInt(dateParts[1], 10) - 1; // Subtrai 1 para ajustar ao índice do array (0-11)
-
-      const yearMonthKey = `${year}-${month < 9 ? `0${month + 1}` : month + 1}`; // Combina ano e mês no formato "YYYY-MM"
-
-      if (!purchasesByYearMonth[yearMonthKey]) {
-        purchasesByYearMonth[yearMonthKey] = 0;
+  useEffect(() => {
+    const fetchWeeksAhead = async () => {
+      try {
+        const response = await fetch("/weeksahead");
+        const data = await response.json();
+        if (response.ok) {
+          setWeeksAhead(data.weeksAhead);
+        } else {
+          console.error(data.error || "Erro ao buscar weeksAhead.");
+        }
+      } catch (error) {
+        console.error("Erro ao buscar weeksAhead:", error);
       }
+    };
 
-      purchasesByYearMonth[yearMonthKey] += compra.monetary; // Somando o valor das compras por mês/ano
+    fetchWeeksAhead();
+  }, []);
+
+  const getLastPurchasesData = useMemo(() => {
+    const purchasesByYearMonth = {};
+    compras.forEach((compra) => {
+      const [month, year] = compra.date.split("/");
+      const key = `${year}-${month}`;
+      purchasesByYearMonth[key] =
+        (purchasesByYearMonth[key] || 0) + compra.monetary;
     });
 
-    // Formatação dos dados para o gráfico
-    const formattedData = [];
-    for (const yearMonth in purchasesByYearMonth) {
-      const [year, month] = yearMonth.split("-");
-      const monthName = new Date(0, parseInt(month) - 1).toLocaleString(
-        "default",
-        { month: "short" }
-      );
+    const formattedData = Object.entries(purchasesByYearMonth).map(
+      ([key, total]) => {
+        const [year, month] = key.split("-");
+        const monthName = new Date(0, parseInt(month) - 1).toLocaleString(
+          "default",
+          { month: "short" }
+        );
+        return {
+          year,
+          month: `${monthName}/${year}`,
+          total: parseFloat(total.toFixed(2)),
+        };
+      }
+    );
+
+    if (cliente) {
       formattedData.push({
-        year,
-        month: `${monthName}/${year}`, // Formato Mês/Ano
-        total: parseFloat(purchasesByYearMonth[yearMonth].toFixed(2)),
+        year: "Futuro",
+        month: "Previsão",
+        total: 0,
+        futurePrediction: parseFloat(
+          (cliente.ExpectedMonetary * cliente.ExpectedFrequency).toFixed(2)
+        ),
       });
     }
 
     return formattedData;
-  };
+  }, [compras, cliente]);
 
-  const lastPurchasesData = getLastPurchasesData();
-  console.log(lastPurchasesData); // Para verificar os dados do gráfico
-
-  // Configuração da tabela
-  const columns = React.useMemo(
+  const columns = useMemo(
     () => [
       {
         Header: "ID da Transação",
@@ -101,24 +113,52 @@ const DetalheCliente = () => {
       {
         Header: "Valor da Transação",
         accessor: "monetary",
-        Cell: ({ value }) => `$${parseFloat(value).toFixed(2)}`, // Adiciona o símbolo de dólar à coluna "monetary"
+        Cell: ({ value }) => `$${parseFloat(value).toFixed(2)}`,
       },
       {
         Header: "Data da Compra",
         accessor: "date",
         disableSortBy: true,
       },
+      {
+        Header: ({ column }) => (
+          <span
+            className={stylesDetalheCliente.futurePrediction}
+            {...column.getSortByToggleProps()} // Aplica a funcionalidade de ordenação
+          >
+            Previsão Futura
+            <InfoTooltip text="Valor Esperado da Transação vezes Número Esperado." />
+          </span>
+        ),
+        accessor: "futurePrediction",
+        Cell: ({ value }) =>
+          value ? `$${parseFloat(value).toFixed(2)}` : "N/A",
+      },
     ],
     []
+  );
+
+  const updatedCompras = useMemo(
+    () => [
+      ...compras,
+      {
+        id_transaction: "Previsão",
+        monetary: cliente ? cliente.ExpectedMonetary : 0,
+        date: weeksAhead ? `Período ${weeksAhead} semanas a frente` : "Futuro",
+        futurePrediction: cliente
+          ? cliente.ExpectedMonetary * cliente.ExpectedFrequency
+          : 0,
+      },
+    ],
+    [compras, cliente, weeksAhead]
   );
 
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
-    prepareRow,
     page,
+    prepareRow,
     canPreviousPage,
     canNextPage,
     pageCount,
@@ -129,25 +169,19 @@ const DetalheCliente = () => {
   } = useTable(
     {
       columns,
-      data: compras,
+      data: updatedCompras,
       initialState: {
         pageSize: 5,
         sortBy: [{ id: "id_transaction", desc: false }],
-      }, // Ordenação padrão pela coluna "ID da Transação"
+      },
     },
     useSortBy,
     usePagination
   );
 
-  // Função para voltar à página de clientes
-  const handleGoBack = () => {
-    navigate("/clientes"); // Navega para a URL /clientes
-  };
-
   return (
     <div className={stylesDetalheCliente.container}>
-      {loading && <LoadingModal />}{" "}
-      {/* Exibe o LoadingModal enquanto os dados estão sendo carregados */}
+      {loading && <LoadingModal />}
       {cliente && (
         <h1 className={stylesDetalheCliente.title}>
           DETALHE DO CLIENTE {cliente.id}
@@ -155,7 +189,6 @@ const DetalheCliente = () => {
       )}
       <div className={stylesDetalheCliente.split}>
         <div className={stylesDetalheCliente.left}>
-          {/* Informações do cliente */}
           {cliente && (
             <div className={stylesDetalheCliente.clientDetails}>
               <h2 className={stylesDetalheCliente.clientId}>
@@ -163,23 +196,21 @@ const DetalheCliente = () => {
                 <span className={stylesDetalheCliente.id}>{id}</span>
               </h2>
               <h2 className={stylesDetalheCliente.clientType}>
-                {" "}
-                <strong>Tipo de Cliente: </strong>
-                {cliente.type}
+                <strong>Tipo de Cliente:</strong> {cliente.type}
               </h2>
               <p>
-                <strong>Descrição do Tipo: </strong> {cliente.description}
+                <strong>Descrição do Tipo:</strong> {cliente.description}
               </p>
               <p>
-                <strong>Como Lidar com Esse Tipo de Cliente: </strong>
+                <strong>Como Lidar com Esse Tipo de Cliente:</strong>{" "}
                 {cliente.howToManage}
               </p>
               <p>
-                <strong>Número Esperado de Transações: </strong>
+                <strong>Número Esperado de Transações:</strong>{" "}
                 {cliente.ExpectedFrequency}
               </p>
               <p>
-                <strong>Valor Esperado por Transação: </strong> $
+                <strong>Valor Esperado por Transação:</strong> $
                 {cliente.ExpectedMonetary.toFixed(2)}
               </p>
               <p>
@@ -189,7 +220,6 @@ const DetalheCliente = () => {
             </div>
           )}
 
-          {/* Tabela de compras */}
           <div className={stylesDetalheCliente.tableContainer}>
             <table {...getTableProps()} className={stylesDetalheCliente.table}>
               <thead>
@@ -203,7 +233,7 @@ const DetalheCliente = () => {
                         className={stylesDetalheCliente.tableHeader}
                       >
                         {column.render("Header")}
-                        <span>
+                        <span className={stylesDetalheCliente.sortIcon}>
                           {column.isSorted ? (
                             column.isSortedDesc ? (
                               <FaSortDown />
@@ -212,8 +242,7 @@ const DetalheCliente = () => {
                             )
                           ) : (
                             <FaSort />
-                          )}{" "}
-                          {/* Ícones de ordenação com React Icons */}
+                          )}
                         </span>
                       </th>
                     ))}
@@ -225,20 +254,15 @@ const DetalheCliente = () => {
                   prepareRow(row);
                   return (
                     <tr {...row.getRowProps()}>
-                      {row.cells.map((cell) => {
-                        return (
-                          <td {...cell.getCellProps()}>
-                            {cell.render("Cell")}
-                          </td>
-                        );
-                      })}
+                      {row.cells.map((cell) => (
+                        <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                      ))}
                     </tr>
                   );
                 })}
               </tbody>
             </table>
 
-            {/* Paginação da tabela */}
             <div className={stylesDetalheCliente.pagination}>
               <button
                 onClick={() => gotoPage(0)}
@@ -275,21 +299,24 @@ const DetalheCliente = () => {
           </div>
         </div>
 
-        {/* Gráfico de barras - Soma das compras por mês */}
         <div className={stylesDetalheCliente.chartContainer}>
-          {lastPurchasesData.length > 0 ? (
+          {getLastPurchasesData.length > 0 ? (
             <ResponsiveContainer width="100%" height={500}>
               <BarChart
-                data={lastPurchasesData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 80 }} // Aumente a margem inferior
+                data={getLastPurchasesData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                   dataKey="month"
-                  angle={-45} 
-                  textAnchor="end" 
-                  interval={0} 
-                  label={{ value: "Tempo (Mês/Ano)", position: "insideBottom", dy: 75 }} 
+                  angle={-30}
+                  textAnchor="end"
+                  interval={0}
+                  label={{
+                    value: "Tempo (Mês/Ano)",
+                    position: "insideBottom",
+                    dy: 75,
+                  }}
                 />
                 <YAxis
                   label={{
@@ -306,7 +333,12 @@ const DetalheCliente = () => {
                   name="Total ($)"
                   fill="#006822"
                   radius={[10, 10, 0, 0]}
-                  background={{ fill: "#D8E7DE" }}
+                />
+                <Bar
+                  dataKey="futurePrediction"
+                  name="Previsão Futura ($)"
+                  fill="#FF0000"
+                  radius={[10, 10, 0, 0]}
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -316,12 +348,11 @@ const DetalheCliente = () => {
         </div>
       </div>
       <button
-        onClick={handleGoBack}
+        onClick={() => navigate("/clientes")}
         className={stylesDetalheCliente.backButton}
       >
         Voltar para Clientes
       </button>
-      {/* Modal de erro */}
       {error && <ErrorModal message={error} onClose={() => setError(null)} />}
     </div>
   );
