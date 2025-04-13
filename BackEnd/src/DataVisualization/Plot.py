@@ -79,6 +79,24 @@ class PlotTask(Task):
         data = dfNew.groupby([self.colRank]).sum()[self.colFreq]
         return self.generatePieData(data)
 
+    def plotLTVByClientType(self, df: pd.DataFrame):
+        # Certifique-se de que as colunas necessárias estão presentes
+        if 'type' not in df.columns or 'CLV' not in df.columns:
+            raise ValueError("As colunas 'type' e 'CLV' são necessárias no DataFrame.")
+
+        # Agrupar os dados por tipo de cliente e somar o LTV
+        grouped_data = df.groupby('type')['CLV'].sum().reset_index()
+
+        # Estruturar os dados em um formato adequado para o gráfico
+        result = []
+        for _, row in grouped_data.iterrows():
+            result.append({
+                "TipoCliente": row['type'],
+                "CLV": row['CLV']
+            })
+
+        return result
+
     def on_run(self, df: pd.DataFrame) -> pd.DataFrame:
         result = {}
 
@@ -86,15 +104,18 @@ class PlotTask(Task):
             result["clients"] = self.plotPorcentagemClientes(df)
             result["monetary"] = self.plotMonetaryClientes(df)
             result["frequency"] = self.plotFrequencyClientes(df)
+            result["ltv_by_client_type"] = self.plotLTVByClientType(df)
         elif self.plot_type == 'porcentagem':
             result["clients"] = self.plotPorcentagemClientes(df)
         elif self.plot_type == 'monetary':
             result["monetary"] = self.plotMonetaryClientes(df)
         elif self.plot_type == 'frequency':
             result["frequency"] = self.plotFrequencyClientes(df)
+        elif self.plot_type == 'ltv_by_client_type':
+            result["ltv_by_client_type"] = self.plotLTVByClientType(df)
         else:
             raise ValueError(f"Plot type '{self.plot_type}' is not supported.")
-
+ 
         if self.save_outliers_plots:
             output_dir = "./plots"
             if 'ExpectedFrequency' in df.columns:
