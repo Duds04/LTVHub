@@ -69,8 +69,8 @@ const DetalheCliente = () => {
   const getLastPurchasesData = useMemo(() => {
     const purchasesByYearMonth = {};
     compras.forEach((compra) => {
-      const [month, year] = compra.date.split("/");
-      const key = `${year}-${month}`;
+      const [day, month, year] = compra.date.split("/");
+      const key = `${year}-${month}`; 
       purchasesByYearMonth[key] =
         (purchasesByYearMonth[key] || 0) + compra.monetary;
     });
