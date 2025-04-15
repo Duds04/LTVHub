@@ -1,43 +1,43 @@
 {
     "clients": {
-        "0": {
-            "Tipo": "Cliente perdido",
-            "Porcentagem": 62.28256257955027,
-            "ValorAbsoluto": 1468
-        },
         "7": {
             "Tipo": "Cliente de alto valor",
-            "Porcentagem": 10.267288926601612,
+            "Porcentagem": 21.49200710479574,
             "ValorAbsoluto": 242
+        },
+        "0": {
+            "Tipo": "Cliente perdido",
+            "Porcentagem": 21.04795737122558,
+            "ValorAbsoluto": 237
         },
         "1": {
             "Tipo": "Cliente de reten\u00e7\u00e3o cr\u00edtica",
-            "Porcentagem": 8.188375053033518,
+            "Porcentagem": 17.140319715808168,
             "ValorAbsoluto": 193
         },
         "6": {
             "Tipo": "Cliente de valor geral",
-            "Porcentagem": 6.1094611794654226,
+            "Porcentagem": 12.788632326820604,
             "ValorAbsoluto": 144
         },
         "2": {
             "Tipo": "Cliente de reten\u00e7\u00e3o geral",
-            "Porcentagem": 4.4123886296139165,
+            "Porcentagem": 9.236234458259325,
             "ValorAbsoluto": 104
         },
         "3": {
             "Tipo": "Cliente de desenvolvimento estrat\u00e9gico",
-            "Porcentagem": 3.8608400509121767,
+            "Porcentagem": 8.081705150976909,
             "ValorAbsoluto": 91
         },
         "5": {
             "Tipo": "Cliente em fase de prote\u00e7\u00e3o",
-            "Porcentagem": 2.545608824777259,
+            "Porcentagem": 5.328596802841918,
             "ValorAbsoluto": 60
         },
         "4": {
             "Tipo": "Cliente em desenvolvimento",
-            "Porcentagem": 2.333474756045821,
+            "Porcentagem": 4.8845470692717585,
             "ValorAbsoluto": 55
         }
     },
@@ -128,35 +128,35 @@
     "ltv_by_client_type": [
         {
             "TipoCliente": "Cliente de alto valor",
-            "CLV": 212619.08455841354
+            "CLV": 14506.96712938343
         },
         {
             "TipoCliente": "Cliente de desenvolvimento estrat\u00e9gico",
-            "CLV": 26640.621076638785
+            "CLV": 1350.0034811822723
         },
         {
             "TipoCliente": "Cliente de reten\u00e7\u00e3o cr\u00edtica",
-            "CLV": 9583.625102793165
+            "CLV": 1253.5664730323294
         },
         {
             "TipoCliente": "Cliente de reten\u00e7\u00e3o geral",
-            "CLV": 25194.38824105621
+            "CLV": 512.5728354862223
         },
         {
             "TipoCliente": "Cliente de valor geral",
-            "CLV": 88924.28487793548
+            "CLV": 3082.540028211366
         },
         {
             "TipoCliente": "Cliente em desenvolvimento",
-            "CLV": 8769.866237243392
+            "CLV": 392.4458289836739
         },
         {
             "TipoCliente": "Cliente em fase de prote\u00e7\u00e3o",
-            "CLV": 18022.28056517549
+            "CLV": 953.1002726187756
         },
         {
             "TipoCliente": "Cliente perdido",
-            "CLV": 6268.645954208628
+            "CLV": 426.71339145171225
         }
     ]
 }

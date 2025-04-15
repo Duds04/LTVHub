@@ -18,6 +18,7 @@ const Estatisticas = () => {
   const [error, setError] = useState(null);
   const [hiddenCategories, setHiddenCategories] = useState([]);
   const [ltvData, setLtvData] = useState(null);
+  const [isLegendVisible, setIsLegendVisible] = useState(true);
 
   const clientOrder = [
     "Cliente de alto valor",
@@ -134,7 +135,7 @@ const Estatisticas = () => {
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis type="number" tickCount={7} />
-            <YAxis type="category" dataKey="TipoCliente" width={140} />
+            <YAxis type="category" dataKey="TipoCliente" width={200} />
             <Tooltip />
             <Bar dataKey="CLV">
               {filteredLtvData.map((entry, index) => {
@@ -147,31 +148,50 @@ const Estatisticas = () => {
         </ResponsiveContainer>
       </div>
 
-      {/* Legenda compartilhada */}
-      <div className={stylesEstatisticas.legendContainer}>
-        <ul className={stylesEstatisticas.legendList}>
-          {clientOrder.map((tipo, index) => (
-            <li
-              key={tipo}
-              style={{
-                cursor: "pointer",
-                opacity: hiddenCategories.includes(tipo) ? 0.5 : 1, // Reduz a opacidade para indicar que está oculto
-              }}
-              onClick={() => toggleCategory(tipo)}
-            >
-              <span
+      {/* Modal flutuante para a legenda */}
+      <div className={stylesEstatisticas.legendModal}>
+        <div className={stylesEstatisticas.legendHeader}>
+          <h3>Legenda</h3>
+          <button
+            className={stylesEstatisticas.toggleLegendButton}
+            onClick={() => setIsLegendVisible((prev) => !prev)}
+          >
+            {isLegendVisible ? (
+              <img
+                src="/assets/eye.svg"
+                alt="Ocultar Legenda"
+                className={stylesEstatisticas.icon}
+              />
+            ) : (
+              <img
+                src="/assets/eye-off.svg"
+                alt="Mostrar Legenda"
+                className={stylesEstatisticas.icon}
+              />
+            )}
+          </button>
+        </div>
+        {isLegendVisible && (
+          <ul>
+            {clientOrder.map((tipo, index) => (
+              <li
+                key={tipo}
                 style={{
-                  display: "inline-block",
-                  width: "1.6vmin",
-                  height: "1.6vmin",
-                  backgroundColor: colors[index],
-                  marginRight: "10px",
+                  cursor: "pointer",
+                  opacity: hiddenCategories.includes(tipo) ? 0.5 : 1, // Reduz a opacidade para indicar que está oculto
                 }}
-              ></span>
-              {tipo}
-            </li>
-          ))}
-        </ul>
+                onClick={() => toggleCategory(tipo)}
+              >
+                <span
+                  style={{
+                    backgroundColor: colors[index], // Cor correspondente ao tipo
+                  }}
+                ></span>
+                {tipo}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );
