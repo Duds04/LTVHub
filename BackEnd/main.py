@@ -8,6 +8,29 @@ import pandas as pd
 from pipelines import calculate_LTV_and_Plot, readCSV, load_model
 from src.DataTransformation.RFM import RFMTask
 
+# Caminho para o arquivo de resultados persistentes
+RESULTS_FILE = './output/results.json'
+
+# Função para salvar os resultados no arquivo JSON
+def save_results(csv_file_path, dfLTV_path, dfOriginal_path, weeksAhead, columns=None):
+    results = {
+        "csv_file_path": csv_file_path,
+        "dfLTV_path": dfLTV_path,
+        "dfOriginal_path": dfOriginal_path,
+        "weeksAhead": weeksAhead
+    }
+    if columns:
+        results["columns"] = columns  # Salva as colunas no arquivo JSON
+    with open(RESULTS_FILE, 'w') as file:
+        json.dump(results, file, indent=4)
+
+# Função para carregar os resultados do arquivo JSON
+def load_results():
+    if os.path.exists(RESULTS_FILE):
+        with open(RESULTS_FILE, 'r') as file:
+            return json.load(file)
+    return None
+
 # Inicializa a aplicação Flask
 app = Flask(__name__, static_folder="../FrontEnd/public",
             template_folder="../FrontEnd/public")
@@ -31,8 +54,6 @@ app.config['IMAGE_FOLDER'] = IMAGE_FOLDER
 
 # Variáveis globais
 csv_file_path = None
-dfLTV = None
-dfOriginal = None
 weeksAhead = None
 
 # Variável global para mensagens de progresso
@@ -73,30 +94,40 @@ def upload_file():
     return jsonify({"message": "Arquivo enviado com sucesso."}), 200
 
 # Rota para retornar as colunas do arquivo CSV
-
-
 @app.route('/columns', methods=['GET'])
 def columns():
     global csv_file_path
     try:
+        # Verificar se o arquivo CSV foi enviado
         if csv_file_path is not None:
             with open(csv_file_path, 'r') as file:
                 first_line = file.readline().strip()
                 columns = [col for col in first_line.split(',') if col.strip()]
+            
+            # Salvar as colunas no arquivo results.json
+            results = load_results() or {}
+            save_results(
+                results.get("csv_file_path", csv_file_path),
+                results.get("dfLTV_path", ""),
+                results.get("dfOriginal_path", ""),
+                results.get("weeksAhead", None),
+                columns=columns
+            )
+            
             return jsonify({"columns": columns}), 200
         else:
-            return jsonify({"error": "Nenhum arquivo foi processado ainda.<br />Por favor, volte à tela inicial e envie um arquivo."}), 400
+            # Caso o arquivo CSV não esteja disponível, pegar as colunas do results.json
+            results = load_results()
+            if results and "columns" in results:
+                return jsonify({"columns": results["columns"]}), 200
+            else:
+                return jsonify({"error": "Nenhum arquivo foi processado ainda e as colunas não estão disponíveis.<br />Por favor, volte à tela inicial e envie um arquivo."}), 400
     except Exception as e:
         return jsonify({"error": f"Erro ao processar o arquivo: {e}"}), 500
 
-
-# Rota para receber os dados do formulário
+# Rota para receber os dados do formulário    
 @app.route('/submit_form', methods=['POST'])
 def submit_form():
-    global dfLTV
-    global dfOriginal
-    global weeksAhead
-    
     """ Para adicionar um novo modelo, siga os seguintes passos:
             1. Criar a Classe do Modelo:
             - A classe deve ser criada no arquivo correspondente:
@@ -118,21 +149,35 @@ def submit_form():
                     model = load_model("frequencyModels",
                                         "NovoModeloID", {"param": 20})
      """
+    global weeksAhead
+    global csv_file_path
+    
 
     try:
+        results = load_results()
+        if csv_file_path is None:
+            csv_file_path = results['csv_file_path'] if results else None
+            print(f"results: {csv_file_path}")
         data = request.json
         data['weeksAhead'] = int(data['weeksAhead'])
-        weeksAhead = data['weeksAhead']
 
+        # Calcular os DataFrames
         dfLTV = calculate_LTV_and_Plot(
             data, csv_file_path, data['idColumn'], data['dateColumn'], data['amountColumn'], data["weeksAhead"]
         )
-
         dfOriginal = readCSV(
             csv_file_path, data['idColumn'], data['dateColumn'], data['amountColumn']
         )
 
-        return jsonify({"message": "Dados recebidos com sucesso."}), 200
+        dfLTV_path = './output/dfLTV.csv'
+        dfOriginal_path = './output/dfOriginal.csv'
+        dfLTV.to_csv(dfLTV_path, index=True)
+        dfOriginal.to_csv(dfOriginal_path, index=True)
+
+        # Salvar os caminhos e weeksAhead no arquivo results.json
+        save_results(csv_file_path, dfLTV_path, dfOriginal_path, data['weeksAhead'])
+
+        return jsonify({"message": "Dados processados e salvos com sucesso."}), 200
 
     except Exception as e:
         print(f"Erro ao processar o formulário: {e}")
@@ -141,9 +186,10 @@ def submit_form():
 # Rota para retornar os clientes
 @app.route('/clientes', methods=['GET'])
 def get_clientes():
-    global dfLTV
-    if dfLTV is not None:
-        clientes = dfLTV.reset_index().to_dict(orient='records')
+    results = load_results()
+    if results and os.path.exists(results['dfLTV_path']):
+        dfLTV = pd.read_csv(results['dfLTV_path'])
+        clientes = dfLTV.to_dict(orient='records')
         return jsonify(clientes), 200
     else:
         return jsonify({"error": "O cálculo do LTV ainda não foi realizado.<br />Por favor, volte à tela 'Modelo' e envie as informações para continuar."}), 400
@@ -151,18 +197,17 @@ def get_clientes():
 # Rota para retornar os dados de um cliente específico
 @app.route('/cliente/<int:id>', methods=['GET'])
 def get_cliente(id):
-    global dfLTV
-    global dfOriginal
+    results = load_results()
+    if results and os.path.exists(results['dfLTV_path']) and os.path.exists(results['dfOriginal_path']):
+        dfLTV = pd.read_csv(results['dfLTV_path'])
+        dfOriginal = pd.read_csv(results['dfOriginal_path'])
 
-    if dfLTV is not None and dfOriginal is not None:
-        cliente = dfLTV[dfLTV.index == id].to_dict(orient='records')
-
+        cliente = dfLTV[dfLTV['id'] == id].to_dict(orient='records')
         if cliente:
             compras_cliente = dfOriginal[dfOriginal['id'] == id]
             compras_cliente = compras_cliente.reset_index(drop=True)
             compras_cliente['id_transaction'] = compras_cliente.index
-            compras_cliente['date'] = compras_cliente['date'].apply(
-                lambda x: x.strftime('%d/%m/%Y') if isinstance(x, pd.Timestamp) else x)
+            compras_cliente['date'] = pd.to_datetime(compras_cliente['date'], errors='coerce').dt.strftime('%d/%m/%Y')
             transactions = compras_cliente[[
                 'id_transaction', 'monetary', 'date']].to_dict(orient='records')
             cliente[0]['transactions'] = transactions
@@ -175,9 +220,17 @@ def get_cliente(id):
 @app.route('/weeksahead', methods=['GET'])
 def get_weeks_ahead():
     global weeksAhead
-    if weeksAhead is not None:
-        return jsonify({"weeksAhead": weeksAhead}), 200
-    else:
+    try:
+        if weeksAhead is not None:
+            return jsonify({"weeksAhead": weeksAhead}), 200
+        else:
+            results = load_results()
+            if results and "weeksAhead" in results:
+                weeksAhead = results["weeksAhead"]
+                return jsonify({"weeksAhead": weeksAhead}), 200
+            else:
+                return jsonify({"error": "Nenhum valor de weeksAhead encontrado."}), 400
+    except Exception as e:    
         return jsonify({"error": "O cálculo do LTV ainda não foi realizado.<br />Por favor, volte à tela 'Modelo' e envie as informações para continuar."}), 400
 
 
@@ -197,8 +250,6 @@ def get_models():
         return jsonify({"error": f"Erro ao carregar os modelos: {e}"}), 500
 
 # Rota para retornar os dados de plotagem
-
-
 @app.route('/plot_data', methods=['GET'])
 def get_plot_data():
     try:

@@ -96,7 +96,7 @@ const FormModel = () => {
         } else {
           console.error("Erro ao buscar colunas:", data.error);
           setError(
-            "Erro ao buscar colunas.<br />Tente novamente da Tela Inicial."
+            `${data.error}`
           );
         }
       } catch (error) {
