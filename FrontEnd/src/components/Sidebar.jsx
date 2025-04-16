@@ -8,7 +8,6 @@ const Sidebar = () => {
     <div className={stylesSidebar.sidebar}>
       {/* Logo no topo */}
       <div className={stylesSidebar.logoContainer}>
-        {/* <img src="/static/react/assets/logo.svg" alt="Logo" className={stylesSidebar.logo} /> */}
         <img src="./assets/logo.svg" alt="Logo" className={stylesSidebar.logo} />
 
       </div>

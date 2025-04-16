@@ -96,7 +96,7 @@ const DetalheCliente = () => {
         month: "Previsão",
         total: 0,
         futurePrediction: parseFloat(
-          (cliente.ExpectedMonetary * cliente.ExpectedFrequency).toFixed(2)
+          (cliente.ExpectedMonetary * Math.max(0, cliente.ExpectedFrequency)).toFixed(2)
         ),
       });
     }
@@ -207,14 +207,14 @@ const DetalheCliente = () => {
               </p>
               <p>
                 <strong>Número Esperado de Transações:</strong>{" "}
-                {cliente.ExpectedFrequency}
-              </p>
+                {Math.max(0, cliente.ExpectedFrequency).toFixed(2)}
+                </p>
               <p>
                 <strong>Valor Esperado por Transação:</strong> $
                 {cliente.ExpectedMonetary.toFixed(2)}
               </p>
               <p>
-                <strong>LTV:</strong> ${cliente.CLV.toFixed(2)}
+                <strong>LTV:</strong> ${cliente.LTV.toFixed(2)}
                 <InfoTooltip text="Lifetime Value (LTV) é uma métrica que indica o valor total estimado que um cliente trará para a empresa ao longo do tempo." />
               </p>
             </div>

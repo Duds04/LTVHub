@@ -65,7 +65,7 @@ const FormModel = () => {
         } else {
           console.error(data.error);
           setError(
-            "Não foi possível enviar o formulário. <br />Revise os parâmetros selecionados e tente novamente."
+            `Não foi possível enviar o formulário. <br />Revise os parâmetros selecionados e tente novamente.<br />${data.error}`
           );
         }
       } catch (error) {
@@ -87,7 +87,7 @@ const FormModel = () => {
 
   useEffect(() => {
     const fetchColumns = async () => {
-      setLoading(true); // Exibir o modal de carregamento
+      setLoading(true); 
       try {
         const response = await fetch("/columns");
         const data = await response.json();

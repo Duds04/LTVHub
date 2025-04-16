@@ -50,9 +50,9 @@ const Estatisticas = () => {
     );
   };
 
-  const filteredLtvData = ltvData?.filter(
-    (item) => !hiddenCategories.includes(item.TipoCliente)
-  );
+  const filteredLtvData = ltvData
+    ?.filter((item) => !hiddenCategories.includes(item.TipoCliente)) 
+    .sort((a, b) => b.LTV - a.LTV); // Ordena pelo valor de LTV em ordem decrescente
 
   useEffect(() => {
     const fetchData = async () => {
@@ -136,8 +136,8 @@ const Estatisticas = () => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis type="number" tickCount={7} />
             <YAxis type="category" dataKey="TipoCliente" width={200} />
-            <Tooltip />
-            <Bar dataKey="CLV">
+            <Tooltip formatter={(value) => `$${value.toFixed(2)}`} /> {/* Formata o valor com $ */}
+            <Bar dataKey="LTV">
               {filteredLtvData.map((entry, index) => {
                 const tipoIndex = clientOrder.indexOf(entry.TipoCliente);
                 const color = colors[tipoIndex] || "#ccc";

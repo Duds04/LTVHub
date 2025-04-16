@@ -65,7 +65,7 @@ const Clientes = () => {
       case "id":
         return a.id - b.id;
       case "ltv":
-        return b.CLV - a.CLV;
+        return b.LTV - a.LTV;
       case "frequency":
         return b.frequency - a.frequency;
       case "monetary_value":
@@ -199,7 +199,7 @@ const Clientes = () => {
                   {client.ExpectedMonetary.toFixed(2)}
                 </p>
                 <p className={stylesCliente.clientInfo}>
-                  <strong>LTV:</strong> ${client.CLV.toFixed(2)}
+                  <strong>LTV:</strong> ${client.LTV.toFixed(2)}
                   <InfoTooltip text="Lifetime Value (LTV) é uma métrica que indica o valor total estimado que um cliente trará para a empresa ao longo do tempo." />
 
                 </p>

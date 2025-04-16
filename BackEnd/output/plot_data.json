@@ -3,160 +3,160 @@
         "7": {
             "Tipo": "Cliente de alto valor",
             "Porcentagem": 21.49200710479574,
-            "ValorAbsoluto": 4114
+            "ValorAbsoluto": 242
         },
         "0": {
             "Tipo": "Cliente perdido",
             "Porcentagem": 21.04795737122558,
-            "ValorAbsoluto": 4029
+            "ValorAbsoluto": 237
         },
         "1": {
             "Tipo": "Cliente de reten\u00e7\u00e3o cr\u00edtica",
             "Porcentagem": 17.140319715808168,
-            "ValorAbsoluto": 3281
+            "ValorAbsoluto": 193
         },
         "6": {
             "Tipo": "Cliente de valor geral",
             "Porcentagem": 12.788632326820604,
-            "ValorAbsoluto": 2448
+            "ValorAbsoluto": 144
         },
         "2": {
             "Tipo": "Cliente de reten\u00e7\u00e3o geral",
             "Porcentagem": 9.236234458259325,
-            "ValorAbsoluto": 1768
+            "ValorAbsoluto": 104
         },
         "3": {
             "Tipo": "Cliente de desenvolvimento estrat\u00e9gico",
             "Porcentagem": 8.081705150976909,
-            "ValorAbsoluto": 1547
+            "ValorAbsoluto": 91
         },
         "5": {
             "Tipo": "Cliente em fase de prote\u00e7\u00e3o",
             "Porcentagem": 5.328596802841918,
-            "ValorAbsoluto": 1020
+            "ValorAbsoluto": 60
         },
         "4": {
             "Tipo": "Cliente em desenvolvimento",
             "Porcentagem": 4.8845470692717585,
-            "ValorAbsoluto": 935
+            "ValorAbsoluto": 55
         }
     },
     "monetary": {
         "0": {
             "Tipo": "Cliente perdido",
             "Porcentagem": 9.1326513353692,
-            "ValorAbsoluto": 66633.54
+            "ValorAbsoluto": 3919.62
         },
         "1": {
             "Tipo": "Cliente de reten\u00e7\u00e3o cr\u00edtica",
             "Porcentagem": 25.68894579492303,
-            "ValorAbsoluto": 187431.375
+            "ValorAbsoluto": 11025.375
         },
         "2": {
             "Tipo": "Cliente de reten\u00e7\u00e3o geral",
-            "Porcentagem": 4.157168852037291,
-            "ValorAbsoluto": 30331.485
+            "Porcentagem": 4.15716885203729,
+            "ValorAbsoluto": 1784.205
         },
         "3": {
             "Tipo": "Cliente de desenvolvimento estrat\u00e9gico",
             "Porcentagem": 12.147487350690653,
-            "ValorAbsoluto": 88630.35
+            "ValorAbsoluto": 5213.55
         },
         "4": {
             "Tipo": "Cliente em desenvolvimento",
             "Porcentagem": 2.6043678070918874,
-            "ValorAbsoluto": 19001.956833333334
+            "ValorAbsoluto": 1117.7621666666666
         },
         "5": {
             "Tipo": "Cliente em fase de prote\u00e7\u00e3o",
-            "Porcentagem": 10.791646881772824,
-            "ValorAbsoluto": 78737.8832012987
+            "Porcentagem": 10.791646881772822,
+            "ValorAbsoluto": 4631.640188311688
         },
         "6": {
             "Tipo": "Cliente de valor geral",
-            "Porcentagem": 6.945070374373115,
-            "ValorAbsoluto": 50672.538302361194
+            "Porcentagem": 6.945070374373113,
+            "ValorAbsoluto": 2980.737547197717
         },
         "7": {
             "Tipo": "Cliente de alto valor",
             "Porcentagem": 28.532661603742,
-            "ValorAbsoluto": 208179.6598230197
+            "ValorAbsoluto": 12245.86234253057
         }
     },
     "frequency": {
         "0": {
             "Tipo": "Cliente perdido",
             "Porcentagem": 7.317682317682318,
-            "ValorAbsoluto": 4981.0
+            "ValorAbsoluto": 293.0
         },
         "1": {
             "Tipo": "Cliente de reten\u00e7\u00e3o cr\u00edtica",
             "Porcentagem": 6.218781218781219,
-            "ValorAbsoluto": 4233.0
+            "ValorAbsoluto": 249.0
         },
         "2": {
             "Tipo": "Cliente de reten\u00e7\u00e3o geral",
             "Porcentagem": 4.020979020979021,
-            "ValorAbsoluto": 2737.0
+            "ValorAbsoluto": 161.0
         },
         "3": {
             "Tipo": "Cliente de desenvolvimento estrat\u00e9gico",
             "Porcentagem": 3.5464535464535465,
-            "ValorAbsoluto": 2414.0
+            "ValorAbsoluto": 142.0
         },
         "4": {
             "Tipo": "Cliente em desenvolvimento",
             "Porcentagem": 5.1448551448551445,
-            "ValorAbsoluto": 3502.0
+            "ValorAbsoluto": 206.0
         },
         "5": {
             "Tipo": "Cliente em fase de prote\u00e7\u00e3o",
             "Porcentagem": 7.142857142857142,
-            "ValorAbsoluto": 4862.0
+            "ValorAbsoluto": 286.0
         },
         "6": {
             "Tipo": "Cliente de valor geral",
             "Porcentagem": 21.753246753246753,
-            "ValorAbsoluto": 14807.0
+            "ValorAbsoluto": 871.0
         },
         "7": {
             "Tipo": "Cliente de alto valor",
             "Porcentagem": 44.85514485514486,
-            "ValorAbsoluto": 30532.0
+            "ValorAbsoluto": 1796.0
         }
     },
     "ltv_by_client_type": [
         {
             "TipoCliente": "Cliente de alto valor",
-            "CLV": 49791.619064014216
+            "LTV": 14506.97
         },
         {
             "TipoCliente": "Cliente de desenvolvimento estrat\u00e9gico",
-            "CLV": 4645.954378067718
+            "LTV": 1350.0
         },
         {
             "TipoCliente": "Cliente de reten\u00e7\u00e3o cr\u00edtica",
-            "CLV": 4316.1800508835195
+            "LTV": 1253.57
         },
         {
             "TipoCliente": "Cliente de reten\u00e7\u00e3o geral",
-            "CLV": 1764.212776404389
+            "LTV": 512.57
         },
         {
             "TipoCliente": "Cliente de valor geral",
-            "CLV": 10582.006607001555
+            "LTV": 3082.54
         },
         {
             "TipoCliente": "Cliente em desenvolvimento",
-            "CLV": 1348.3268980001315
+            "LTV": 392.45
         },
         {
             "TipoCliente": "Cliente em fase de prote\u00e7\u00e3o",
-            "CLV": 3273.9698612840175
+            "LTV": 953.1
         },
         {
             "TipoCliente": "Cliente perdido",
-            "CLV": 1469.6171992997029
+            "LTV": 426.71
         }
     ]
 }

@@ -81,18 +81,18 @@ class PlotTask(Task):
 
     def plotLTVByClientType(self, df: pd.DataFrame):
         # Certifique-se de que as colunas necessárias estão presentes
-        if 'type' not in df.columns or 'CLV' not in df.columns:
-            raise ValueError("As colunas 'type' e 'CLV' são necessárias no DataFrame.")
+        if 'type' not in df.columns or 'LTV' not in df.columns:
+            raise ValueError("As colunas 'type' e 'LTV' são necessárias no DataFrame.")
 
         # Agrupar os dados por tipo de cliente e somar o LTV
-        grouped_data = df.groupby('type')['CLV'].sum().reset_index()
+        grouped_data = df.groupby('type')['LTV'].sum().reset_index()
 
         # Estruturar os dados em um formato adequado para o gráfico
         result = []
         for _, row in grouped_data.iterrows():
             result.append({
                 "TipoCliente": row['type'],
-                "CLV": row['CLV']
+                "LTV": round(row['LTV'], 2) 
             })
 
         return result
