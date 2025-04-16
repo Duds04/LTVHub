@@ -12,6 +12,8 @@ from src.DataTransformation.RFM import RFMTask
 RESULTS_FILE = './output/results.json'
 
 # Função para salvar os resultados no arquivo JSON
+
+
 def save_results(csv_file_path, dfLTV_path, dfOriginal_path, weeksAhead, columns=None):
     results = {
         "csv_file_path": csv_file_path,
@@ -20,16 +22,19 @@ def save_results(csv_file_path, dfLTV_path, dfOriginal_path, weeksAhead, columns
         "weeksAhead": weeksAhead
     }
     if columns:
-        results["columns"] = columns  # Salva as colunas no arquivo JSON
+        results["columns"] = [str(col) for col in columns]
     with open(RESULTS_FILE, 'w') as file:
         json.dump(results, file, indent=4)
 
 # Função para carregar os resultados do arquivo JSON
+
+
 def load_results():
     if os.path.exists(RESULTS_FILE):
         with open(RESULTS_FILE, 'r') as file:
             return json.load(file)
     return None
+
 
 # Inicializa a aplicação Flask
 app = Flask(__name__, static_folder="../FrontEnd/public",
@@ -54,6 +59,7 @@ app.config['IMAGE_FOLDER'] = IMAGE_FOLDER
 
 # Variáveis globais
 csv_file_path = None
+columns = None
 weeksAhead = None
 dfLTV = None
 dfOriginal = None
@@ -82,6 +88,7 @@ def static_proxy(path):
 @app.route('/upload', methods=['POST'])
 def upload_file():
     global csv_file_path
+    global columns
     if 'file' not in request.files:
         return jsonify({"error": "Nenhum arquivo foi enviado."}), 400
 
@@ -93,32 +100,31 @@ def upload_file():
     file.save(filename)
     csv_file_path = filename
 
+    with open(csv_file_path, 'r') as file:
+        first_line = file.readline().strip()
+        columns = [col for col in first_line.split(',') if col.strip()]
+
+        # Salvar as colunas no arquivo results.json
+        results = load_results() or {}
+        save_results(
+            results.get("csv_file_path", csv_file_path),
+            results.get("dfLTV_path", ""),
+            results.get("dfOriginal_path", ""),
+            results.get("weeksAhead", None),
+            columns=columns
+        )
+
     return jsonify({"message": "Arquivo enviado com sucesso."}), 200
 
 # Rota para retornar as colunas do arquivo CSV
 @app.route('/columns', methods=['GET'])
-def columns():
+def get_columns():
     global csv_file_path
+    global columns
     try:
-        # Verificar se o arquivo CSV foi enviado
-        if csv_file_path is not None:
-            with open(csv_file_path, 'r') as file:
-                first_line = file.readline().strip()
-                columns = [col for col in first_line.split(',') if col.strip()]
-            
-            # Salvar as colunas no arquivo results.json
-            results = load_results() or {}
-            save_results(
-                results.get("csv_file_path", csv_file_path),
-                results.get("dfLTV_path", ""),
-                results.get("dfOriginal_path", ""),
-                results.get("weeksAhead", None),
-                columns=columns
-            )
-            
+        if columns is not None:
             return jsonify({"columns": columns}), 200
         else:
-            # Caso o arquivo CSV não esteja disponível, pegar as colunas do results.json
             results = load_results()
             if results and "columns" in results:
                 return jsonify({"columns": results["columns"]}), 200
@@ -127,7 +133,9 @@ def columns():
     except Exception as e:
         return jsonify({"error": f"Erro ao processar o arquivo: {e}"}), 500
 
-# Rota para receber os dados do formulário    
+# Rota para receber os dados do formulário
+
+
 @app.route('/submit_form', methods=['POST'])
 def submit_form():
     """ Para adicionar um novo modelo, siga os seguintes passos:
@@ -155,13 +163,13 @@ def submit_form():
     global csv_file_path
     global dfLTV
     global dfOriginal
-    
+    global columns
 
     try:
-        results = load_results()
         if csv_file_path is None:
+            results = load_results()
             csv_file_path = results['csv_file_path'] if results else None
-            print(f"results: {csv_file_path}")
+            
         data = request.json
         data['weeksAhead'] = int(data['weeksAhead'])
 
@@ -177,9 +185,11 @@ def submit_form():
         dfOriginal_path = './output/dfOriginal.csv'
         dfLTV.to_csv(dfLTV_path, index=True)
         dfOriginal.to_csv(dfOriginal_path, index=True)
+        dfLTV = dfLTV.reset_index() 
 
         # Salvar os caminhos e weeksAhead no arquivo results.json
-        save_results(csv_file_path, dfLTV_path, dfOriginal_path, data['weeksAhead'])
+        save_results(csv_file_path, dfLTV_path,
+                     dfOriginal_path, data['weeksAhead'], columns=columns)
 
         return jsonify({"message": "Dados processados e salvos com sucesso."}), 200
 
@@ -188,26 +198,31 @@ def submit_form():
         return jsonify({"error": f"Erro ao processar o formulário: {e}"}), 500
 
 # Rota para retornar os clientes
+
+
 @app.route('/clientes', methods=['GET'])
 def get_clientes():
     global dfLTV
-    
+   
+
     if dfLTV is None:
         results = load_results()
         if results and os.path.exists(results['dfLTV_path']):
             dfLTV = pd.read_csv(results['dfLTV_path'])
         else:
             return jsonify({"error": "O cálculo do LTV ainda não foi realizado.<br />Por favor, volte à tela 'Modelo' e envie as informações para continuar."}), 400
-    
-    clientes = dfLTV.to_dict(orient='records')
+
+    clientes = dfLTV.to_dict(orient='records')  # Inclui o índice como uma coluna no dicionário
     return jsonify(clientes), 200
-   
+
 # Rota para retornar os dados de um cliente específico
+
+
 @app.route('/cliente/<int:id>', methods=['GET'])
 def get_cliente(id):
     global dfLTV
     global dfOriginal
-    
+
     if dfLTV is None or dfOriginal is None:
         results = load_results()
         if results and os.path.exists(results['dfLTV_path']) and os.path.exists(results['dfOriginal_path']):
@@ -215,20 +230,21 @@ def get_cliente(id):
             dfOriginal = pd.read_csv(results['dfOriginal_path'])
         else:
             return jsonify({"error": "O cálculo do LTV ainda não foi realizado.<br />Por favor, volte à tela 'Modelo' e envie as informações para continuar."}), 400
-    
 
     cliente = dfLTV[dfLTV['id'] == id].to_dict(orient='records')
     if cliente:
         compras_cliente = dfOriginal[dfOriginal['id'] == id]
         compras_cliente = compras_cliente.reset_index(drop=True)
         compras_cliente['id_transaction'] = compras_cliente.index
-        compras_cliente['date'] = pd.to_datetime(compras_cliente['date'], errors='coerce').dt.strftime('%d/%m/%Y')
+        compras_cliente['date'] = pd.to_datetime(
+            compras_cliente['date'], errors='coerce').dt.strftime('%d/%m/%Y')
         transactions = compras_cliente[[
             'id_transaction', 'monetary', 'date']].to_dict(orient='records')
         cliente[0]['transactions'] = transactions
         return jsonify(cliente[0]), 200
     else:
         return jsonify({"error": "Cliente não encontrado."}), 404
+
 
 @app.route('/weeksahead', methods=['GET'])
 def get_weeks_ahead():
@@ -243,7 +259,7 @@ def get_weeks_ahead():
                 return jsonify({"weeksAhead": weeksAhead}), 200
             else:
                 return jsonify({"error": "Nenhum valor de weeksAhead encontrado."}), 400
-    except Exception as e:    
+    except Exception as e:
         return jsonify({"error": "O cálculo do LTV ainda não foi realizado.<br />Por favor, volte à tela 'Modelo' e envie as informações para continuar."}), 400
 
 
@@ -253,6 +269,8 @@ def get_image(filename):
     return send_from_directory(app.config['IMAGE_FOLDER'], filename)
 
 # Rota para retornar os modelos de frequência e monetário
+
+
 @app.route('/models', methods=['GET'])
 def get_models():
     try:
@@ -263,6 +281,8 @@ def get_models():
         return jsonify({"error": f"Erro ao carregar os modelos: {e}"}), 500
 
 # Rota para retornar os dados de plotagem
+
+
 @app.route('/plot_data', methods=['GET'])
 def get_plot_data():
     try:
@@ -271,6 +291,7 @@ def get_plot_data():
         return jsonify(plot_data), 200
     except Exception as e:
         return jsonify({"error": f"Erro ao carregar os dados de plotagem: {e}"}), 500
+
 
 @app.route('/progress', methods=['GET'])
 def get_progress():
@@ -288,9 +309,12 @@ def get_progress():
         return jsonify({"messages": [], "last_update": app.config['LAST_UPDATE']}), 204
 
 # Exemplo de função que atualiza as mensagens de progresso
+
+
 def add_progress_message(message):
     app.config['PROGRESS_MESSAGES'].append(message)
     app.config['LAST_UPDATE'] = time.time()  # Atualizar o timestamp
+
 
 # Inicia a aplicação Flask
 if __name__ == "__main__":

@@ -2,5 +2,13 @@
     "csv_file_path": "./output/data/transactions.csv",
     "dfLTV_path": "./output/dfLTV.csv",
     "dfOriginal_path": "./output/dfOriginal.csv",
-    "weeksAhead": 20
+    "weeksAhead": 20,
+    "columns": [
+        "a",
+        "customer_id",
+        "customer_index",
+        "date",
+        "quantity",
+        "amount"
+    ]
 }
