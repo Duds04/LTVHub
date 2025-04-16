@@ -117,7 +117,7 @@ class PlotTask(Task):
             raise ValueError(f"Plot type '{self.plot_type}' is not supported.")
  
         if self.save_outliers_plots:
-            output_dir = "./plots"
+            output_dir = "./output/plots"
             if 'ExpectedFrequency' in df.columns:
                 self.save_outliers_plot(df, 'ExpectedFrequency', 'blue', output_dir)
             if 'ExpectedMonetary' in df.columns:
