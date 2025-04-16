@@ -15,7 +15,7 @@
 
 /* Ajustes para o Gráfico */
 .chartContainer {
-  width: 48%; /* Aumenta o width do gráfico para um pouco menor que a tabela */
+  width: 100%; /* Aumenta o width do gráfico para um pouco menor que a tabela */
   height: 500px;
   margin-top: 15vmin;
   background-color: #ffffff;
@@ -34,8 +34,8 @@
   box-sizing: border-box;
 }
 
-.left{
-    width: 100%;
+.left {
+  width: 100%;
 }
 
 /* Ajuste para dispositivos móveis */
@@ -124,7 +124,7 @@
   font-weight: bold;
   color: #006822;
   margin-bottom: 10px;
-  .id{
+  .id {
     color: #006822b8;
   }
 }
@@ -161,7 +161,6 @@
   margin-top: 30px;
   padding-left: 30px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-
 }
 
 /* Header da Tabela */
@@ -305,13 +304,13 @@
 
   .chartContainer {
     margin-top: 35px;
-    margin-left: 0; 
+    margin-left: 0;
   }
 }
 
 /* Ajuste para telas maiores que 1300px */
 .chartContainer {
-  width: 85%; 
+  width: 85%;
   align-self: first baseline;
 }
 
@@ -356,6 +355,6 @@
   margin-right: 8px; /* Espaçamento entre o ícone e o texto */
 }
 
-.tableHeader{
+.tableHeader {
   user-select: none;
 }

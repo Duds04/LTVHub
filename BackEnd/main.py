@@ -55,6 +55,8 @@ app.config['IMAGE_FOLDER'] = IMAGE_FOLDER
 # Variáveis globais
 csv_file_path = None
 weeksAhead = None
+dfLTV = None
+dfOriginal = None
 
 # Variável global para mensagens de progresso
 app.config['PROGRESS_MESSAGES'] = []
@@ -151,6 +153,8 @@ def submit_form():
      """
     global weeksAhead
     global csv_file_path
+    global dfLTV
+    global dfOriginal
     
 
     try:
@@ -186,36 +190,45 @@ def submit_form():
 # Rota para retornar os clientes
 @app.route('/clientes', methods=['GET'])
 def get_clientes():
-    results = load_results()
-    if results and os.path.exists(results['dfLTV_path']):
-        dfLTV = pd.read_csv(results['dfLTV_path'])
-        clientes = dfLTV.to_dict(orient='records')
-        return jsonify(clientes), 200
-    else:
-        return jsonify({"error": "O cálculo do LTV ainda não foi realizado.<br />Por favor, volte à tela 'Modelo' e envie as informações para continuar."}), 400
-
+    global dfLTV
+    
+    if dfLTV is None:
+        results = load_results()
+        if results and os.path.exists(results['dfLTV_path']):
+            dfLTV = pd.read_csv(results['dfLTV_path'])
+        else:
+            return jsonify({"error": "O cálculo do LTV ainda não foi realizado.<br />Por favor, volte à tela 'Modelo' e envie as informações para continuar."}), 400
+    
+    clientes = dfLTV.to_dict(orient='records')
+    return jsonify(clientes), 200
+   
 # Rota para retornar os dados de um cliente específico
 @app.route('/cliente/<int:id>', methods=['GET'])
 def get_cliente(id):
-    results = load_results()
-    if results and os.path.exists(results['dfLTV_path']) and os.path.exists(results['dfOriginal_path']):
-        dfLTV = pd.read_csv(results['dfLTV_path'])
-        dfOriginal = pd.read_csv(results['dfOriginal_path'])
-
-        cliente = dfLTV[dfLTV['id'] == id].to_dict(orient='records')
-        if cliente:
-            compras_cliente = dfOriginal[dfOriginal['id'] == id]
-            compras_cliente = compras_cliente.reset_index(drop=True)
-            compras_cliente['id_transaction'] = compras_cliente.index
-            compras_cliente['date'] = pd.to_datetime(compras_cliente['date'], errors='coerce').dt.strftime('%d/%m/%Y')
-            transactions = compras_cliente[[
-                'id_transaction', 'monetary', 'date']].to_dict(orient='records')
-            cliente[0]['transactions'] = transactions
-            return jsonify(cliente[0]), 200
+    global dfLTV
+    global dfOriginal
+    
+    if dfLTV is None or dfOriginal is None:
+        results = load_results()
+        if results and os.path.exists(results['dfLTV_path']) and os.path.exists(results['dfOriginal_path']):
+            dfLTV = pd.read_csv(results['dfLTV_path'])
+            dfOriginal = pd.read_csv(results['dfOriginal_path'])
         else:
-            return jsonify({"error": "Cliente não encontrado."}), 404
+            return jsonify({"error": "O cálculo do LTV ainda não foi realizado.<br />Por favor, volte à tela 'Modelo' e envie as informações para continuar."}), 400
+    
+
+    cliente = dfLTV[dfLTV['id'] == id].to_dict(orient='records')
+    if cliente:
+        compras_cliente = dfOriginal[dfOriginal['id'] == id]
+        compras_cliente = compras_cliente.reset_index(drop=True)
+        compras_cliente['id_transaction'] = compras_cliente.index
+        compras_cliente['date'] = pd.to_datetime(compras_cliente['date'], errors='coerce').dt.strftime('%d/%m/%Y')
+        transactions = compras_cliente[[
+            'id_transaction', 'monetary', 'date']].to_dict(orient='records')
+        cliente[0]['transactions'] = transactions
+        return jsonify(cliente[0]), 200
     else:
-        return jsonify({"error": "O cálculo do LTV ainda não foi realizado.<br />Por favor, volte à tela 'Modelo' e envie as informações para continuar."}), 400
+        return jsonify({"error": "Cliente não encontrado."}), 404
 
 @app.route('/weeksahead', methods=['GET'])
 def get_weeks_ahead():
