@@ -12,8 +12,6 @@ from src.DataTransformation.RFM import RFMTask
 RESULTS_FILE = './output/results.json'
 
 # Função para salvar os resultados no arquivo JSON
-
-
 def save_results(csv_file_path, dfLTV_path, dfOriginal_path, weeksAhead, columns=None):
     results = {
         "csv_file_path": csv_file_path,
@@ -27,8 +25,6 @@ def save_results(csv_file_path, dfLTV_path, dfOriginal_path, weeksAhead, columns
         json.dump(results, file, indent=4)
 
 # Função para carregar os resultados do arquivo JSON
-
-
 def load_results():
     if os.path.exists(RESULTS_FILE):
         with open(RESULTS_FILE, 'r') as file:
@@ -69,22 +65,16 @@ app.config['PROGRESS_MESSAGES'] = []
 app.config['LAST_UPDATE'] = time.time()  # Timestamp da última atualização
 
 # Rota para a página inicial
-
-
 @app.route("/")
 def index():
     return render_template("index.html")
 
 # Rota para servir arquivos estáticos
-
-
 @app.route('/<path:path>', methods=['GET'])
 def static_proxy(path):
     return send_from_directory(app.static_folder, path)
 
 # Rota para upload de arquivos
-
-
 @app.route('/upload', methods=['POST'])
 def upload_file():
     global csv_file_path
@@ -134,8 +124,6 @@ def get_columns():
         return jsonify({"error": f"Erro ao processar o arquivo: {e}"}), 500
 
 # Rota para receber os dados do formulário
-
-
 @app.route('/submit_form', methods=['POST'])
 def submit_form():
     """ Para adicionar um novo modelo, siga os seguintes passos:
@@ -185,8 +173,7 @@ def submit_form():
         dfOriginal_path = './output/dfOriginal.csv'
         dfLTV.to_csv(dfLTV_path, index=True)
         dfOriginal.to_csv(dfOriginal_path, index=True)
-        dfLTV = dfLTV.reset_index() 
-
+        
         # Salvar os caminhos e weeksAhead no arquivo results.json
         save_results(csv_file_path, dfLTV_path,
                      dfOriginal_path, data['weeksAhead'], columns=columns)
@@ -198,8 +185,6 @@ def submit_form():
         return jsonify({"error": f"Erro ao processar o formulário: {e}"}), 500
 
 # Rota para retornar os clientes
-
-
 @app.route('/clientes', methods=['GET'])
 def get_clientes():
     global dfLTV
@@ -216,8 +201,6 @@ def get_clientes():
     return jsonify(clientes), 200
 
 # Rota para retornar os dados de um cliente específico
-
-
 @app.route('/cliente/<int:id>', methods=['GET'])
 def get_cliente(id):
     global dfLTV
@@ -245,7 +228,7 @@ def get_cliente(id):
     else:
         return jsonify({"error": "Cliente não encontrado."}), 404
 
-
+# Rota para retornar o valor de weeksAhead
 @app.route('/weeksahead', methods=['GET'])
 def get_weeks_ahead():
     global weeksAhead
@@ -269,8 +252,6 @@ def get_image(filename):
     return send_from_directory(app.config['IMAGE_FOLDER'], filename)
 
 # Rota para retornar os modelos de frequência e monetário
-
-
 @app.route('/models', methods=['GET'])
 def get_models():
     try:
@@ -281,8 +262,6 @@ def get_models():
         return jsonify({"error": f"Erro ao carregar os modelos: {e}"}), 500
 
 # Rota para retornar os dados de plotagem
-
-
 @app.route('/plot_data', methods=['GET'])
 def get_plot_data():
     try:
@@ -309,8 +288,6 @@ def get_progress():
         return jsonify({"messages": [], "last_update": app.config['LAST_UPDATE']}), 204
 
 # Exemplo de função que atualiza as mensagens de progresso
-
-
 def add_progress_message(message):
     app.config['PROGRESS_MESSAGES'].append(message)
     app.config['LAST_UPDATE'] = time.time()  # Atualizar o timestamp

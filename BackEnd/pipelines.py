@@ -59,8 +59,8 @@ def calculate_LTV_and_Plot(data, file_path="output/data/transactions.csv", colum
     with Pipeline() as pipeline:
         read_dt = CsvReadTask("read_dt", file_path,
                               columnID, columnDate, columnMonetary)
-        rfm_training = RFMTask("data_training", predictInterval=numPeriods, isTraining=True)
-        rfm_predict = RFMTask("data_predict", isRating=True, predictInterval=numPeriods, isTraining=False)
+        rfm_training = RFMTask("data_training", predictInterval=numPeriods, isTraining=True, isRating=False)
+        rfm_predict = RFMTask("data_predict", isRating=True, isTraining=False)
         ltv = LTVTask("calculo_ltv", columnFrequency="ExpectedFrequency",
                       columnMonetary="ExpectedMonetary")
 
@@ -105,7 +105,7 @@ def load_model(model_type, model_id, custom_props=None, data_predict=None):
     # Atualiza os props com valores customizados, se existirem
     model_props = model_config["props"]
 
-    # Itera sobre os custom_props e adiciona apenas os que são usados no modelo
+    # Pega os custom_props e adiciona apenas os que são usados no modelo
     if custom_props:
         for key, value in custom_props.items():
             # Adiciona o parâmetro somente se a chave existir nos props do modelo
@@ -115,9 +115,6 @@ def load_model(model_type, model_id, custom_props=None, data_predict=None):
     # Inicializa o modelo dinamicamente
     model_class = globals()[model_config["model_task_name"]]
     
-    # if model_config.get("data_predict", False):
-    #     model_instance = model_class(**model_props)
-    # else:
     model_instance = model_class(**model_props)
 
     return model_instance
@@ -127,9 +124,9 @@ def __use_calculate():
         'idColumn': 'customer_id',
         'dateColumn': 'date',
         'amountColumn': 'amount',
-        'frequencyModel': 'BGFModel',
+        'frequencyModel': 'ParetoModel',
         'monetaryModel': 'MachineLearningModel',
-        'weeksAhead': 4,
+        'weeksAhead': 1,
     }
 
     csv_file_path = "output/data/transactions.csv"

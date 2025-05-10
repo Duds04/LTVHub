@@ -1,43 +1,43 @@
 {
     "clients": {
-        "7": {
-            "Tipo": "Cliente de alto valor",
-            "Porcentagem": 21.49200710479574,
-            "ValorAbsoluto": 242
-        },
         "0": {
             "Tipo": "Cliente perdido",
-            "Porcentagem": 21.04795737122558,
-            "ValorAbsoluto": 237
+            "Porcentagem": 62.28256257955027,
+            "ValorAbsoluto": 1468
+        },
+        "7": {
+            "Tipo": "Cliente de alto valor",
+            "Porcentagem": 10.267288926601612,
+            "ValorAbsoluto": 242
         },
         "1": {
             "Tipo": "Cliente de reten\u00e7\u00e3o cr\u00edtica",
-            "Porcentagem": 17.140319715808168,
+            "Porcentagem": 8.188375053033518,
             "ValorAbsoluto": 193
         },
         "6": {
             "Tipo": "Cliente de valor geral",
-            "Porcentagem": 12.788632326820604,
+            "Porcentagem": 6.1094611794654226,
             "ValorAbsoluto": 144
         },
         "2": {
             "Tipo": "Cliente de reten\u00e7\u00e3o geral",
-            "Porcentagem": 9.236234458259325,
+            "Porcentagem": 4.4123886296139165,
             "ValorAbsoluto": 104
         },
         "3": {
             "Tipo": "Cliente de desenvolvimento estrat\u00e9gico",
-            "Porcentagem": 8.081705150976909,
+            "Porcentagem": 3.8608400509121767,
             "ValorAbsoluto": 91
         },
         "5": {
             "Tipo": "Cliente em fase de prote\u00e7\u00e3o",
-            "Porcentagem": 5.328596802841918,
+            "Porcentagem": 2.545608824777259,
             "ValorAbsoluto": 60
         },
         "4": {
             "Tipo": "Cliente em desenvolvimento",
-            "Porcentagem": 4.8845470692717585,
+            "Porcentagem": 2.333474756045821,
             "ValorAbsoluto": 55
         }
     },
@@ -128,35 +128,35 @@
     "ltv_by_client_type": [
         {
             "TipoCliente": "Cliente de alto valor",
-            "LTV": 14506.97
+            "LTV": 32.24
         },
         {
             "TipoCliente": "Cliente de desenvolvimento estrat\u00e9gico",
-            "LTV": 1350.0
+            "LTV": 2.03
         },
         {
             "TipoCliente": "Cliente de reten\u00e7\u00e3o cr\u00edtica",
-            "LTV": 1253.57
+            "LTV": 1.43
         },
         {
             "TipoCliente": "Cliente de reten\u00e7\u00e3o geral",
-            "LTV": 512.57
+            "LTV": 2.41
         },
         {
             "TipoCliente": "Cliente de valor geral",
-            "LTV": 3082.54
+            "LTV": 13.02
         },
         {
             "TipoCliente": "Cliente em desenvolvimento",
-            "LTV": 392.45
+            "LTV": 0.27
         },
         {
             "TipoCliente": "Cliente em fase de prote\u00e7\u00e3o",
-            "LTV": 953.1
+            "LTV": 0.35
         },
         {
             "TipoCliente": "Cliente perdido",
-            "LTV": 426.71
+            "LTV": 1.88
         }
     ]
 }

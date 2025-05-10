@@ -1,9 +1,11 @@
 from src.workflows.task import Task
 import pandas as pd
 from abc import abstractmethod
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, median_absolute_error
+from sklearn.metrics import mean_squared_error, mean_absolute_error, median_absolute_error
 
 # usados pelo Machine Learning (tem o Y independente)
+
+
 class GenericModelTask(Task):
     def __init__(
         self,
@@ -70,7 +72,6 @@ class GenericModelTask(Task):
         print("Máximo:", expected.max())
         print()
 
-
         # Cálculo do MSE
         mse = mean_squared_error(yTrue, expected)
         print("Model Mean Squared Error (MSE):", mse)
@@ -80,36 +81,27 @@ class GenericModelTask(Task):
         mae = mean_absolute_error(yTrue, expected)
         print("Model Mean Absolute Error (MAE):", mae)
 
-        # Cálculo do R²
-        from sklearn.metrics import r2_score
-        r2 = r2_score(yTrue, expected)
-        print("R² (Coeficiente de Determinação):", r2)
-
         # Cálculo do RMSE
         import numpy as np
         rmse = np.sqrt(mse)
-        print("RMSE (Root Mean Squared Error):", rmse)
-
-        # Cálculo do MAPE (tratando valores zero em yTrue)
-        non_zero_indices = yTrue != 0  # Filtra índices onde yTrue não é zero
-        if non_zero_indices.any():  # Verifica se há valores válidos
-            mape = (abs(yTrue[non_zero_indices] - expected[non_zero_indices]) / yTrue[non_zero_indices]).mean() * 100
-            print("MAPE (Mean Absolute Percentage Error):", mape, "%")
-        else:
-            print("MAPE (Mean Absolute Percentage Error): Não pode ser calculado (todos os valores de monetary_value são zero).")
+        print("Root Mean Squared Error (RMSE):", rmse)
 
         # Cálculo da Mediana do Erro Absoluto
         from sklearn.metrics import median_absolute_error
         medae = median_absolute_error(yTrue, expected)
         print("Mediana do Erro Absoluto (MedAE):", medae)
 
-        
-        if (yTrue != 0).all():  # Verifica se todos os valores de yTrue são diferentes de zero
-            mean_relative_error = (abs(yTrue - expected) / abs(yTrue)).mean()
+        if (yTrue != 0).any(): 
+            valid_indices = yTrue != 0  
+            mape = (abs(yTrue[valid_indices] - expected[valid_indices]
+                        ) / yTrue[valid_indices]).mean() * 100
+            print("Mean Absolute Percentage Error (MAPE):", mape, "%")
+            mean_relative_error = (abs(yTrue[valid_indices] - expected[valid_indices]) / abs(yTrue[valid_indices])).mean()
             print("Erro Relativo Médio:", mean_relative_error)
         else:
-            mean_relative_error = float('inf')  # Define como infinito se houver divisão por zero
-            print("Erro Relativo Médio: inf (divisão por zero detectada)")
-            print()
-        
+            # Define como infinito se todos os valores de yTrue forem zero
+            mean_relative_error = float('inf')
+            print("Mean Absolute Percentage Error (MAPE): Não pode ser calculado (todos os valores de monetary_value são zero).")
+            print("Erro Relativo Médio: inf (todos os valores de monetary_value são zero)")
+
         return mse

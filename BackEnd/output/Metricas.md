@@ -100,3 +100,22 @@ Aqui está uma explicação detalhada sobre cada uma das métricas de erro imple
 
 ### Conclusão
 Cada métrica tem seu propósito e limitações. Para uma análise completa, é recomendável usar várias métricas em conjunto. Por exemplo, o MSE e o RMSE são úteis para identificar grandes erros, enquanto o MAE e o MedAE são mais robustos a outliers. O R² ajuda a entender a qualidade geral do modelo, e o MAPE é útil para interpretar o erro em termos percentuais.
+
+Quando temos outliers nos dados, algumas métricas de avaliação tradicionais como MSE ou RMSE podem ser enganosas, porque elas penalizam fortemente erros grandes (quadráticos), fazendo parecer que o modelo é pior do que realmente é — mesmo que só esteja errando em poucos pontos extremos.
+
+#### Melhores métricas para avaliar modelos com outliers:
+🔹 1. MAE (Mean Absolute Error)
+
+    Resistente a outliers.
+
+    Como usa valores absolutos, trata todos os erros da mesma forma, sem elevar ao quadrado.
+
+    Boa no geral, especialmente se você quer saber o erro médio real.
+
+🔹 2. MedAE (Mediana do Erro Absoluto)
+
+    Muito robusta contra outliers.
+
+    Mostra o erro típico (mediano), ignorando completamente valores extremos.
+
+    Excelente quando os dados têm muitos outliers ou distribuição assimétrica.

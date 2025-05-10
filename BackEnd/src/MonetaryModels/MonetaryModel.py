@@ -77,23 +77,18 @@ class MonetaryModelTask(Task):
         mae = mean_absolute_error(yTrue, expected)
         print("Model Mean Absolute Error (MAE):", mae)
 
-        # Cálculo do R²
-        from sklearn.metrics import r2_score
-        r2 = r2_score(yTrue, expected)
-        print("R² (Coeficiente de Determinação):", r2)
-
         # Cálculo do RMSE
         import numpy as np
         rmse = np.sqrt(mse)
-        print("RMSE (Root Mean Squared Error):", rmse)
+        print("Root Mean Squared Error (RMSE):", rmse)
 
         # Cálculo do MAPE (tratando valores zero em yTrue)
         non_zero_indices = yTrue != 0  # Filtra índices onde yTrue não é zero
         if non_zero_indices.any():  # Verifica se há valores válidos
             mape = (abs(yTrue[non_zero_indices] - expected[non_zero_indices]) / yTrue[non_zero_indices]).mean() * 100
-            print("MAPE (Mean Absolute Percentage Error):", mape, "%")
+            print("Mean Absolute Percentage Error (MAPE):", mape, "%")
         else:
-            print("MAPE (Mean Absolute Percentage Error): Não pode ser calculado (todos os valores de monetary_value são zero).")
+            print("Mean Absolute Percentage Error (MAPE): Não pode ser calculado (todos os valores de monetary_value são zero).")
 
         # Cálculo da Mediana do Erro Absoluto
         from sklearn.metrics import median_absolute_error

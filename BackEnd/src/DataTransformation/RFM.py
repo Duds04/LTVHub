@@ -77,7 +77,7 @@ class RFMTask(Task):
                 minTrainin: int, # Qual é o periodo mínimo que será usado para treino
                 maxTraining: int, # Qual será o último período que será usado para o treino
                 predictInterval: int = 4, # Define quantos períodos serão os intervalos de predição (Quantos periodos queremos prever)
-                apply_calibration_split # Fazer a divisão do dataFrame em calibration e holdout (se for Test isso ficara como true)
+                isTraining # Fazer a divisão do dataFrame em calibration e holdout (se for Test isso ficara como true)
         """
         super().__init__(name)
         self.columnID = columnID
@@ -88,8 +88,6 @@ class RFMTask(Task):
         self.observationEnd = observationEnd
         self.split = split
         self.isTraining = isTraining
-        if(isTraining): self.apply_calibration_split = True
-        else: self.apply_calibration_split = False
         self.minTrainin = minTrainin
         self.maxTraining = maxTraining
         self.predictInterval = predictInterval
@@ -121,7 +119,7 @@ class RFMTask(Task):
         indexCut = round(len(rangeDatas) * self.split)
         return rangeDatas[indexCut], lastData
 
-    def __rfm_data_filler(self, df: pd.DataFrame) -> pd.DataFrame:
+    def __generate_rfm_summary(self, df: pd.DataFrame) -> pd.DataFrame:
             """
             Args:
                 df, #Dataframe do Pandas
@@ -131,16 +129,8 @@ class RFMTask(Task):
                     df
                 )
             
-            if self.apply_calibration_split is False:
-                return summary_data_from_transaction_data(
-                    transactions=df,
-                    customer_id_col=self.columnID,
-                    datetime_col=self.columnDate,
-                    monetary_value_col=self.columnMonetary,
-                    freq=self.frequency,
-                )
-            else:
-                rfm_cal_holdout = calibration_and_holdout_data(
+            if self.isTraining:
+                return calibration_and_holdout_data(
                     transactions=df,
                     customer_id_col=self.columnID,
                     datetime_col=self.columnDate,
@@ -149,7 +139,14 @@ class RFMTask(Task):
                     calibration_period_end=self.calibrationEnd,
                     observation_period_end=self.observationEnd,
                 )
-            return rfm_cal_holdout
+            else:
+                return summary_data_from_transaction_data(
+                    transactions=df,
+                    customer_id_col=self.columnID,
+                    datetime_col=self.columnDate,
+                    monetary_value_col=self.columnMonetary,
+                    freq=self.frequency,
+                )
         
     def __split_by_percentage(self, df: pd.DataFrame, column: str, percent=0.75):
         limiar = df[column].sort_values().iloc[int(df.shape[0] * percent)]
@@ -181,9 +178,7 @@ class RFMTask(Task):
         assert self.columnDate in df.columns, f"Date column '{self.columnDate}' not found in DataFrame columns: {df.columns}"
         
         dfReturn = pd.DataFrame()
-        if self.apply_calibration_split:
-            dfReturn = self.__rfm_data_filler(df)
-        else:
+        if self.isTraining:
             periods = self.__getPeriodosList(df)
             
             if self.maxTraining == -1:
@@ -194,9 +189,11 @@ class RFMTask(Task):
             for period in range(self.minTrainin, self.maxTraining, self.predictInterval):
                 self.calibrationEnd = periods[period].to_timestamp()
                 self.observationEnd = periods[period + self.predictInterval].to_timestamp()
-                dfReturn = pd.concat([dfReturn, self.__rfm_data_filler(df)])
-                
+                dfReturn = pd.concat([dfReturn, self.__generate_rfm_summary(df)])
+        else:
+            dfReturn = self.__generate_rfm_summary(df)
+        
         if self.isRating:
             dfReturn = self.rating(dfReturn)
-                
-        return dfReturn
+        
+        return dfReturn.reset_index()
