@@ -36,7 +36,7 @@ const PieChart = ({ data }) => {
         ? { ...entry, Cor: colors[index] }
         : { Tipo: tipo, Porcentagem: 0, ValorAbsoluto: 0, Cor: colors[index] };
     })
-    .filter((item) => item.Porcentagem > 0); // Filtra valores com porcentagem maior que 0
+    .filter((item) => item.Porcentagem > 0); 
 
   const chartData = {
     labels: orderedData.map((item) => item.Tipo),

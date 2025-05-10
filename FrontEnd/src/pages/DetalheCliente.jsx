@@ -124,7 +124,7 @@ const DetalheCliente = () => {
         Header: ({ column }) => (
           <span
             className={stylesDetalheCliente.futurePrediction}
-            {...column.getSortByToggleProps()} // Aplica a funcionalidade de ordenação
+            {...column.getSortByToggleProps()} // Ordenação
           >
             Previsão Futura
             <InfoTooltip text="Valor Esperado da Transação vezes Número Esperado." />

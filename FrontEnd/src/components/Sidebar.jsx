@@ -6,7 +6,6 @@ import stylesSidebar from '../style/Sidebar.module.css';
 const Sidebar = () => {
   return (
     <div className={stylesSidebar.sidebar}>
-      {/* Logo no topo */}
       <div className={stylesSidebar.logoContainer}>
         <img src="./assets/logo.svg" alt="Logo" className={stylesSidebar.logo} />
 

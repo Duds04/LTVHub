@@ -9,7 +9,6 @@ import Select from "react-select";
 const FormModel = () => {
   const navigate = useNavigate();
 
-  // Estados do formulário
   const [idColumn, setIdColumn] = useState("");
   const [dateColumn, setDateColumn] = useState("");
   const [amountColumn, setAmountColumn] = useState("");
@@ -105,12 +104,12 @@ const FormModel = () => {
           "Erro ao buscar colunas.<br />Tente novamente da Tela Inicial."
         );
       } finally {
-        setLoading(false); // Ocultar o modal de carregamento
+        setLoading(false); 
       }
     };
 
     const fetchModels = async () => {
-      setLoading(true); // Exibir o modal de carregamento
+      setLoading(true); 
       try {
         const response = await fetch("/models");
         const data = await response.json();
@@ -129,7 +128,7 @@ const FormModel = () => {
           "Erro ao buscar modelos.<br />Tente novamente da Tela Inicial."
         );
       } finally {
-        setLoading(false); // Ocultar o modal de carregamento
+        setLoading(false); 
       }
     };
 
@@ -147,7 +146,7 @@ const FormModel = () => {
             const data = await response.json();
             if (data.messages.length > 0) {
               setLoadingMessage(data.messages[data.messages.length - 1]);
-              setLastUpdate(data.last_update); // Atualizar o timestamp
+              setLastUpdate(data.last_update); // Atualiza o timestamp
             }
           }
         } catch (error) {
@@ -208,7 +207,7 @@ const FormModel = () => {
             value={idColumn ? { label: idColumn, value: idColumn } : null}
             onChange={(selectedOption) => setIdColumn(selectedOption.value)}
             options={columns}
-            styles={customStyles} // Aplica os estilos personalizados
+            styles={customStyles} 
             required
             placeholder="Coluna..."
           />
@@ -224,7 +223,7 @@ const FormModel = () => {
             value={dateColumn ? { label: dateColumn, value: dateColumn } : null}
             onChange={(selectedOption) => setDateColumn(selectedOption.value)}
             options={columns}
-            styles={customStyles} // Aplica os estilos personalizados
+            styles={customStyles} 
             required
             placeholder="Coluna..."
           />
@@ -242,7 +241,7 @@ const FormModel = () => {
             }
             onChange={(selectedOption) => setAmountColumn(selectedOption.value)}
             options={columns}
-            styles={customStyles} // Aplica os estilos personalizados
+            styles={customStyles} 
             required
             placeholder="Coluna..."
           />
@@ -310,7 +309,6 @@ const FormModel = () => {
           />
         </div>
 
-        {/* Botão de envio */}
         <button type="submit" className={styles.submitButton}>
           ENVIAR
         </button>

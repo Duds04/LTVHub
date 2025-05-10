@@ -6,11 +6,11 @@ export default function isConfigurateModel(Component) {
     const navigate = useNavigate();
 
     useEffect(() => {
-      const configurateModel = localStorage.getItem('configurateModel'); // Verifica se o arquivo foi enviado
+      const configurateModel = localStorage.getItem('configurateModel'); 
 
       if (!configurateModel) {
         
-        navigate('/modelo'); // Se o arquivo não foi enviado, redireciona para a página inicial
+        navigate('/modelo'); 
         return;
       }
     }, [navigate]);

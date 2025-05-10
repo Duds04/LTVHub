@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import stylesEstatisticas from "../style/Estatisticas.module.css";
-import isConfigurateModel from "../components/isConfigurateModel"; // Importando o HOC
-import PieChart from "../components/PieChart"; // Componente para renderizar gráficos de pizza
+import isConfigurateModel from "../components/isConfigurateModel"; 
+import PieChart from "../components/PieChart"; 
 import {
   BarChart,
   Bar,
@@ -94,7 +94,6 @@ const Estatisticas = () => {
       <h1 className={stylesEstatisticas.title}>ESTATÍSTICAS</h1>
 
       <div className={stylesEstatisticas.graphRow}>
-        {/* Gráfico 1 */}
         <div className={stylesEstatisticas.graphContainer}>
           <h3 className={stylesEstatisticas.graphTitle}>
             Distribuição Percentual pelos Tipos de Clientes
@@ -102,7 +101,6 @@ const Estatisticas = () => {
           <PieChart data={filteredData(data.clients)} />
         </div>
 
-        {/* Gráfico 2 */}
         <div className={stylesEstatisticas.graphContainer}>
           <h3 className={stylesEstatisticas.graphTitle}>
             Distribuição Percentual do Valor Monetário pelos Tipos de Clientes
@@ -110,7 +108,6 @@ const Estatisticas = () => {
           <PieChart data={filteredData(data.monetary)} />
         </div>
 
-        {/* Gráfico 3 */}
         <div className={stylesEstatisticas.graphContainer}>
           <h3 className={stylesEstatisticas.graphTitle}>
             Distribuição Percentual das Transações pelos Tipos de Clientes
@@ -178,13 +175,13 @@ const Estatisticas = () => {
                 key={tipo}
                 style={{
                   cursor: "pointer",
-                  opacity: hiddenCategories.includes(tipo) ? 0.5 : 1, // Reduz a opacidade para indicar que está oculto
+                  opacity: hiddenCategories.includes(tipo) ? 0.5 : 1, 
                 }}
                 onClick={() => toggleCategory(tipo)}
               >
                 <span
                   style={{
-                    backgroundColor: colors[index], // Cor correspondente ao tipo
+                    backgroundColor: colors[index], 
                   }}
                 ></span>
                 {tipo}

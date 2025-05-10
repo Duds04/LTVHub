@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import stylesCliente from "../style/Clientes.module.css";
-import isConfigurateModel from "../components/isConfigurateModel"; // Importando o HOC
-import ErrorModal from "../components/ErrorModal"; // Importando o ErrorModal
-import LoadingModal from "../components/LoadingModal"; // Importando o LoadingModal
+import isConfigurateModel from "../components/isConfigurateModel";
+import ErrorModal from "../components/ErrorModal";
+import LoadingModal from "../components/LoadingModal"; 
 import InfoTooltip from "../components/InfoTooltip";
 
 
@@ -162,7 +162,7 @@ const Clientes = () => {
             <select
               className={stylesCliente.filterSelect}
               value={filter}
-              onChange={handleFilterChange} // Atualiza o filtro
+              onChange={handleFilterChange}
             >
               <option value="" disabled>Filtros </option>
               {clientOrder.map((type, index) => (
@@ -170,7 +170,7 @@ const Clientes = () => {
                   {type}
                 </option>
               ))}
-              <option value="">Nenhum Filtro</option> {/* Opção para limpar o filtro */}
+              <option value="">Nenhum Filtro</option> {/* Opção que limpa o filtro */}
             </select>
           </div>
         </span>
@@ -213,9 +213,7 @@ const Clientes = () => {
             ))}
           </div>
 
-          {/* Paginação */}
           <div className={stylesCliente.pagination}>
-            {/* Botão para voltar para o conjunto anterior de páginas */}
             <button
               className={`${stylesCliente.pageButton} ${
                 pageRangeStart === 0 ? stylesCliente.disabled : ""
@@ -236,7 +234,6 @@ const Clientes = () => {
               &lt;
             </button>
 
-            {/* Botões das páginas, exibindo somente 5 por vez */}
             {[...Array(5)].map((_, index) => {
               const pageNumber = pageRangeStart + index + 1;
               if (pageNumber <= totalPages) {
@@ -252,7 +249,7 @@ const Clientes = () => {
                   </button>
                 );
               }
-              return null; // Não renderiza botões para páginas além do total
+              return null; 
             })}
 
             <button
@@ -265,7 +262,6 @@ const Clientes = () => {
               &gt;
             </button>
 
-            {/* Botão para avançar para o próximo conjunto de páginas */}
             <button
               className={`${stylesCliente.pageButton} ${
                 pageRangeStart + 5 >= totalPages ? stylesCliente.disabled : ""
@@ -279,7 +275,6 @@ const Clientes = () => {
         </>
       )}
 
-      {/* Modal de erro */}
       {error && <ErrorModal message={error} onClose={() => setError(null)} />}
     </div>
   );

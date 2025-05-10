@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import stylesHome from "../style/Home.module.css";
-import { FaPaperPlane } from "react-icons/fa"; // Ícone do avião de papel
-import { useNavigate } from "react-router-dom"; // Usando o useNavigate para navegação
+import { FaPaperPlane } from "react-icons/fa"; 
+import { useNavigate } from "react-router-dom";
 
-import LoadingModal from "../components/LoadingModal"; // Importando o componente de carregamento
-import ErrorModal from "../components/ErrorModal"; // Importando o componente de erro
+import LoadingModal from "../components/LoadingModal";
 
 const Home = () => {
   const [fileName, setFileName] = useState("");
@@ -163,10 +162,8 @@ const Home = () => {
           Escolha um arquivo ".csv" e clique em "Enviar Arquivo" para continuar.
         </p>
 
-        {/* Container para o input e botão */}
         <div className={stylesHome.uploadContainer}>
           <div className={stylesHome.uploadWrapper}>
-            {/* Label e Input de Arquivo */}
             <label htmlFor="upload-file" className={stylesHome.uploadLabel}>
               {fileName ? fileName : "Selecione o arquivo CSV"}
             </label>
@@ -177,12 +174,11 @@ const Home = () => {
               onChange={handleFileChange} // Chama a função quando um arquivo é selecionado
             />
 
-            {/* Botão de envio com ícone de avião de papel */}
             <button
               className={`${stylesHome.uploadButton} ${
                 isUploaded ? stylesHome.uploadButtonToggled : ""
               }`}
-              onClick={handleFileUpload} // Simula o envio do arquivo
+              onClick={handleFileUpload}
               disabled={isUploaded} // Desabilita o botão se não houver arquivo ou se o arquivo já foi enviado
             >
               <FaPaperPlane className={stylesHome.uploadButtonIcon} />
@@ -191,7 +187,7 @@ const Home = () => {
               </span>
             </button>
           </div>
-          {/* Exibe a mensagem de erro, se houver */}
+
           {error && <p className={stylesHome.error}>{error}</p>}
         </div>
       </div>
