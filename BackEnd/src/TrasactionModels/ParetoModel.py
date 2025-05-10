@@ -8,7 +8,7 @@ class ParetoModelTask(TransactionModelTask):
         self,
         name: str,
         isTraining: bool = False,
-        penalizer: float = 0.1,
+        penalizer: float =  0.01,
         numPeriods: int = 1,
         isRating: bool = False,
     ) -> None:

@@ -8,7 +8,7 @@ class BGFModelTask(TransactionModelTask):
         self,
         name: str,
         isTraining: bool = False,
-        penalizer: float = 0.1,
+        penalizer: float = 0.01,
         numPeriods: int = 1,
         isRating: bool = False,
     ) -> None:
@@ -16,7 +16,7 @@ class BGFModelTask(TransactionModelTask):
         Args:
             name, #Nome da tarefa
             isTraining = True #Caso seja para efetuar a predição em um dataset com ou sem o período de observação
-            penalizer = 0.1# Coeficiente de penalização usado pelo modelo
+            penalizer # Coeficiente de penalização usado pelo modelo
         """
         super().__init__(name,  isTraining, penalizer, numPeriods, isRating)
         self.model = self.createModel()
