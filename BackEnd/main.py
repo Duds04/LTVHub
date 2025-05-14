@@ -168,6 +168,16 @@ def submit_form():
         dfOriginal = readCSV(
             csv_file_path, data['idColumn'], data['dateColumn'], data['amountColumn']
         )
+        
+        # Verificar se dfLTV está vazio
+        if dfLTV.empty:
+            print("Erro: dfLTV está vazio após o cálculo.")
+            return jsonify({"error": "Erro: dfLTV está vazio após o cálculo."}), 500
+
+        # Verificar se dfOriginal está vazio
+        if dfOriginal.empty:
+            print("Erro: dfOriginal está vazio após a leitura do CSV.")
+            return jsonify({"error": "Erro: dfOriginal está vazio após a leitura do CSV."}), 500
 
         dfLTV_path = './output/dfLTV.csv'
         dfOriginal_path = './output/dfOriginal.csv'

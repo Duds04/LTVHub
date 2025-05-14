@@ -9,7 +9,7 @@ class TransactionModelTask(Task):
         self,
         name: str,
         isTraining: bool = False,
-        penalizer: float =  0.01,
+        penalizer: float = 0.1,
         numPeriods: int = 1,
         isRating: bool = False,
     ) -> None:
